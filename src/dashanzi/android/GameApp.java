@@ -10,6 +10,8 @@ import android.util.Log;
 public class GameApp extends Application {
 	
 	public Socket mSocketClient = null;
+	
+	
 	private final static String SERVER_IP = "127.0.0.1";
 	private final static int PORT = 12345;
 	
