@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="@drawable/game_background">
+
+    <TextView
+        android:id="@+id/aboutTextViewId"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24dip"
+        android:textColor="@android:color/black"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:layout_weight="1"/>
+
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:textSize="15dip"
+        android:gravity="center_vertical"
+        android:layout_weight="3"
+        android:textColor="@android:color/black"/>
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:textSize="20dip"
+        android:gravity="right"
+  		android:paddingRight="5dip"
+        android:layout_weight="3"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"/>
+    
+     <TextView
+        android:id="@+id/textView3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" 
+        android:textSize="12dip"
+        android:gravity="center_horizontal"
+        android:layout_weight="1"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"/>
+
+</LinearLayout>
