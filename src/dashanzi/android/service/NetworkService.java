@@ -1,5 +1,14 @@
 package dashanzi.android.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -9,8 +18,10 @@ import android.util.Log;
 public class NetworkService extends Service {
 
 	protected boolean isStop = false;
-
 	private final IBinder binder = new MyBinder();
+	private Socket socket;
+	private BufferedReader is;
+	private PrintWriter os;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -24,9 +35,40 @@ public class NetworkService extends Service {
 		}
 	}
 
-	public void excute() {
+	// ------------- public methods ----------------------------
+	public void connect(String ip, int port) {
+		try {
+			socket = new Socket(ip, port);
+			is = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+					socket.getOutputStream())), true);
+			if (socket.isConnected()) {
+				if (!socket.isOutputShutdown()) {
+					os.println("are you sb?");
+				}
+			}
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	// ------------- private methods ----------------------------
+	public void onMessageRecevied(String strMsg) {
+
+	}
+
+	/**
+	 * 
+	 */
+	public void test() {
 		Log.i("ttt", "service execute");
-		
+
 		new Thread() {// �½��̣߳�ÿ��1�뷢��һ�ι㲥��ͬʱ��i�Ž�intent����
 
 			public void run() {
@@ -47,7 +89,7 @@ public class NetworkService extends Service {
 				}
 			}
 		}.start();
-		
+
 	}
 
 	public void onCreate() {

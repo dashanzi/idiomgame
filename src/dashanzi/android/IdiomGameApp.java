@@ -25,7 +25,7 @@ public class IdiomGameApp extends Application {
 
 	}
 
-	// ------------- public method ----------------------------
+	// ------------- public methods ----------------------------
 	/**
 	 * used by all activities
 	 */
@@ -38,10 +38,11 @@ public class IdiomGameApp extends Application {
 	 */
 	public void connect() {
 		initService();
+		connect();
 	}
 
-	// ------------- private method ----------------------------
-	private void onMessageReceived() {
+	// ------------- private methods ----------------------------
+	private void onMessageReceived(String msg) {
 
 	}
 
@@ -60,6 +61,11 @@ public class IdiomGameApp extends Application {
 
 	}
 
+	private void connnect() {
+		// System.out.println("onServiceConnected");
+		networkService.connect(serverIp, serverPort);
+	}
+
 	private ServiceConnection connection = new ServiceConnection() {
 
 		public void onServiceDisconnected(ComponentName name) {
@@ -68,8 +74,8 @@ public class IdiomGameApp extends Application {
 
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			networkService = ((NetworkService.MyBinder) service).getService();
-			System.out.println("onServiceConnected");
-			networkService.excute();
+			// System.out.println("onServiceConnected");
+			// networkService.test();
 		}
 	};
 
@@ -79,10 +85,10 @@ public class IdiomGameApp extends Application {
 			// TODO Auto-generated method stub
 			Log.i("ttt", "DP OnReceive");
 			Bundle bundle = intent.getExtras();
-			int a = bundle.getInt("i");
-			Log.i("ttt", "DP int -> " + a);
-			// pb.setProgress(a);
-			// tv.setText(String.valueOf(a));
+			String strMsg = bundle.getString("msg");
+			onMessageReceived(strMsg);
+			// int a = bundle.getInt("i");
+			// Log.i("ttt", "DP int -> " + a);
 
 		}
 
