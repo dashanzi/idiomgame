@@ -2,7 +2,6 @@ package dashanzi.android.service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -15,6 +14,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import dashanzi.android.dto.IMessage;
 
 public class NetworkService extends Service {
 
@@ -42,18 +42,16 @@ public class NetworkService extends Service {
 			socket = new Socket(ip, port);
 			is = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
-//			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-//					socket.getOutputStream())), true);
+			// os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+			// socket.getOutputStream())), true);
 			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream())), true);
-			
-			
-			
-			
+
 			if (socket.isConnected()) {
 				if (!socket.isOutputShutdown()) {
-//					os.print("Are you sb?");
-					socket.getOutputStream().write(new String("Are you robot?\r\n\r\n").getBytes());
+					// os.print("Are you sb?");
+					socket.getOutputStream().write(
+							new String("Are you robot?\r\n\r\n").getBytes());
 				}
 			}
 		} catch (UnknownHostException e) {
@@ -63,6 +61,10 @@ public class NetworkService extends Service {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+	}
+
+	public void sendMessage(IMessage msg) {
 
 	}
 

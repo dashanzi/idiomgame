@@ -11,6 +11,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import dashanzi.android.activity.IConnectHandler;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.service.NetworkService;
 
@@ -20,6 +21,7 @@ public class IdiomGameApp extends Application {
 
 	private String serverIp = "127.0.0.1";
 	private int serverPort = 12345;
+	private IConnectHandler handler;
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -30,15 +32,20 @@ public class IdiomGameApp extends Application {
 	 * used by all activities
 	 */
 	public void sendMessage(IMessage msg) {
-
+		if (networkService == null) {
+			Log.e("sendMessage", "networkService == NULL");
+		} else {
+			networkService.sendMessage(msg);
+		}
 	}
 
 	/**
 	 * used by all welcome activity
 	 */
-	public void connect() {
+	public void connect(IConnectHandler handler) {
+		this.handler = handler;
 		initService();
-//		 connnectService();
+		// connnectService();
 	}
 
 	// ------------- private methods ----------------------------
@@ -61,17 +68,17 @@ public class IdiomGameApp extends Application {
 
 	}
 
-//	private void connnectService() {
-//
-//		try {
-//			Thread.sleep(3000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//
-//		Log.i("dddd", "=====service=" + networkService);
-//		networkService.connect(serverIp, serverPort);
-//	}
+	// private void connnectService() {
+	//
+	// try {
+	// Thread.sleep(3000);
+	// } catch (InterruptedException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// Log.i("dddd", "=====service=" + networkService);
+	// networkService.connect(serverIp, serverPort);
+	// }
 
 	private ServiceConnection connection = new ServiceConnection() {
 
@@ -82,9 +89,11 @@ public class IdiomGameApp extends Application {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			System.out.println("onServiceConnected");
 			networkService = ((NetworkService.MyBinder) service).getService();
-			
+
 			networkService.connect(serverIp, serverPort);
 			System.out.println("service=" + networkService);
+
+			IdiomGameApp.this.handler.handle();
 			// networkService.test();
 		}
 	};
