@@ -49,8 +49,6 @@ public class Game extends Activity {
 	private static final int IDIOM_CORRECT = 1;
 	//倒计时秒数
 	private static final int COUNT_DOWN_SECOND = 10;
-	
-	
 
 	// 组件
 	private RelativeLayout current_player_layout;// 当前活跃玩家layout，背景颜色区别于观看玩家
