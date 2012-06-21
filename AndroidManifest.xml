@@ -24,6 +24,10 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name=".game.House"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name=".game.Game"
             android:label="@string/app_name" >
         </activity>
