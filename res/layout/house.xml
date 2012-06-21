@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/father_linear_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/game_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/house_title_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="60dip"
+        android:background="@drawable/login_input_area_background" >
+
+        <RelativeLayout
+            android:id="@+id/loading_linear_layout"
+            android:layout_width="200dip"
+            android:layout_height="40dip"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/house_title"
+                android:layout_width="160dip"
+                android:layout_height="50dip"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="游戏大厅"
+                android:textColor="@android:color/white"
+                android:textSize="25dip" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/house_welcome_user_text"
+            android:layout_width="fill_parent"
+            android:layout_height="20dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="欢迎您！"
+            android:gravity="right"
+            android:paddingRight="15dip"
+            android:paddingBottom="2dip"
+            android:textColor="@android:color/white" >
+        </TextView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="300dip"
+        android:layout_weight="1"
+        android:background="@drawable/frame" >
+
+        <RelativeLayout
+            android:id="@+id/house_list_layout"
+            android:layout_width="240dip"
+            android:layout_height="fill_parent"
+            android:layout_centerInParent="true"
+            android:orientation="horizontal"
+            android:paddingTop="50dip" >
+
+            <RelativeLayout
+                android:id="@+id/house_list_title"
+                android:layout_width="fill_parent"
+                android:layout_height="25dip"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/gridview_background" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentLeft="true"
+                    android:paddingLeft="5dip"
+                    android:text="房间号"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dip" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_alignParentRight="true"
+                    android:paddingLeft="25dip"
+                    android:text="剩余席位"
+                    android:textColor="@android:color/white"
+                    android:textSize="20dip" />
+            </RelativeLayout>
+
+            <ListView
+                android:id="@id/android:list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/house_list_title"
+                android:cacheColorHint="#00000000"
+                android:drawSelectorOnTop="false"
+                android:fastScrollEnabled="true"
+                android:focusable="true"
+                android:paddingBottom="50dip"
+                android:scrollbars="vertical" />
+
+            <TextView
+                android:id="@id/android:empty"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/house_list_title"
+                android:layout_gravity="center"
+                android:text="没有房间!"
+                android:textColor="@android:color/white"
+                android:textSize="9pt" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:background="@drawable/gridview_background" >
+
+        <Button
+            android:id="@+id/house_quick_select_btn"
+            android:layout_width="120dip"
+            android:layout_height="60dip"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="快速加入"
+            android:textSize="20dip" />
+    </RelativeLayout>
+
+</LinearLayout>

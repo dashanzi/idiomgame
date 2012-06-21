@@ -97,7 +97,6 @@ public class Login extends Activity {
 			ToastUtil.toast(this, "登陆失败,请重新登陆!", android.R.drawable.ic_dialog_alert);
 		}
 	}
-
 	
 	// test TODO
 	private void testLoginResult() {
