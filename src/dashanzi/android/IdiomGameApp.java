@@ -38,7 +38,7 @@ public class IdiomGameApp extends Application {
 	 */
 	public void connect() {
 		initService();
-		connnectService();
+//		 connnectService();
 	}
 
 	// ------------- private methods ----------------------------
@@ -61,17 +61,17 @@ public class IdiomGameApp extends Application {
 
 	}
 
-	private void connnectService() {
-
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		Log.i("dddd","=====service=" + networkService);
-		networkService.connect(serverIp, serverPort);
-	}
+//	private void connnectService() {
+//
+//		try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+//
+//		Log.i("dddd", "=====service=" + networkService);
+//		networkService.connect(serverIp, serverPort);
+//	}
 
 	private ServiceConnection connection = new ServiceConnection() {
 
@@ -80,8 +80,11 @@ public class IdiomGameApp extends Application {
 		}
 
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			 System.out.println("onServiceConnected");
+			System.out.println("onServiceConnected");
 			networkService = ((NetworkService.MyBinder) service).getService();
+			
+			networkService.connect(serverIp, serverPort);
+			System.out.println("service=" + networkService);
 			// networkService.test();
 		}
 	};
