@@ -45,7 +45,7 @@ public class NetworkService extends Service {
 					socket.getOutputStream())), true);
 			if (socket.isConnected()) {
 				if (!socket.isOutputShutdown()) {
-					os.println("are you sb?");
+					os.println("Are you sb?\r\n");
 				}
 			}
 		} catch (UnknownHostException e) {
