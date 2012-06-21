@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import dashanzi.android.Constants;
+import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.request.LoginRequestMsg;
@@ -30,6 +31,7 @@ import dashanzi.android.util.ToastUtil;
 public class Login extends Activity implements IMessageHandler{
 
 	private static final String tag = "Login";
+	private IdiomGameApp app;
 	// 组件
 	private LinearLayout father_ll;// 父linearLayout
 	private LinearLayout loading_ll;// loading_linearLayout，用于显示loading动画
@@ -51,6 +53,8 @@ public class Login extends Activity implements IMessageHandler{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
+		app = (IdiomGameApp) this.getApplication();
+		
 		// 获得组件，login relativelayout, 设置透明度
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.login_input_area);
 		rl.getBackground().setAlpha(190);
@@ -78,15 +82,11 @@ public class Login extends Activity implements IMessageHandler{
 	public void onMesssageReceived(IMessage msg) {
 		//得到服务端消息
 		if(!(msg instanceof LoginResponseMsg)){
-			
+			Log.e(tag, "LoginResponseMsg format error !");
+			return;
 		}
 		
 		LoginResponseMsg loginRes = (LoginResponseMsg)msg;
-		
-		if (loginRes == null) {
-			Log.e(tag, "LoginResponseMsg is null !");
-			return;
-		}
 		// 终止登陆thread
 		hasLoginResult = true;
 
@@ -139,6 +139,7 @@ public class Login extends Activity implements IMessageHandler{
 			Log.d("click", "--->> onClickListener !");
 
 			// 封装loginMsg
+			loginMsg.setType(Constants.Type.LOGIN_REQ);
 			if (userName != null && userName.getText() != null) {
 				loginMsg.setName(userName.getText().toString());
 			}
@@ -156,7 +157,8 @@ public class Login extends Activity implements IMessageHandler{
 			playAnimationThread();
 
 			// 发送登陆请求 TODO，接收登陆响应，成功则跳转至游戏界面，否则提示登陆错误
-			testLoginResult();
+			app.sendMessage(loginMsg);
+//			testLoginResult();
 		}
 	}
 

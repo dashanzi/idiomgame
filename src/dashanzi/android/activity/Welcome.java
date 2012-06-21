@@ -38,6 +38,7 @@ public class Welcome extends Activity implements IMessageHandler {
 				new Handler().postDelayed(new Runnable() {
 					@Override
 					public void run() {
+						Log.i(Tag, "......................hhhhh");
 						startActivity(new Intent(Welcome.this, Login.class));
 						Welcome.this.finish();
 					}
@@ -52,6 +53,4 @@ public class Welcome extends Activity implements IMessageHandler {
 		// TODO Auto-generated method stub
 
 	}
-
-	public void handle() {}
 }

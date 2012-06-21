@@ -22,7 +22,9 @@ import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
+import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
+import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
 
 public class House extends ListActivity implements IMessageHandler {
@@ -43,7 +45,6 @@ public class House extends ListActivity implements IMessageHandler {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.house);
 
@@ -75,34 +76,36 @@ public class House extends ListActivity implements IMessageHandler {
 
 	@Override
 	public void onMesssageReceived(IMessage msg) {
-		// TODO Auto-generated method stub
-		RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
-		if (refreshRes == null) {
-			Log.e(tag, "refreshRes si null");
-			return;
-		}
-		// 1. 获得所有房间信息、初始化房间列表
-		List<GroupInfo> groups = refreshRes.getGroupInfoList();
-		for (GroupInfo group : groups) {
-			HashMap<String, Object> houseInfo = new HashMap<String, Object>();
-			houseInfo.put(Constants.HouseList.HEADER_IMAGE,
-					R.drawable.house_list_image);
-			houseInfo.put(Constants.HouseList.HOUSE_NUM, group.getGid());
-			houseInfo.put(Constants.HouseList.HOUSE_REST_PLACE_NUM,
-					group.getState());
-			houseList.add(houseInfo);
-		}
+		if(msg instanceof RefreshResponseMsg){
+			//refresh response
+			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
+			// 1. 获得所有房间信息、初始化房间列表
+			List<GroupInfo> groups = refreshRes.getGroupInfoList();
+			for (GroupInfo group : groups) {
+				HashMap<String, Object> houseInfo = new HashMap<String, Object>();
+				houseInfo.put(Constants.HouseList.HEADER_IMAGE,
+						R.drawable.house_list_image);
+				houseInfo.put(Constants.HouseList.HOUSE_NUM, group.getGid());
+				houseInfo.put(Constants.HouseList.HOUSE_REST_PLACE_NUM,
+						group.getState());
+				houseList.add(houseInfo);
+			}
 
-		// 2. 生成一个SimpleAdapter类型的变量来填充数据
-		String[] col_show = { Constants.HouseList.HEADER_IMAGE,
-				Constants.HouseList.HOUSE_NUM,
-				Constants.HouseList.HOUSE_REST_PLACE_NUM };
-		houseListAdapter = new SimpleAdapter(this, houseList,
-				R.layout.houselist, col_show, new int[] {
-						R.id.house_list_image, R.id.house_number,
-						R.id.house_rest_place_num });
-		// 设置显示ListView
-		setListAdapter(houseListAdapter);
+			// 2. 生成一个SimpleAdapter类型的变量来填充数据
+			String[] col_show = { Constants.HouseList.HEADER_IMAGE,
+					Constants.HouseList.HOUSE_NUM,
+					Constants.HouseList.HOUSE_REST_PLACE_NUM };
+			houseListAdapter = new SimpleAdapter(this, houseList,
+					R.layout.houselist, col_show, new int[] {
+							R.id.house_list_image, R.id.house_number,
+							R.id.house_rest_place_num });
+			// 设置显示ListView
+			setListAdapter(houseListAdapter);
+		}else if(msg instanceof JoinResponseMsg){
+			//join response TODO 
+			
+		}
+		
 
 	}
 
@@ -144,6 +147,8 @@ public class House extends ListActivity implements IMessageHandler {
 								int whichButton) {
 
 							// 1.向服务端发送登陆房间请求 TODO
+							JoinRequestMsg joinReq = new JoinRequestMsg();
+							joinReq.setType(Constants.Type.JOIN_REQ);
 
 							// 2. 页面转向Game
 							Intent intent = new Intent();

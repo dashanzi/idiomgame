@@ -18,6 +18,15 @@ import dashanzi.android.dto.response.TimeoutResponseMsg;
 
 public class Json2BeansUtil {
 
+	private static String getType(String jsonStr) throws JSONException{
+		if (jsonStr == null) {
+			return null;
+		}
+		JSONObject dataJson = new JSONObject(jsonStr);
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		return header.getString("type");
+	}
+	
 	/**
 	 * 获取LoginResponseMsg
 	 * 
@@ -25,7 +34,7 @@ public class Json2BeansUtil {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static LoginResponseMsg getLoginResponseFromJsonStr(String jsonStr)
+	private static LoginResponseMsg getLoginResponseFromJsonStr(String jsonStr)
 			throws JSONException {
 		if (jsonStr == null) {
 			return null;
@@ -56,7 +65,7 @@ public class Json2BeansUtil {
 	}
 
 	
-	public static JoinResponseMsg getJoinResponseFromJsonStr(String jsonStr)
+	private static JoinResponseMsg getJoinResponseFromJsonStr(String jsonStr)
 			throws JSONException {
 
 		if (jsonStr == null) {
@@ -98,7 +107,7 @@ public class Json2BeansUtil {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static RefreshResponseMsg getRefreshResponseFromJsonStr(
+	private static RefreshResponseMsg getRefreshResponseFromJsonStr(
 			String jsonStr) throws JSONException {
 		if (jsonStr == null) {
 			return null;
@@ -135,7 +144,7 @@ public class Json2BeansUtil {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static StartNotifyMsg getStartNotifyMsgFromJsonStr(String jsonStr)
+	private static StartNotifyMsg getStartNotifyMsgFromJsonStr(String jsonStr)
 			throws JSONException {
 		if (jsonStr == null) {
 			return null;
@@ -176,7 +185,7 @@ public class Json2BeansUtil {
 	 * @return
 	 * @throws JSONException
 	 */
-	public static TimeoutResponseMsg getTimeoutResponseFromJsonStr(
+	private static TimeoutResponseMsg getTimeoutResponseFromJsonStr(
 			String jsonStr) throws JSONException {
 		if (jsonStr == null) {
 			return null;
