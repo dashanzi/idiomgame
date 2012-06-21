@@ -51,6 +51,8 @@ public class NetworkService extends Service {
 			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream())), true);
 
+			Log.i("socketccc", "connected");
+
 			// if (socket.isConnected()) {
 			// if (!socket.isOutputShutdown()) {
 			// // os.print("Are you sb?");
@@ -65,7 +67,7 @@ public class NetworkService extends Service {
 			// }
 
 			// 2. start reader
-			readerThread.run();
+			new Thread(readerThread).start();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -128,7 +130,7 @@ public class NetworkService extends Service {
 								// content += "\n";
 								// mHandler.sendMessage(mHandler.obtainMessage());
 							} else {
-								System.out.println("content NULL");
+								// System.out.println("content NULL");
 
 							}
 						} catch (IOException e) {

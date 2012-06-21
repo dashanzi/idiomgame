@@ -3,6 +3,8 @@ package dashanzi.android.util;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import dashanzi.android.Constants;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
@@ -122,6 +124,7 @@ public class Beans2JsonUtil {
 	}
 
 	public static String getJsonStr(IMessage msg) {
+		Log.i("dddd", "ddddddddddddddddddddd");
 		String s = null;
 		if (msg instanceof LoginRequestMsg) {
 			try {
@@ -136,6 +139,7 @@ public class Beans2JsonUtil {
 			return null;
 		}
 
+		Log.i("str", s);
 		return s;
 
 	}

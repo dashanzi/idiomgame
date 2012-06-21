@@ -97,6 +97,7 @@ public class IdiomGameApp extends Application {
 			networkService.connect(serverIp, serverPort);
 			System.out.println("service=" + networkService);
 
+			Log.i("iiiii", "before handle");
 			IdiomGameApp.this.handler.handle();
 			// networkService.test();
 		}
@@ -120,8 +121,7 @@ public class IdiomGameApp extends Application {
 		}
 
 	}
-	
-	
+
 	// ------------- setters and getters ----------------------------
 	public Activity getCurrentActivity() {
 		return currentActivity;
