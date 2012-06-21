@@ -80,8 +80,8 @@ public class IdiomGameApp extends Application {
 		}
 
 		public void onServiceConnected(ComponentName name, IBinder service) {
+			 System.out.println("onServiceConnected");
 			networkService = ((NetworkService.MyBinder) service).getService();
-			// System.out.println("onServiceConnected");
 			// networkService.test();
 		}
 	};
