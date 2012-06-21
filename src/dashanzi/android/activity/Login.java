@@ -77,6 +77,10 @@ public class Login extends Activity implements IMessageHandler{
 	@Override
 	public void onMesssageReceived(IMessage msg) {
 		//得到服务端消息
+		if(!(msg instanceof LoginResponseMsg)){
+			
+		}
+		
 		LoginResponseMsg loginRes = (LoginResponseMsg)msg;
 		
 		if (loginRes == null) {
