@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.util.Log;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.dto.IMessage;
+import dashanzi.android.util.Beans2JsonUtil;
 
 public class NetworkService extends Service {
 
@@ -81,9 +82,11 @@ public class NetworkService extends Service {
 				// os.print("Are you sb?");
 
 				try {
-					socket.getOutputStream()
-							.write("{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"zhangsan\",\"gid\":\"g01\"}}\r\n"
-									.getBytes("utf-8"));
+					// socket.getOutputStream()
+					// .write("{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"zhangsan\",\"gid\":\"g01\"}}\r\n"
+					// .getBytes("utf-8"));
+					socket.getOutputStream().write(
+							Beans2JsonUtil.getJsonStr(msg).getBytes("utf-8"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (IOException e) {

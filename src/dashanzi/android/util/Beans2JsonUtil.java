@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import dashanzi.android.Constants;
+import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
@@ -14,7 +15,7 @@ import dashanzi.android.dto.request.TimeoutRequestMsg;
 
 public class Beans2JsonUtil {
 
-	public static String getJsonStrFromLoginRequest(LoginRequestMsg bean)
+	private static String getJsonStrFromLoginRequest(LoginRequestMsg bean)
 			throws JSONException {
 
 		JSONObject json = new JSONObject();
@@ -31,7 +32,7 @@ public class Beans2JsonUtil {
 
 	}
 
-	public static String getJsonStrFromRefreshRequest(RefreshRequestMsg bean)
+	private static String getJsonStrFromRefreshRequest(RefreshRequestMsg bean)
 			throws JSONException {
 
 		JSONObject json = new JSONObject();
@@ -43,7 +44,7 @@ public class Beans2JsonUtil {
 		return json.toString();
 	}
 
-	public static String getJsonStrFromJoinRequest(JoinRequestMsg bean)
+	private static String getJsonStrFromJoinRequest(JoinRequestMsg bean)
 			throws JSONException {
 
 		JSONObject json = new JSONObject();
@@ -59,7 +60,7 @@ public class Beans2JsonUtil {
 		return json.toString();
 	}
 
-	public static String getJsonStrFromInputRequest(InputRequestMsg bean)
+	private static String getJsonStrFromInputRequest(InputRequestMsg bean)
 			throws JSONException {
 
 		JSONObject json = new JSONObject();
@@ -76,37 +77,37 @@ public class Beans2JsonUtil {
 		return json.toString();
 	}
 
-	public static String getJsonStrFromTimeOutRequest(TimeoutRequestMsg bean)
+	private static String getJsonStrFromTimeOutRequest(TimeoutRequestMsg bean)
 			throws JSONException {
 		JSONObject json = new JSONObject();
-		
+
 		JSONObject header = new JSONObject();
 		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
 		json.put(Constants.JSON.HEADER, header);
-		
+
 		JSONObject body = new JSONObject();
 		body.put("gid", bean.getGid());
 		body.put("uid", bean.getUid());
 		json.put(Constants.JSON.BODY, body);
 		return json.toString();
 	}
-	
-	public static String getJsonStrFromQuitNotify(QuitNotifyMsg bean)
+
+	private static String getJsonStrFromQuitNotify(QuitNotifyMsg bean)
 			throws JSONException {
 		JSONObject json = new JSONObject();
-		
+
 		JSONObject header = new JSONObject();
 		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
 		json.put(Constants.JSON.HEADER, header);
-		
+
 		JSONObject body = new JSONObject();
 		body.put("gid", bean.getGid());
 		body.put("uid", bean.getUid());
 		json.put(Constants.JSON.BODY, body);
 		return json.toString();
 	}
-	
-	public static String getJsonStrFromLogoutNotify(LogoutNotifyMsg bean)
+
+	private static String getJsonStrFromLogoutNotify(LogoutNotifyMsg bean)
 			throws JSONException {
 		JSONObject json = new JSONObject();
 
@@ -118,5 +119,24 @@ public class Beans2JsonUtil {
 		body.put("name", bean.getName());
 		json.put(Constants.JSON.BODY, body);
 		return json.toString();
+	}
+
+	public static String getJsonStr(IMessage msg) {
+		String s = null;
+		if (msg instanceof LoginRequestMsg) {
+			try {
+				s = getJsonStrFromLoginRequest((LoginRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else {
+			return null;
+		}
+
+		return s;
+
 	}
 }
