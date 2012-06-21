@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import dashanzi.android.IdiomGameApp;
 import dashanzi.android.dto.IMessage;
 
 public class NetworkService extends Service {
@@ -39,6 +41,7 @@ public class NetworkService extends Service {
 	// ------------- public methods ----------------------------
 	public void connect(String ip, int port) {
 		try {
+			// 1. connect
 			socket = new Socket(ip, port);
 			is = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
@@ -47,23 +50,21 @@ public class NetworkService extends Service {
 			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream())), true);
 
-			if (socket.isConnected()) {
-				if (!socket.isOutputShutdown()) {
-					// os.print("Are you sb?");
+			// if (socket.isConnected()) {
+			// if (!socket.isOutputShutdown()) {
+			// // os.print("Are you sb?");
+			//
+			// socket.getOutputStream()
+			// .write(new String(
+			// "{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"张三\",\"gid\":\"g01\"}}\r\n"
+			// .getBytes("UTF-8"), "UTF-8")
+			// .getBytes("UTF-8"));
+			//
+			// }
+			// }
 
-//					new OutputStreamWriter(socket.getOutputStream(), "utf-8")
-//							.write(new String(
-//									"{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"张三\",\"gid\":\"g01\"}}\r\n"
-//											.getBytes(), "UTF-8"));
-
-					 socket.getOutputStream()
-					 .write(new String(
-					 "{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"张三\",\"gid\":\"g01\"}}\r\n"
-					 .getBytes("UTF-8"), "UTF-8")
-					 .getBytes("UTF-8"));
-
-				}
-			}
+			// 2. start reader
+			readerThread.run();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,21 +76,77 @@ public class NetworkService extends Service {
 	}
 
 	public void sendMessage(IMessage msg) {
+		if (socket.isConnected()) {
+			if (!socket.isOutputShutdown()) {
+				// os.print("Are you sb?");
 
+				try {
+					socket.getOutputStream()
+							.write("{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"zhangsan\",\"gid\":\"g01\"}}\r\n"
+									.getBytes("utf-8"));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+	}
+
+	public void disconnect() {
+		try {
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// ------------- private methods ----------------------------
 	public void onMessageRecevied(String strMsg) {
-
+		Intent intent = new Intent();
+		intent.putExtra("msg", strMsg);
+		intent.setAction("android.intent.action.test");
+		sendBroadcast(intent);
 	}
 
+	// ------------- reader thread ----------------------------
+	Runnable readerThread = new Runnable() {
+
+		@Override
+		public void run() {
+			String content;
+			while (true) {
+				if (socket.isConnected()) {
+					if (!socket.isInputShutdown()) {
+						try {
+							if ((content = is.readLine()) != null) {
+								System.out.println("content => " + content);
+								// content += "\n";
+								// mHandler.sendMessage(mHandler.obtainMessage());
+							} else {
+								System.out.println("content NULL");
+
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+
+		}
+
+	};
+
+	// ------------- othre ----------------------------
 	/**
 	 * 
 	 */
 	public void test() {
 		Log.i("ttt", "service execute");
 
-		new Thread() {// �½��̣߳�ÿ��1�뷢��һ�ι㲥��ͬʱ��i�Ž�intent����
+		new Thread() {
 
 			public void run() {
 				int i = 0;

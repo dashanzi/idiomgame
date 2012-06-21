@@ -48,6 +48,10 @@ public class IdiomGameApp extends Application {
 		// connnectService();
 	}
 
+	public void disconnect() {
+		networkService.disconnect();
+	}
+
 	// ------------- private methods ----------------------------
 	private void onMessageReceived(String msg) {
 
@@ -116,7 +120,8 @@ public class IdiomGameApp extends Application {
 		}
 
 	}
-
+	
+	
 	// ------------- setters and getters ----------------------------
 	public Activity getCurrentActivity() {
 		return currentActivity;
