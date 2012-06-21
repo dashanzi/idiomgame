@@ -1,7 +1,9 @@
 package dashanzi.android.dto.request;
 
+import dashanzi.android.dto.Message;
 
-public class RequestMsg {
+
+public class RequestMsg implements Message{
 
 	private String type;
 

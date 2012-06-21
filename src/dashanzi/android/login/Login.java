@@ -20,26 +20,30 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import dashanzi.android.Constants;
 import dashanzi.android.R;
 import dashanzi.android.dto.request.LoginRequestMsg;
-import dashanzi.android.game.Game;
+import dashanzi.android.dto.response.LoginResponseMsg;
+import dashanzi.android.game.House;
+import dashanzi.android.util.ToastUtil;
 
 public class Login extends Activity {
 
+	private static final String tag = "Login";
+	// 组件
 	private LinearLayout father_ll;// 父linearLayout
-	private LinearLayout loading_ll;// loading_linearLayout
-
+	private LinearLayout loading_ll;// loading_linearLayout，用于显示loading动画
 	private EditText userName = null;
 	private EditText passWord = null;
 	private CheckBox rememberPasswordCheck = null;
-	
 	private Button loginBtn = null;
-	private LoginRequestMsg loginMsg = new LoginRequestMsg();
 
+	// loading动画
 	private Animation anm;// loading动画
 	private int loadingAnmLoation;// loading动画位置
 	private List<ImageView> images;// loading图片列表
 
+	private LoginRequestMsg loginMsg = new LoginRequestMsg();
 	private boolean hasLoginResult = false;// 是否返回了登陆结果
 
 	@Override
@@ -47,26 +51,12 @@ public class Login extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
-		// 获得login relativelayout, 设置透明度
+		// 获得组件，login relativelayout, 设置透明度
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.login_input_area);
 		rl.getBackground().setAlpha(190);
-
-		// 获取登陆信息
 		userName = (EditText) findViewById(R.id.login_edittext_username);
 		passWord = (EditText) findViewById(R.id.login_edittext_password);
 		rememberPasswordCheck = (CheckBox) findViewById(R.id.login_checkbox_remember_password);
-		if (userName != null && userName.getText() != null) {
-			loginMsg.setName(userName.getText().toString());
-		}
-		if (passWord != null && passWord.getText() != null) {
-			loginMsg.setPassword(passWord.getText().toString());
-		}
-		if (rememberPasswordCheck.isChecked()) {
-			loginMsg.setRememberPassword(true);
-		} else {
-			loginMsg.setRememberPassword(false);
-		}
-
 		// 设置登陆监听
 		loginBtn = (Button) findViewById(R.id.login_button_login);
 		loginBtn.setOnClickListener(new MyOnClickListener());
@@ -80,41 +70,94 @@ public class Login extends Activity {
 		anm = AnimationUtils.loadAnimation(this, R.anim.loadinganim);
 	}
 
-	class MyOnClickListener implements OnClickListener {
-		@Override
-		public void onClick(View v) {
-			Log.d("click", "--->> onClickListener !");
+	/**********************************************************************************************
+	 * Logic Action
+	 **********************************************************************************************/
 
-			// 显示加载动画
-			initImage(loading_ll);
-			playAnimation();
+	private void LoginResponseAction(LoginResponseMsg loginRes) {
 
-			// 发送登陆请求 TODO，接收登陆响应，成功则跳转至游戏界面，否则提示登陆错误
-			testLoginResult();
+		if (loginRes == null) {
+			Log.e(tag, "LoginResponseMsg is null !");
+			return;
+		}
+		// 终止登陆thread
+		hasLoginResult = true;
+
+		if (loginRes.getStatus().equals(Constants.Response.SUCCESS)) {
+			// 将username uid传给House界面
+			Intent intent = new Intent();
+			intent.putExtra("name", userName.getText().toString());
+			intent.setClass(Login.this, House.class);
+			Login.this.startActivity(intent);
+
+			// 终止Login
+			Login.this.finish();
+		}else if(loginRes.getStatus().equals(Constants.Response.FAILED)){
+			// 提示登陆失败
+			ToastUtil.toast(this, "登陆失败,请重新登陆!", android.R.drawable.ic_dialog_alert);
 		}
 	}
 
+	
 	// test TODO
 	private void testLoginResult() {
 		new Thread() {
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(5000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 
 				hasLoginResult = true;
-				
-				startActivity(new Intent(Login.this , Game.class));  
-                Login.this.finish(); 
+
+				Intent intent = new Intent();
+				intent.putExtra("name", userName.getText().toString());
+				intent.putExtra("uid", "001");
+				intent.setClass(Login.this, House.class);
+				Login.this.startActivity(intent);
+				Login.this.finish();
 			}
 
 		}.start();
 	}
 
-	private void playAnimation() {
+	/**********************************************************************************************
+	 * 按钮监听
+	 **********************************************************************************************/
+	// 登陆按钮监听
+	class MyOnClickListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			Log.d("click", "--->> onClickListener !");
+
+			// 封装loginMsg
+			if (userName != null && userName.getText() != null) {
+				loginMsg.setName(userName.getText().toString());
+			}
+			if (passWord != null && passWord.getText() != null) {
+				loginMsg.setPassword(passWord.getText().toString());
+			}
+			if (rememberPasswordCheck.isChecked()) {
+				loginMsg.setRememberPassword(true);
+			} else {
+				loginMsg.setRememberPassword(false);
+			}
+
+			// 显示加载动画
+			initImage(loading_ll);
+			playAnimationThread();
+
+			// 发送登陆请求 TODO，接收登陆响应，成功则跳转至游戏界面，否则提示登陆错误
+			testLoginResult();
+		}
+	}
+
+	/**********************************************************************************************
+	 * loading动画
+	 **********************************************************************************************/
+	private void playAnimationThread() {
 		new Thread() {
 			@Override
 			public void run() {

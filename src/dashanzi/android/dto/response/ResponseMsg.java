@@ -1,6 +1,8 @@
 package dashanzi.android.dto.response;
 
-public class ResponseMsg {
+import dashanzi.android.dto.Message;
+
+public class ResponseMsg implements Message {
 
 	private String type;
 	private String status;
