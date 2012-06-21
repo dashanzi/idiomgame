@@ -1,5 +1,5 @@
 package dashanzi.android.dto;
 
-public interface Message {
+public interface IMessage {
 
 }

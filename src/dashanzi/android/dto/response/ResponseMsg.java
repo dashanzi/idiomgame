@@ -1,8 +1,8 @@
 package dashanzi.android.dto.response;
 
-import dashanzi.android.dto.Message;
+import dashanzi.android.dto.IMessage;
 
-public class ResponseMsg implements Message {
+public class ResponseMsg implements IMessage {
 
 	private String type;
 	private String status;
