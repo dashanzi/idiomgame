@@ -38,7 +38,7 @@ public class IdiomGameApp extends Application {
 	 */
 	public void connect() {
 		initService();
-		connect();
+		connnectService();
 	}
 
 	// ------------- private methods ----------------------------
@@ -55,14 +55,21 @@ public class IdiomGameApp extends Application {
 		// 2. reg receiver
 		MyReceiver receiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.intent.action.test");
-		IdiomGameApp.this.registerReceiver(receiver, filter);
-		Log.i("ttt", "TestadActivity onCreate reg ok");
+		// filter.addAction("android.intent.action.test");
+		// IdiomGameApp.this.registerReceiver(receiver, filter);
+		// Log.i("ttt", "TestadActivity onCreate reg ok");
 
 	}
 
-	private void connnect() {
-		// System.out.println("onServiceConnected");
+	private void connnectService() {
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Log.i("dddd","=====service=" + networkService);
 		networkService.connect(serverIp, serverPort);
 	}
 
