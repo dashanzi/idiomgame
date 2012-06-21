@@ -50,8 +50,18 @@ public class NetworkService extends Service {
 			if (socket.isConnected()) {
 				if (!socket.isOutputShutdown()) {
 					// os.print("Are you sb?");
-					socket.getOutputStream().write(
-							new String("Are you robot?\r\n\r\n").getBytes());
+
+//					new OutputStreamWriter(socket.getOutputStream(), "utf-8")
+//							.write(new String(
+//									"{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"张三\",\"gid\":\"g01\"}}\r\n"
+//											.getBytes(), "UTF-8"));
+
+					 socket.getOutputStream()
+					 .write(new String(
+					 "{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"张三\",\"gid\":\"g01\"}}\r\n"
+					 .getBytes("UTF-8"), "UTF-8")
+					 .getBytes("UTF-8"));
+
 				}
 			}
 		} catch (UnknownHostException e) {
