@@ -9,9 +9,16 @@ public class IdiomGameApp extends Application {
 
 	// ------------- public method ----------------------------
 	/**
-	 * used by activities
+	 * used by all activities
 	 */
 	public void sendMessage(IMessage msg) {
+
+	}
+
+	/**
+	 * used by all welcome activity
+	 */
+	public void connect() {
 
 	}
 
