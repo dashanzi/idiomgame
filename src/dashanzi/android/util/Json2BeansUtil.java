@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import dashanzi.android.Constants;
 import dashanzi.android.dto.GroupInfo;
+import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.StartNotifyMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
@@ -17,8 +18,18 @@ import dashanzi.android.dto.response.RefreshResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 
 public class Json2BeansUtil {
+	public static IMessage getMessageFromJsonStr(String jsonStr)
+			throws JSONException {
+		IMessage msg = null;
+		String type = null;
+		type = getType(jsonStr);
+		if (type.equals(Constants.Type.JOIN_RESP)) {
+			msg = getLoginResponseFromJsonStr(jsonStr);
+		}
+		return msg;
+	}
 
-	private static String getType(String jsonStr) throws JSONException{
+	private static String getType(String jsonStr) throws JSONException {
 		if (jsonStr == null) {
 			return null;
 		}
@@ -26,7 +37,7 @@ public class Json2BeansUtil {
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		return header.getString("type");
 	}
-	
+
 	/**
 	 * 获取LoginResponseMsg
 	 * 
@@ -64,7 +75,6 @@ public class Json2BeansUtil {
 		return result;
 	}
 
-	
 	private static JoinResponseMsg getJoinResponseFromJsonStr(String jsonStr)
 			throws JSONException {
 
@@ -82,7 +92,7 @@ public class Json2BeansUtil {
 
 		result.setGid(body.getString("gid"));
 		result.setUid(body.getString("uid"));
-		
+
 		// List<User>
 		JSONArray listJson = body.getJSONArray("users");
 		List<User> users = new ArrayList<User>();

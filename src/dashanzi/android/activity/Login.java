@@ -54,6 +54,7 @@ public class Login extends Activity implements IMessageHandler{
 		setContentView(R.layout.login);
 
 		app = (IdiomGameApp) this.getApplication();
+		app.setCurrentActivity(this);
 		
 		// 获得组件，login relativelayout, 设置透明度
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.login_input_area);
