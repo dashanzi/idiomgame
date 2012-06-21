@@ -15,8 +15,8 @@ public class Constants {
 	}
 
 	public static class Response{
-		public static final String SUCCESS = "success";
-		public static final String FAILED = "failed";
+		public static final String SUCCESS = "OK";
+		public static final String FAILED = "FAIL";
 	}
 	
 	public static class JSON{
@@ -36,5 +36,8 @@ public class Constants {
 		public static final String GID = "gid";
 	}
 	
+	public static class Type{
+		public static final String REFRESH_REQ = "REFRESH_REQ";
+	}
 	
 }
