@@ -7,7 +7,7 @@
     <uses-sdk android:minSdkVersion="4" />
 
     <application
-        android:name="dashanzi.android.GameApp"
+        android:name="dashanzi.android.IdiomGameApp"
         android:icon="@drawable/logo"
         android:label="@string/app_name" >
         <activity
