@@ -178,7 +178,7 @@ public class Login extends Activity implements IMessageHandler{
 				while (!hasLoginResult) {
 					if (runcount < 2) {
 						for (int i = 0; i <= 6; i++) {
-							Log.d("loading", "loading...");
+//							Log.d("loading", "loading...");
 							handler.sendEmptyMessage(i);
 							try {
 								Thread.sleep(300);
