@@ -4,7 +4,6 @@ public class ResponseMsg {
 
 	private String type;
 	private String status;
-	private String gid;
 
 	public String getType() {
 		return type;
@@ -20,13 +19,5 @@ public class ResponseMsg {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public String getGid() {
-		return gid;
-	}
-
-	public void setGid(String gid) {
-		this.gid = gid;
 	}
 }

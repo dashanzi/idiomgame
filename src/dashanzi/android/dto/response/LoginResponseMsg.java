@@ -1,14 +1,19 @@
 package dashanzi.android.dto.response;
 
+import java.util.List;
+
+import dashanzi.android.dto.GroupInfo;
+
 public class LoginResponseMsg extends ResponseMsg{
 
-	private String uid;
+	private List<GroupInfo> groupInfoList;
 
-	public String getUid() {
-		return uid;
+	public List<GroupInfo> getGroupInfoList() {
+		return groupInfoList;
 	}
 
-	public void setUid(String uid) {
-		this.uid = uid;
+	public void setGroupInfoList(List<GroupInfo> groupInfoList) {
+		this.groupInfoList = groupInfoList;
 	}
+
 }

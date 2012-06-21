@@ -2,9 +2,18 @@ package dashanzi.android.dto.response;
 
 public class InputResponseMsg extends ResponseMsg{
 
+	private String gid;
 	private String word;
 	private String uid;
 	private String nextUid;
+
+	public String getGid() {
+		return gid;
+	}
+
+	public void setGid(String gid) {
+		this.gid = gid;
+	}
 
 	public String getWord() {
 		return word;

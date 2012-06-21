@@ -2,22 +2,17 @@ package dashanzi.android.dto.notify;
 
 import java.util.List;
 
+import dashanzi.android.dto.User;
+import dashanzi.android.dto.request.RequestMsg;
 
-public class StartNotifyMsg {
 
-	private String type;
+public class StartNotifyMsg extends RequestMsg{
+
 	private String gid;
 	private List<User> users;
 	private String firstuid;
-	private String firstword;
+	private String word;
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public String getGid() {
 		return gid;
@@ -43,11 +38,12 @@ public class StartNotifyMsg {
 		this.firstuid = firstuid;
 	}
 
-	public String getFirstword() {
-		return firstword;
+	public String getWord() {
+		return word;
 	}
 
-	public void setFirstword(String firstword) {
-		this.firstword = firstword;
+	public void setWord(String word) {
+		this.word = word;
 	}
+	
 }
