@@ -13,7 +13,7 @@ import dashanzi.android.dto.IMessage;
 
 public class Welcome extends Activity implements IMessageHandler {
 	private final int SPLASH_DELAY_TIME = 5000;
-	private String Tag = "WelcomeActivity";
+	private String Tag = "Welcome";
 	private IdiomGameApp app;
 
 	@Override
@@ -43,11 +43,8 @@ public class Welcome extends Activity implements IMessageHandler {
 					}
 
 				}, SPLASH_DELAY_TIME);
-			
 			}
-
 		});
-
 	}
 
 	@Override
