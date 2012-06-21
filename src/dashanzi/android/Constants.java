@@ -39,6 +39,7 @@ public class Constants {
 	public static class Type {
 
 		public static final String LOGIN_REQ = "LOGIN_REQ";
+		public static final String LOGIN_RESP = "LOGIN_RESP";
 		public static final String JOIN_REQ = "JOIN_REQ";
 		public static final String JOIN_RESP = "JOIN_RESP";
 		public static final String REFRESH_REQ = "REFRESH_REQ";

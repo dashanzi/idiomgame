@@ -109,6 +109,8 @@ public class NetworkService extends Service {
 
 	// ------------- private methods ----------------------------
 	public void onMessageRecevied(String strMsg) {
+		Log.i("NNNN", "onMessageReceived");
+
 		Intent intent = new Intent();
 		intent.putExtra("msg", strMsg);
 		intent.setAction("android.intent.action.test");
@@ -127,6 +129,7 @@ public class NetworkService extends Service {
 						try {
 							if ((content = is.readLine()) != null) {
 								System.out.println("content => " + content);
+								onMessageRecevied(content);
 								// content += "\n";
 								// mHandler.sendMessage(mHandler.obtainMessage());
 							} else {

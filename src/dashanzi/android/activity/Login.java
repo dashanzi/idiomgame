@@ -28,7 +28,7 @@ import dashanzi.android.dto.request.LoginRequestMsg;
 import dashanzi.android.dto.response.LoginResponseMsg;
 import dashanzi.android.util.ToastUtil;
 
-public class Login extends Activity implements IMessageHandler{
+public class Login extends Activity implements IMessageHandler {
 
 	private static final String tag = "Login";
 	private IdiomGameApp app;
@@ -55,7 +55,7 @@ public class Login extends Activity implements IMessageHandler{
 
 		app = (IdiomGameApp) this.getApplication();
 		app.setCurrentActivity(this);
-		
+
 		// 获得组件，login relativelayout, 设置透明度
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.login_input_area);
 		rl.getBackground().setAlpha(190);
@@ -77,17 +77,18 @@ public class Login extends Activity implements IMessageHandler{
 
 	/**********************************************************************************************
 	 * Logic Action
-	 **********************************************************************************************/  
+	 **********************************************************************************************/
 
 	@Override
 	public void onMesssageReceived(IMessage msg) {
-		//得到服务端消息
-		if(!(msg instanceof LoginResponseMsg)){
-			Log.e(tag, "LoginResponseMsg format error !");
+		// 得到服务端消息
+		if (!(msg instanceof LoginResponseMsg)) {
+			Log.e(tag, "LoginResponseMsg format error ! msg=" + msg);
+			Log.e(tag, "class =" + msg.getClass().getCanonicalName());
 			return;
 		}
-		
-		LoginResponseMsg loginRes = (LoginResponseMsg)msg;
+
+		LoginResponseMsg loginRes = (LoginResponseMsg) msg;
 		// 终止登陆thread
 		hasLoginResult = true;
 
@@ -100,12 +101,13 @@ public class Login extends Activity implements IMessageHandler{
 
 			// 终止Login
 			Login.this.finish();
-		}else if(loginRes.getStatus().equals(Constants.Response.FAILED)){
+		} else if (loginRes.getStatus().equals(Constants.Response.FAILED)) {
 			// 提示登陆失败
-			ToastUtil.toast(this, "登陆失败,请重新登陆!", android.R.drawable.ic_dialog_alert);
+			ToastUtil.toast(this, "登陆失败,请重新登陆!",
+					android.R.drawable.ic_dialog_alert);
 		}
 	}
-	
+
 	// test TODO
 	private void testLoginResult() {
 		new Thread() {
@@ -159,7 +161,7 @@ public class Login extends Activity implements IMessageHandler{
 
 			// 发送登陆请求 TODO，接收登陆响应，成功则跳转至游戏界面，否则提示登陆错误
 			app.sendMessage(loginMsg);
-//			testLoginResult();
+			// testLoginResult();
 		}
 	}
 
@@ -179,7 +181,7 @@ public class Login extends Activity implements IMessageHandler{
 				while (!hasLoginResult) {
 					if (runcount < 2) {
 						for (int i = 0; i <= 6; i++) {
-//							Log.d("loading", "loading...");
+							// Log.d("loading", "loading...");
 							handler.sendEmptyMessage(i);
 							try {
 								Thread.sleep(300);

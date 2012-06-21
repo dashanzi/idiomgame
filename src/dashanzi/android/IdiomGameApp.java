@@ -70,8 +70,8 @@ public class IdiomGameApp extends Application {
 		// 2. reg receiver
 		MyReceiver receiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
-		// filter.addAction("android.intent.action.test");
-		// IdiomGameApp.this.registerReceiver(receiver, filter);
+		filter.addAction("android.intent.action.test");
+		IdiomGameApp.this.registerReceiver(receiver, filter);
 		// Log.i("ttt", "TestadActivity onCreate reg ok");
 
 	}
@@ -111,6 +111,7 @@ public class IdiomGameApp extends Application {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
+			Log.i("NNNN", "MyReceiver onMessageReceived");
 			Log.i("ttt", "DP OnReceive");
 			Bundle bundle = intent.getExtras();
 			String strMsg = bundle.getString("msg");

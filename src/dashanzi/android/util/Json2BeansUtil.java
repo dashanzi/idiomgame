@@ -23,7 +23,7 @@ public class Json2BeansUtil {
 		IMessage msg = null;
 		String type = null;
 		type = getType(jsonStr);
-		if (type.equals(Constants.Type.JOIN_RESP)) {
+		if (type.equals(Constants.Type.LOGIN_RESP)) {
 			msg = getLoginResponseFromJsonStr(jsonStr);
 		}
 		return msg;
