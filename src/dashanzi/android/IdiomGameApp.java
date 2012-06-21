@@ -1,6 +1,7 @@
 package dashanzi.android;
 
-import android.app.Activity;
+import org.json.JSONException;
+
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,11 +13,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import dashanzi.android.activity.IConnectHandler;
+import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.service.NetworkService;
+import dashanzi.android.util.Json2BeansUtil;
 
 public class IdiomGameApp extends Application {
-	private Activity currentActivity;
+	private IMessageHandler currentActivity;
 	private NetworkService networkService;
 
 	private String serverIp = "127.0.0.1";
@@ -53,8 +56,9 @@ public class IdiomGameApp extends Application {
 	}
 
 	// ------------- private methods ----------------------------
-	private void onMessageReceived(String msg) {
-
+	private void onMessageReceived(String s) throws JSONException {
+		IMessage msg = Json2BeansUtil.getMessageFromJsonStr(s);
+		currentActivity.onMesssageReceived(msg);
 	}
 
 	private void initService() {
@@ -110,7 +114,11 @@ public class IdiomGameApp extends Application {
 			Log.i("ttt", "DP OnReceive");
 			Bundle bundle = intent.getExtras();
 			String strMsg = bundle.getString("msg");
-			onMessageReceived(strMsg);
+			try {
+				onMessageReceived(strMsg);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 			// int a = bundle.getInt("i");
 			// Log.i("ttt", "DP int -> " + a);
 
@@ -123,16 +131,17 @@ public class IdiomGameApp extends Application {
 	}
 
 	// ------------- setters and getters ----------------------------
-	public Activity getCurrentActivity() {
-		return currentActivity;
-	}
-
-	public void setCurrentActivity(Activity currentActivity) {
-		this.currentActivity = currentActivity;
-	}
 
 	public String getServerIp() {
 		return serverIp;
+	}
+
+	public IMessageHandler getCurrentActivity() {
+		return currentActivity;
+	}
+
+	public void setCurrentActivity(IMessageHandler currentActivity) {
+		this.currentActivity = currentActivity;
 	}
 
 	public void setServerIp(String serverIp) {
