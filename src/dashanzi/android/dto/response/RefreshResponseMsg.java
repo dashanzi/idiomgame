@@ -15,4 +15,4 @@ public class RefreshResponseMsg extends ResponseMsg {
 	public void setGroupInfoList(List<GroupInfo> groupInfoList) {
 		this.groupInfoList = groupInfoList;
 	}
-	}
+}

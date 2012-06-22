@@ -4,7 +4,7 @@ import java.util.List;
 
 import dashanzi.android.dto.User;
 
-public class RefreshRoomResponseMsg {
+public class RefreshRoomResponseMsg extends ResponseMsg {
 	private List<User> users;
 
 	public List<User> getUsers() {
