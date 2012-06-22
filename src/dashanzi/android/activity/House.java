@@ -60,10 +60,10 @@ public class House extends ListActivity implements IMessageHandler {
 		House.this.getListView().setOnItemClickListener(item_click);
 
 		// 3. 此时向服务端发送refresh_request
-		app = (IdiomGameApp) this.getApplication();
-		RefreshRequestMsg refreshReq = new RefreshRequestMsg();
-		refreshReq.setType(Constants.Type.REFRESH_REQ);
-		app.sendMessage(refreshReq);
+//		app = (IdiomGameApp) this.getApplication();
+//		RefreshRequestMsg refreshReq = new RefreshRequestMsg();
+//		refreshReq.setType(Constants.Type.REFRESH_REQ);
+//		app.sendMessage(refreshReq);
 
 		// 4. 设置快速加入监听
 		quickSelectBtn = (Button) findViewById(R.id.house_quick_select_btn);

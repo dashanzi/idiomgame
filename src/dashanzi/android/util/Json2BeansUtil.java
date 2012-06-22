@@ -56,6 +56,7 @@ public class Json2BeansUtil {
 
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
 
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
