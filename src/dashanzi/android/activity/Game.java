@@ -149,6 +149,9 @@ public class Game extends Activity implements IMessageHandler {
 			return;
 		}
 		
+		if(msg instanceof StartNotifyMsg){
+			
+		}
 		if(msg instanceof InputResponseMsg){
 			InputResponseMsg inputRes = (InputResponseMsg)msg;
 			
