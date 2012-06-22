@@ -73,6 +73,7 @@ public class Game extends Activity implements IMessageHandler {
 	private User[] users = new User[3];
 	private Map<String, User> userMap = new HashMap<String, User>();
 	private String currentUid = null;
+	private String currentWord = null;
 	private String myUid = null;
 	private String gid=null;
 	
@@ -150,14 +151,17 @@ public class Game extends Activity implements IMessageHandler {
 		
 		if(msg instanceof InputResponseMsg){
 			InputResponseMsg inputRes = (InputResponseMsg)msg;
-			//1. 显示结果正确与否,显示对号，叉号
+			
+			//1. 显示填写的成语
+			currentWord = inputRes.getWord();
+			showIdiomThread(currentWord);
+			
+			//2. 显示结果正确与否,显示对号，叉号
 			if(inputRes.getStatus().equals(Constants.Response.SUCCESS)){
 				idiomCheckThread(true);
 			}else if(inputRes.getStatus().equals(Constants.Response.FAILED)){
 				idiomCheckThread(false);
-				//
 			}
-			
 		}
 	}
 
@@ -194,8 +198,8 @@ public class Game extends Activity implements IMessageHandler {
 		inputReq.setWord(idiom_write.toString());
 		app.sendMessage(inputReq);
 		
-		//3. 显示填写的成语
-		showIdiomThread(idiom_write);
+//		//3. 显示填写的成语
+//		showIdiomThread(idiom_write);
 	}
 
 	// 锦囊操作
@@ -231,8 +235,7 @@ public class Game extends Activity implements IMessageHandler {
 		@Override
 		public void handleMessage(Message msg) {
 			Log.i("test", msg.what + "");
-			String idiomStr = idiom_write_et.getText().toString()
-					.substring(0, msg.what);
+			String idiomStr = currentWord.substring(0, msg.what);
 			idiom_show_tv.setText(idiomStr);
 		}
 	};
