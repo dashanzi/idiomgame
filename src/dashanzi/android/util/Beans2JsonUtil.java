@@ -135,6 +135,51 @@ public class Beans2JsonUtil {
 			} finally {
 
 			}
+		} else if (msg instanceof JoinRequestMsg) {
+			try {
+				s = getJsonStrFromJoinRequest((JoinRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof RefreshRequestMsg) {
+			try {
+				s = getJsonStrFromRefreshRequest((RefreshRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof TimeoutRequestMsg) {
+			try {
+				s = getJsonStrFromTimeOutRequest((TimeoutRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof LogoutNotifyMsg) {
+			try {
+				s = getJsonStrFromLogoutNotify((LogoutNotifyMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof QuitNotifyMsg) {
+			try {
+				s = getJsonStrFromQuitNotify((QuitNotifyMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
 		} else {
 			return null;
 		}
