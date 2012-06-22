@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
-
 import dashanzi.android.Constants;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
@@ -13,6 +12,7 @@ import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.LoginRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
+import dashanzi.android.dto.request.RefreshRoomRequestMsg;
 import dashanzi.android.dto.request.TimeoutRequestMsg;
 
 public class Beans2JsonUtil {
@@ -46,6 +46,22 @@ public class Beans2JsonUtil {
 		json.put(Constants.JSON.BODY, body);
 
 		return json.toString();
+	}
+
+	private static String getJsonStrFromRefreshRoomRequest(
+			RefreshRoomRequestMsg bean) throws JSONException {
+
+		JSONObject json = new JSONObject();
+
+		JSONObject header = new JSONObject();
+		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
+		json.put(Constants.JSON.HEADER, header);
+		JSONObject body = new JSONObject();
+		body.put("gid", bean.getGid());
+		json.put(Constants.JSON.BODY, body);
+
+		return json.toString();
+
 	}
 
 	private static String getJsonStrFromJoinRequest(JoinRequestMsg bean)
@@ -149,6 +165,15 @@ public class Beans2JsonUtil {
 		} else if (msg instanceof RefreshRequestMsg) {
 			try {
 				s = getJsonStrFromRefreshRequest((RefreshRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof RefreshRoomRequestMsg) {
+			try {
+				s = getJsonStrFromRefreshRoomRequest((RefreshRoomRequestMsg) msg);
 				s += "\r\n\r\n";
 			} catch (JSONException e) {
 				e.printStackTrace();

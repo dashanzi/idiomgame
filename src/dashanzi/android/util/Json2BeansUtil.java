@@ -13,11 +13,13 @@ import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
+import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.LoginResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
+import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 
 public class Json2BeansUtil {
@@ -31,6 +33,8 @@ public class Json2BeansUtil {
 			msg = getLoginResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.REFRESH_RESP)) {
 			msg = getRefreshResponseFromJsonStr(jsonStr);
+		} else if (type.equals(Constants.Type.REFRESHROOM_RESP)) {
+			msg = getRefreshRoomResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.JOIN_RESP)) {
 			msg = getJoinResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.INPUT_RESP)) {
@@ -38,7 +42,7 @@ public class Json2BeansUtil {
 		} else if (type.equals(Constants.Type.TIMEOUT_RESP)) {
 			msg = getTimeoutResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.ROOM_NOTIFY)) {
-			// msg = getRoomNotifyFromJsonStr(jsonStr);
+			msg = getRoomNotifyFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.START_NOTIFY)) {
 			msg = getStartNotifyFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.QUIT_NOTIFY)) {
@@ -157,6 +161,37 @@ public class Json2BeansUtil {
 		return result;
 	}
 
+	private static RoomNotifyMsg getRoomNotifyFromJsonStr(String jsonStr)
+			throws JSONException {
+		if (jsonStr == null) {
+			return null;
+		}
+
+		RoomNotifyMsg result = new RoomNotifyMsg();
+
+		JSONObject dataJson = new JSONObject(jsonStr);
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+
+		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+
+		// List<User>
+		JSONArray listJson = body.getJSONArray("users");
+		List<User> users = new ArrayList<User>();
+
+		for (int i = 0; i < listJson.length(); i++) {
+
+			JSONObject userJson = listJson.optJSONObject(i);
+			User user = new User();
+			user.setUid(userJson.getString("uid"));
+			user.setName(userJson.getString("name"));
+			users.add(user);
+		}
+		result.setUsers(users);
+
+		return result;
+	}
+
 	/**
 	 * 获取RefreshResponseMsg
 	 * 
@@ -192,6 +227,44 @@ public class Json2BeansUtil {
 			groupList.add(group);
 		}
 		result.setGroupInfoList(groupList);
+		return result;
+	}
+
+	/**
+	 * 获取RefreshRoomResponseMsg
+	 * 
+	 * @param jsonStr
+	 * @return
+	 * @throws JSONException
+	 */
+	private static RefreshRoomResponseMsg getRefreshRoomResponseFromJsonStr(
+			String jsonStr) throws JSONException {
+		if (jsonStr == null) {
+			return null;
+		}
+
+		RefreshRoomResponseMsg result = new RefreshRoomResponseMsg();
+
+		JSONObject dataJson = new JSONObject(jsonStr);
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+
+		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+
+		// List<User>
+		JSONArray listJson = body.getJSONArray("users");
+		List<User> users = new ArrayList<User>();
+
+		for (int i = 0; i < listJson.length(); i++) {
+
+			JSONObject userJson = listJson.optJSONObject(i);
+			User user = new User();
+			user.setUid(userJson.getString("uid"));
+			user.setName(userJson.getString("name"));
+			users.add(user);
+		}
+		result.setUsers(users);
+
 		return result;
 	}
 
