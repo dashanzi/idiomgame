@@ -155,6 +155,7 @@ public class Json2BeansUtil {
 
 		result.setGid(body.getString("gid"));
 		result.setWord(body.getString("word"));
+		result.setAnswer(body.getString("answer"));
 		result.setUid(body.getString("uid"));
 		result.setNextUid(body.getString("nextuid"));
 

@@ -1,9 +1,19 @@
 package dashanzi.android.dto.response;
 
-public class InputResponseMsg extends ResponseMsg{
+public class InputResponseMsg extends ResponseMsg {
 
 	private String gid;
 	private String word;
+	private String answer;
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
 	private String uid;
 	private String nextUid;
 
