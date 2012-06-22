@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -23,6 +24,8 @@ import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
+import dashanzi.android.dto.notify.LogoutNotifyMsg;
+import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
@@ -220,6 +223,41 @@ public class House extends ListActivity implements IMessageHandler {
 		}
 	}
 
+	// 监听back键
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			
+				AlertDialog.Builder builder = new AlertDialog.Builder(House.this);
+
+				builder.setIcon(android.R.drawable.ic_dialog_alert);
+				builder.setTitle("确定退出游戏吗?");
+
+				builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int whichButton) {
+						
+						//1. 发送退出游戏通知
+						LogoutNotifyMsg quitGame = new LogoutNotifyMsg();
+						quitGame.setType(Constants.Type.LOGOUT_NOTIFY);
+						quitGame.setName(userName);
+						app.sendMessage(quitGame);
+
+						//2. finish activity
+						House.this.finish();
+					}
+				});
+
+				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+
+					}
+				});
+				builder.create().show();
+			}
+		return false;
+	}
+	
 	private void sendJionRequest(String gid_selected, String userName) {
 		JoinRequestMsg joinReq = new JoinRequestMsg();
 		joinReq.setType(Constants.Type.JOIN_REQ);
