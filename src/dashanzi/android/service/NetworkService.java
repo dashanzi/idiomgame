@@ -129,10 +129,7 @@ public class NetworkService extends Service {
 							if ((content = is.readLine()) != null) {
 								System.out.println("content => " + content);
 								onMessageRecevied(content);
-								// content += "\n";
-								// mHandler.sendMessage(mHandler.obtainMessage());
 							} else {
-								// System.out.println("content NULL");
 
 							}
 						} catch (IOException e) {
@@ -146,7 +143,7 @@ public class NetworkService extends Service {
 
 	};
 
-	// ------------- othre ----------------------------
+	// ------------- other ----------------------------
 	/**
 	 * 
 	 */
@@ -218,7 +215,7 @@ public class NetworkService extends Service {
 					Intent intent = new Intent();
 					intent.putExtra("i", i);
 					i++;
-					intent.setAction("android.intent.action.test");// action���������ͬ
+					intent.setAction("android.intent.action.test");
 					sendBroadcast(intent);
 					Log.i("ttt", "Broadcasting... " + String.valueOf(i));
 					try {
