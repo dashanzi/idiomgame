@@ -40,9 +40,20 @@ public class Constants {
 
 		public static final String LOGIN_REQ = "LOGIN_REQ";
 		public static final String LOGIN_RESP = "LOGIN_RESP";
+		public static final String REFRESH_REQ = "REFRESH_REQ";
+		public static final String REFRESH_RESP = "REFRESH_RESP";
 		public static final String JOIN_REQ = "JOIN_REQ";
 		public static final String JOIN_RESP = "JOIN_RESP";
-		public static final String REFRESH_REQ = "REFRESH_REQ";
+		public static final String ROOM_NOTIFY = "ROOM_NOTIFY";
+		public static final String START_NOTIFY = "START_NOTIFY";
+		public static final String INPUT_REQ = "INPUT_REQ";
+		public static final String INPUT_RESP = "INPUT_RESP";
+		public static final String TIMEOUT_REQ = "TIMEOUT_REQ";
+		public static final String TIMEOUT_RESP = "TIMEOUT_RESP";
+		public static final String QUIT_NOTIFY = "QUIT_NOTIFY";
+		public static final String LOGOUT_NOTIFY = "LOGOUT_NOTIFY";
+		// mmm:notify response!!
+
 	}
 
 }

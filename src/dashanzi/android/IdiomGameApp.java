@@ -72,21 +72,8 @@ public class IdiomGameApp extends Application {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.test");
 		IdiomGameApp.this.registerReceiver(receiver, filter);
-		// Log.i("ttt", "TestadActivity onCreate reg ok");
 
 	}
-
-	// private void connnectService() {
-	//
-	// try {
-	// Thread.sleep(3000);
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// }
-	//
-	// Log.i("dddd", "=====service=" + networkService);
-	// networkService.connect(serverIp, serverPort);
-	// }
 
 	private ServiceConnection connection = new ServiceConnection() {
 
@@ -112,7 +99,6 @@ public class IdiomGameApp extends Application {
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			Log.i("NNNN", "MyReceiver onMessageReceived");
-			Log.i("ttt", "DP OnReceive");
 			Bundle bundle = intent.getExtras();
 			String strMsg = bundle.getString("msg");
 			try {
@@ -120,9 +106,6 @@ public class IdiomGameApp extends Application {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			// int a = bundle.getInt("i");
-			// Log.i("ttt", "DP int -> " + a);
-
 		}
 
 		public MyReceiver() {
