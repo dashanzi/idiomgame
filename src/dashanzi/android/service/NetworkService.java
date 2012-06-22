@@ -43,6 +43,7 @@ public class NetworkService extends Service {
 		try {
 			// 1. connect
 			socket = new Socket(ip, port);
+			socket.setSoTimeout(5000);
 			is = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			// os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
