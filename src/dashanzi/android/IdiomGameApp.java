@@ -36,7 +36,7 @@ public class IdiomGameApp extends Application {
 	 */
 	public void sendMessage(IMessage msg) {
 		if (networkService == null) {
-			Log.e("sendMessage", "networkService == NULL");
+			Log.e("==APP==", "networkService == NULL");
 		} else {
 			networkService.sendMessage(msg);
 		}
@@ -65,7 +65,7 @@ public class IdiomGameApp extends Application {
 		// 1. init service
 		Intent intent = new Intent(this, NetworkService.class);
 		bindService(intent, connection, Context.BIND_AUTO_CREATE);
-		Log.i("ttt", "Dispatcher() service binded");
+		Log.i("==APP==", "service binded");
 
 		// 2. reg receiver
 		MyReceiver receiver = new MyReceiver();
@@ -82,13 +82,12 @@ public class IdiomGameApp extends Application {
 		}
 
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			System.out.println("onServiceConnected");
+			Log.i("==APP==", "service connected");
 			networkService = ((NetworkService.MyBinder) service).getService();
 
 			networkService.connect(serverIp, serverPort);
-			System.out.println("service=" + networkService);
+			// System.out.println("service=" + networkService);
 
-			Log.i("iiiii", "before handle");
 			IdiomGameApp.this.handler.handle();
 			// networkService.test();
 		}
@@ -98,7 +97,7 @@ public class IdiomGameApp extends Application {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			Log.i("NNNN", "MyReceiver onMessageReceived");
+			Log.i("==APP==", "message received");
 			Bundle bundle = intent.getExtras();
 			String strMsg = bundle.getString("msg");
 			try {
@@ -109,7 +108,7 @@ public class IdiomGameApp extends Application {
 		}
 
 		public MyReceiver() {
-			System.out.println("MyReceiver");
+//			System.out.println("MyReceiver");
 		}
 
 	}
