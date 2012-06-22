@@ -71,7 +71,8 @@ public class Game extends Activity implements IMessageHandler {
 	// game状态变量
 	private final int pNum = 3;
 	private User[] users = new User[3];
-	private Map<String, User> userMap = new HashMap<String, User>();
+	private Map<String, Integer> userIdLayoutIdMap = new HashMap<String, Integer>();
+	
 	private String currentUid = null;
 	private String currentWord = null;
 	private String myUid = null;
@@ -82,12 +83,6 @@ public class Game extends Activity implements IMessageHandler {
 	private StartNotifyMsg startNotify;
 	private InputResponseMsg inputResponse;
 	private TimeoutResponseMsg timeOutResponse;
-
-	// 玩家信息
-	private TextView player1Name = null;
-	private TextView player2Name = null;
-	private TextView player3Name = null;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -148,10 +143,35 @@ public class Game extends Activity implements IMessageHandler {
 			Log.e(tag, "msg is null !");
 			return;
 		}
-		
+		//开始游戏通知
 		if(msg instanceof StartNotifyMsg){
+			StartNotifyMsg startNotify = (StartNotifyMsg)msg;
+			currentUid = startNotify.getFirstuid();
+			currentWord = startNotify.getWord();
+			List<User> users = startNotify.getUsers();
+			
+			if(users.size() != 3){
+				Log.e(tag, "users.size() != 3");
+			}
+			
+			//封装uid与layoutid之间的关系，便于找到当前玩家
+			int[] layoutArray = {R.id.game_player_one_layout,R.id.game_player_two_layout,R.id.game_player_three_layout};
+			int[] playerNameArray = {R.id.game_player_one_name, R.id.game_player_two_name,R.id.game_player_three_name};
+			
+			for(int i=0;i<3;i++){
+				userIdLayoutIdMap.put(users.get(i).getUid(),layoutArray[i]);
+				//显示玩家信息
+				TextView playerName = (TextView) findViewById(playerNameArray[i]);
+				playerName.setText(users.get(i).getName());
+			}
+			
+			
+			
+			
 			
 		}
+		
+		
 		if(msg instanceof InputResponseMsg){
 			InputResponseMsg inputRes = (InputResponseMsg)msg;
 			
