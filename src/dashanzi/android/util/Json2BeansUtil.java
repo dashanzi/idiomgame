@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
 import dashanzi.android.Constants;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
@@ -25,9 +26,10 @@ public class Json2BeansUtil {
 		IMessage msg = null;
 		String type = null;
 		type = getType(jsonStr);
+		Log.i("TTTTT", "type=" + type);
 		if (type.equals(Constants.Type.LOGIN_RESP)) {
 			msg = getLoginResponseFromJsonStr(jsonStr);
-		} else if (type.equals(Constants.Type.LOGIN_RESP)) {
+		} else if (type.equals(Constants.Type.REFRESH_RESP)) {
 			msg = getRefreshResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.JOIN_RESP)) {
 			msg = getJoinResponseFromJsonStr(jsonStr);
@@ -48,11 +50,13 @@ public class Json2BeansUtil {
 	}
 
 	private static String getType(String jsonStr) throws JSONException {
+		Log.i("Str", "str=" + jsonStr);
 		if (jsonStr == null) {
 			return null;
 		}
 		JSONObject dataJson = new JSONObject(jsonStr);
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		Log.i("Str", "str=" + jsonStr);
 		return header.getString("type");
 	}
 
@@ -106,6 +110,7 @@ public class Json2BeansUtil {
 		JSONObject dataJson = new JSONObject(jsonStr);
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
 
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
@@ -170,6 +175,7 @@ public class Json2BeansUtil {
 
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
 
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
@@ -255,7 +261,8 @@ public class Json2BeansUtil {
 		return result;
 	}
 
-	private static QuitNotifyMsg getQuitNotifyFromJsonStr(String jsonStr) throws JSONException {
+	private static QuitNotifyMsg getQuitNotifyFromJsonStr(String jsonStr)
+			throws JSONException {
 		if (jsonStr == null) {
 			return null;
 		}

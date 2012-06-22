@@ -109,7 +109,7 @@ public class NetworkService extends Service {
 
 	// ------------- private methods ----------------------------
 	public void onMessageRecevied(String strMsg) {
-		Log.i("NNNN", "onMessageReceived");
+		Log.i("NNNN", "onMessageReceived: " + strMsg);
 
 		Intent intent = new Intent();
 		intent.putExtra("msg", strMsg);

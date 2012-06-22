@@ -42,6 +42,8 @@ public class Beans2JsonUtil {
 		JSONObject header = new JSONObject();
 		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
 		json.put(Constants.JSON.HEADER, header);
+		JSONObject body = new JSONObject();
+		json.put(Constants.JSON.BODY, body);
 
 		return json.toString();
 	}
@@ -147,6 +149,15 @@ public class Beans2JsonUtil {
 		} else if (msg instanceof RefreshRequestMsg) {
 			try {
 				s = getJsonStrFromRefreshRequest((RefreshRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof InputRequestMsg) {
+			try {
+				s = getJsonStrFromInputRequest((InputRequestMsg) msg);
 				s += "\r\n\r\n";
 			} catch (JSONException e) {
 				e.printStackTrace();

@@ -31,23 +31,30 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import dashanzi.android.Constants;
+import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.User;
+import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
+import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
+import dashanzi.android.util.ToastUtil;
 
-public class Game extends Activity implements IMessageHandler{
+public class Game extends Activity implements IMessageHandler {
 
-	//gridView
+	private static final String tag = "Game";
+	private IdiomGameApp app = null;
+	// gridView
 	private static final int EXIT = 0;
 	private static final int SUBMIT = 1;
 	private static final int HELP = 2;
-	//成语结果检查
+	// 成语结果检查
 	private static final int IDIOM_WRONG = 0;
 	private static final int IDIOM_CORRECT = 1;
-	//倒计时秒数
+	// 倒计时秒数
 	private static final int COUNT_DOWN_SECOND = 10;
 
 	// 组件
@@ -67,7 +74,9 @@ public class Game extends Activity implements IMessageHandler{
 	private Map<String, User> userMap = new HashMap<String, User>();
 	private String currentUid = null;
 	private String myUid = null;
-
+	private String gid=null;
+	
+	
 	// game消息变量
 	private StartNotifyMsg startNotify;
 	private InputResponseMsg inputResponse;
@@ -77,12 +86,17 @@ public class Game extends Activity implements IMessageHandler{
 	private TextView player1Name = null;
 	private TextView player2Name = null;
 	private TextView player3Name = null;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game);
 
+		// 0. app
+		app = (IdiomGameApp) this.getApplication();
+		app.setCurrentActivity(this);
+		
 		// 1. 获取所有要使用的组件
 		idiom_show_tv = (TextView) findViewById(R.id.game_idiom_show_text);
 		idiom_check_iv = (ImageView) findViewById(R.id.game_idiom_check_image);
@@ -96,64 +110,92 @@ public class Game extends Activity implements IMessageHandler{
 		configGrid.setAdapter(gridAdapter);
 		configGrid.setOnItemClickListener(new MyOnItemClickListener());
 
-		
 		// 2. 进入房间时候，设置Activity title
 		Intent intent = this.getIntent();
-		String gid = intent.getStringExtra("gid");
+		gid = intent.getStringExtra("gid");
+		myUid = intent.getStringExtra("uid");
+		Log.i("uid", myUid);
 		this.setTitle("成语接龙" + "-" + gid + "号房间");
 
-		
-/*		// 获取自身的登录名、uid
-		String loginName = intent.getStringExtra("name");
-		myUid = intent.getStringExtra("uid");
-
-		// 永远将自己放置在玩家1的位置
-		player1Name = (TextView) findViewById(R.id.game_player_one_name);
-		player1Name.setText(loginName);
-
-		// test TODO
-		current_player_layout = (RelativeLayout) findViewById(R.id.game_player_one_layout);
-		current_player_layout.setBackgroundColor(Color.RED);
-		current_player_layout
-				.setBackgroundResource(R.drawable.player_area_background);*/
+		/*
+		 * // 获取自身的登录名、uid String loginName = intent.getStringExtra("name");
+		 * myUid = intent.getStringExtra("uid");
+		 * 
+		 * // 永远将自己放置在玩家1的位置 player1Name = (TextView)
+		 * findViewById(R.id.game_player_one_name);
+		 * player1Name.setText(loginName);
+		 * 
+		 * // test TODO current_player_layout = (RelativeLayout)
+		 * findViewById(R.id.game_player_one_layout);
+		 * current_player_layout.setBackgroundColor(Color.RED);
+		 * current_player_layout
+		 * .setBackgroundResource(R.drawable.player_area_background);
+		 */
 
 		countDownThread();
 
 	}
 
-	
 	/************************************************************************************************************************
 	 * Logic Action
 	 ************************************************************************************************************************/
-	//进入大厅
-	
-	//超時操作
+
+	@Override
+	public void onMesssageReceived(IMessage msg) {
+		// TODO Auto-generated method stub
+		if(msg == null){
+			Log.e(tag, "msg is null !");
+			return;
+		}
+		
+		if(msg instanceof InputResponseMsg){
+			InputResponseMsg inputRes = (InputResponseMsg)msg;
+			//1. 显示结果正确与否,显示对号，叉号
+			if(inputRes.getStatus().equals(Constants.Response.SUCCESS)){
+				idiomCheckThread(true);
+			}else if(inputRes.getStatus().equals(Constants.Response.FAILED)){
+				idiomCheckThread(false);
+				//
+			}
+			
+		}
+	}
+
+	// 超時操作
 	private void doTimeOutAction() {
 		// TODO Auto-generated method stub
 
 	}
-	
-	
+
 	/************************************************************************************************************************
 	 * GridView Action
 	 ************************************************************************************************************************/
-	// 准备操作
+	// 退出房间操作
 	private void doExitAction() {
-		this.exit();
+		this.quitRoom();
 	}
 
 	// 提交成语操作
 	private void doSubmitAction() {
-		// TODO Auto-generated method stub
-		// 1. 停表
+		
+		// 1. 停倒计时表
 		this.clockStop = true;
+		
 		// 2. 发送提交请求
-
-		String idiom = idiom_write_et.getText().toString();
-		showIdiomThread(idiom);
-
-		// TODO
-		idiomCheckThread(true);
+		String idiom_write = idiom_write_et.getText().toString();
+		if(idiom_write == null || idiom_write.trim().length()!= 4){
+			ToastUtil.toast(this, "成语格式错误!", android.R.drawable.ic_dialog_alert);
+			return;
+		}
+		InputRequestMsg inputReq = new InputRequestMsg();
+		inputReq.setGid(gid);
+		inputReq.setType(Constants.Type.INPUT_REQ);
+		inputReq.setUid(myUid);
+		inputReq.setWord(idiom_write.toString());
+		app.sendMessage(inputReq);
+		
+		//3. 显示填写的成语
+		showIdiomThread(idiom_write);
 	}
 
 	// 锦囊操作
@@ -161,12 +203,11 @@ public class Game extends Activity implements IMessageHandler{
 		// TODO Auto-generated method stub
 		// 1. 发送锦囊请求
 	}
-	
-	
+
 	/************************************************************************************************************************
 	 * Handler
 	 ************************************************************************************************************************/
-	//showIdiomHandler
+	// showIdiomHandler
 	private void showIdiomThread(final String idiom) {
 		// TODO Auto-generated method stub
 		new Thread() {
@@ -195,8 +236,8 @@ public class Game extends Activity implements IMessageHandler{
 			idiom_show_tv.setText(idiomStr);
 		}
 	};
-	
-	//idiomCheckHandler
+
+	// idiomCheckHandler
 	private void idiomCheckThread(final boolean isCorrect) {
 		new Thread() {
 			public void run() {
@@ -240,7 +281,7 @@ public class Game extends Activity implements IMessageHandler{
 		}
 	};
 
-	//clockHandler
+	// clockHandler
 	private void countDownThread() {
 		new Thread() {
 			public void run() {
@@ -304,7 +345,7 @@ public class Game extends Activity implements IMessageHandler{
 			}
 		}
 	}
-	
+
 	// 菜单操作
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -330,40 +371,44 @@ public class Game extends Activity implements IMessageHandler{
 
 		return super.onMenuItemSelected(featureId, item);
 	}
-	
+
 	// 监听back键
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			this.exit();
+			this.quitRoom();
 		}
 		return false;
 	}
-	
-	private void exit(){
+
+	private void quitRoom() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
 
 		builder.setIcon(android.R.drawable.ic_dialog_alert);
 		builder.setTitle("确定退出房间吗?");
 
-		builder.setPositiveButton("确定",
-				new DialogInterface.OnClickListener() {
+		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
-					public void onClick(DialogInterface dialog,
-							int whichButton) {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				
+				//1. 发送退出房间通知
+				QuitNotifyMsg quitNotify = new QuitNotifyMsg();
+				quitNotify.setType(Constants.Type.QUIT_NOTIFY);
+				quitNotify.setGid(gid);
+				quitNotify.setUid(myUid);
+				app.sendMessage(quitNotify);
 
-						Game.this.finish();
-					}
-				});
+				//2. finish activity
+				Game.this.finish();
+			}
+		});
 
-		builder.setNegativeButton("取消",
-				new DialogInterface.OnClickListener() {
+		builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
 
-					public void onClick(DialogInterface dialog,
-							int whichButton) {
+			public void onClick(DialogInterface dialog, int whichButton) {
 
-					}
-				});
+			}
+		});
 		builder.create().show();
 	}
 
@@ -423,11 +468,5 @@ public class Game extends Activity implements IMessageHandler{
 
 			return tv;
 		}
-	}
-
-	@Override
-	public void onMesssageReceived(IMessage msg) {
-		// TODO Auto-generated method stub
-		
 	}
 }

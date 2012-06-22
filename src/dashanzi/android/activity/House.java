@@ -3,6 +3,7 @@ package dashanzi.android.activity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -26,6 +27,7 @@ import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
+import dashanzi.android.util.ToastUtil;
 
 public class House extends ListActivity implements IMessageHandler {
 
@@ -42,15 +44,22 @@ public class House extends ListActivity implements IMessageHandler {
 
 	// 变量
 	private String gid_selected;// 选择的房间号
+	private String userName;
+	private Map<String, String> groupIdStateMap = new HashMap<String, String>();// 存储gid
+																				// 与
+																				// state，便于登陆房间时，判断房间是否已满
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.house);
+		// 0. app
+		app = (IdiomGameApp) this.getApplication();
+		app.setCurrentActivity(this);
 
 		// 1. 显示欢迎词
 		Intent intent = this.getIntent();
-		String userName = intent.getStringExtra("name");
+		userName = intent.getStringExtra("name");
 		welcomeTv = (TextView) findViewById(R.id.house_welcome_user_text);
 		if (userName.trim() != null) {
 			welcomeTv.setText(userName + ", 欢迎您!");
@@ -60,10 +69,9 @@ public class House extends ListActivity implements IMessageHandler {
 		House.this.getListView().setOnItemClickListener(item_click);
 
 		// 3. 此时向服务端发送refresh_request
-//		app = (IdiomGameApp) this.getApplication();
-//		RefreshRequestMsg refreshReq = new RefreshRequestMsg();
-//		refreshReq.setType(Constants.Type.REFRESH_REQ);
-//		app.sendMessage(refreshReq);
+		RefreshRequestMsg refreshReq = new RefreshRequestMsg();
+		refreshReq.setType(Constants.Type.REFRESH_REQ);
+		app.sendMessage(refreshReq);
 
 		// 4. 设置快速加入监听
 		quickSelectBtn = (Button) findViewById(R.id.house_quick_select_btn);
@@ -76,9 +84,12 @@ public class House extends ListActivity implements IMessageHandler {
 
 	@Override
 	public void onMesssageReceived(IMessage msg) {
-		if(msg instanceof RefreshResponseMsg){
-			//refresh response
+		Log.i(tag, "00000000000000000000000000000 + msg type="
+				+ msg.getClass().getCanonicalName());
+		if (msg instanceof RefreshResponseMsg) {
+			// refresh response
 			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
+			Log.i(tag, "1111111111111111");
 			// 1. 获得所有房间信息、初始化房间列表
 			List<GroupInfo> groups = refreshRes.getGroupInfoList();
 			for (GroupInfo group : groups) {
@@ -88,7 +99,11 @@ public class House extends ListActivity implements IMessageHandler {
 				houseInfo.put(Constants.HouseList.HOUSE_NUM, group.getGid());
 				houseInfo.put(Constants.HouseList.HOUSE_REST_PLACE_NUM,
 						group.getState());
+				// 存储在map中
+				groupIdStateMap.put(group.getGid(), group.getState());
+
 				houseList.add(houseInfo);
+				Log.i(tag, "222222222222222= " + houseList.size());
 			}
 
 			// 2. 生成一个SimpleAdapter类型的变量来填充数据
@@ -99,14 +114,25 @@ public class House extends ListActivity implements IMessageHandler {
 					R.layout.houselist, col_show, new int[] {
 							R.id.house_list_image, R.id.house_number,
 							R.id.house_rest_place_num });
-			// 设置显示ListView
+			// 3. 设置显示ListView
 			setListAdapter(houseListAdapter);
-		}else if(msg instanceof JoinResponseMsg){
-			//join response TODO 
-			
-		}
-		
+		} else if (msg instanceof JoinResponseMsg) {
+			Log.i(tag, "7777777777777777777777777777");
+			JoinResponseMsg joinRes = (JoinResponseMsg) msg;
 
+			if (joinRes.getStatus().equals(Constants.Response.SUCCESS)) {
+				// 页面转向Game房间
+				Intent intent = new Intent();
+				intent.putExtra("gid", gid_selected);
+				intent.putExtra("uid", joinRes.getUid());
+				intent.setClass(House.this, Game.class);
+				startActivity(intent);
+			} else {
+				// 提示登陆失败
+				ToastUtil.toast(this, "登陆失败,请重新登陆!",
+						android.R.drawable.ic_dialog_alert);
+			}
+		}
 	}
 
 	// 用于生成test数据 TODO
@@ -131,13 +157,21 @@ public class House extends ListActivity implements IMessageHandler {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 
-			AlertDialog.Builder builder = new AlertDialog.Builder(House.this);
-			builder.setIcon(android.R.drawable.ic_menu_help);
-
 			HashMap<String, Object> item = (HashMap<String, Object>) houseListAdapter
 					.getItem(arg2);
 			gid_selected = (String) item.get(Constants.HouseList.HOUSE_NUM);
 
+			// 判断房间是否已满，已满则提示
+			String state = groupIdStateMap.get(gid_selected);
+			if (state != null && state.trim().equals("3/3")) {
+				ToastUtil.toast(House.this, "房间已满,请选择其他房间!",
+						android.R.drawable.ic_dialog_alert);
+				return;
+			}
+
+			// 未满，则提示是否进入
+			AlertDialog.Builder builder = new AlertDialog.Builder(House.this);
+			builder.setIcon(android.R.drawable.ic_menu_help);
 			builder.setTitle("确定进入" + gid_selected + "号房间吗?");
 
 			builder.setPositiveButton("确定",
@@ -146,16 +180,10 @@ public class House extends ListActivity implements IMessageHandler {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
 
-							// 1.向服务端发送登陆房间请求 TODO
-							JoinRequestMsg joinReq = new JoinRequestMsg();
-							joinReq.setType(Constants.Type.JOIN_REQ);
-
-							// 2. 页面转向Game
-							Intent intent = new Intent();
-							intent.putExtra("gid", gid_selected);
-							intent.setClass(House.this, Game.class);
-							startActivity(intent);
+							// 向服务端发送登陆房间请求
+							sendJionRequest(gid_selected, userName);
 						}
+
 					});
 
 			builder.setNegativeButton("取消",
@@ -175,7 +203,6 @@ public class House extends ListActivity implements IMessageHandler {
 	class MyOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
 			if (houseList == null || houseList.size() < 1) {
 				Log.e(tag, "houseList is null");
 				return;
@@ -183,18 +210,22 @@ public class House extends ListActivity implements IMessageHandler {
 
 			gid_selected = quickSelectHouseNum();
 
-			// 1. 向服务端发送登陆房间请求
-
-			// 2. 页面转向Game
-			Intent intent = new Intent();
-			intent.putExtra("gid", gid_selected);
-			intent.setClass(House.this, Game.class);
-			startActivity(intent);
+			// 向服务端发送登陆房间请求
+			sendJionRequest(gid_selected, userName);
 		}
 
 		// TODO 第一个房间号作为选择结果，可以扩展
 		private String quickSelectHouseNum() {
 			return (String) houseList.get(0).get(Constants.HouseList.HOUSE_NUM);
 		}
+	}
+
+	private void sendJionRequest(String gid_selected, String userName) {
+		JoinRequestMsg joinReq = new JoinRequestMsg();
+		joinReq.setType(Constants.Type.JOIN_REQ);
+		joinReq.setGid(gid_selected);
+		joinReq.setName(userName);
+		app.sendMessage(joinReq);
+
 	}
 }
