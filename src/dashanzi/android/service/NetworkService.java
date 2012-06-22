@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
-import dashanzi.android.IdiomGameApp;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.util.Beans2JsonUtil;
 
@@ -185,7 +184,7 @@ public class NetworkService extends Service {
 	public void onStart(Intent intent, int startId) {
 		Log.i("ttt", "Services onStart");
 		super.onStart(intent, startId);
-		new Thread() {// �½��̣߳�ÿ��1�뷢��һ�ι㲥��ͬʱ��i�Ž�intent����
+		new Thread() {
 
 			public void run() {
 				int i = 0;
@@ -211,7 +210,7 @@ public class NetworkService extends Service {
 	public int onStartCommand(Intent i, int a, int b) {
 		Log.i("ttt", "Services onStartCommand");
 
-		new Thread() {// �½��̣߳�ÿ��1�뷢��һ�ι㲥��ͬʱ��i�Ž�intent����
+		new Thread() {
 
 			public void run() {
 				int i = 0;
@@ -238,7 +237,7 @@ public class NetworkService extends Service {
 	@Override
 	public void onDestroy() {
 		Log.i("TAG", "Services onDestory");
-		isStop = true;// ��ʹservice����߳�Ҳ����ֹͣ����������ͨ������isStop��ֹͣ�߳�
+		isStop = true;
 		super.onDestroy();
 	}
 }
