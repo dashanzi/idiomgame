@@ -102,6 +102,11 @@ public class NetworkService extends Service {
 	public void disconnect() {
 		try {
 			socket.close();
+			is.close();
+			os.close();
+			Log.i("==NET==",
+					"socket closed: socket.isClosed=" + socket.isClosed()
+							+ ", socket.isConnected=" + socket.isConnected());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
