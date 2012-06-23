@@ -1,10 +1,12 @@
 package dashanzi.android.activity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import dashanzi.android.IdiomGameApp;
@@ -48,6 +50,15 @@ public class Welcome extends Activity implements IMessageHandler {
 		});
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// 在首页监听back键， 点击返回键时完全退出程序
+			Welcome.this.finish();
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+	
 	@Override
 	public void onMesssageReceived(IMessage msg) {
 		// TODO Auto-generated method stub

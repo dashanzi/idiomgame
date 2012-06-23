@@ -326,12 +326,17 @@ public class Json2BeansUtil {
 
 		TimeoutResponseMsg result = new TimeoutResponseMsg();
 		JSONObject dataJson = new JSONObject(jsonStr);
-		result.setType(dataJson.getString("type"));
-		result.setStatus(dataJson.getString("status"));
-		result.setGid(dataJson.getString("gid"));
-		result.setWord(dataJson.getString("word"));
-		result.setUid(dataJson.getString("uid"));
-		result.setNextuid(dataJson.getString("nextuid"));
+		
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
+		
+		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+		
+		result.setGid(body.getString("gid"));
+		result.setWord(body.getString("word"));
+		result.setUid(body.getString("uid"));
+		result.setNextuid(body.getString("nextuid"));
 
 		return result;
 	}

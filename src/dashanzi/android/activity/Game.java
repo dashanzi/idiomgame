@@ -1,9 +1,7 @@
 package dashanzi.android.activity;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,9 +35,13 @@ import dashanzi.android.R;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
+import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
+import dashanzi.android.dto.request.RefreshRoomRequestMsg;
+import dashanzi.android.dto.request.TimeoutRequestMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
+import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 import dashanzi.android.util.ToastUtil;
 
@@ -66,23 +68,13 @@ public class Game extends Activity implements IMessageHandler {
 	private GridView configGrid;// 按钮gridview
 	private String configData[] = { "退出", "提交", "锦囊" };
 
-	private boolean clockStop = false;
 
 	// game状态变量
-	private final int pNum = 3;
-	private User[] users = new User[3];
-	private Map<String, Integer> userIdLayoutIdMap = new HashMap<String, Integer>();
-	
+
 	private String currentUid = null;
 	private String currentWord = null;
 	private String myUid = null;
-	private String gid=null;
-	
-	
-	// game消息变量
-	private StartNotifyMsg startNotify;
-	private InputResponseMsg inputResponse;
-	private TimeoutResponseMsg timeOutResponse;
+	private String gid = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +84,7 @@ public class Game extends Activity implements IMessageHandler {
 		// 0. app
 		app = (IdiomGameApp) this.getApplication();
 		app.setCurrentActivity(this);
-		
+
 		// 1. 获取所有要使用的组件
 		idiom_show_tv = (TextView) findViewById(R.id.game_idiom_show_text);
 		idiom_check_iv = (ImageView) findViewById(R.id.game_idiom_check_image);
@@ -113,22 +105,11 @@ public class Game extends Activity implements IMessageHandler {
 		Log.i("uid", myUid);
 		this.setTitle("成语接龙" + "-" + gid + "号房间");
 
-		/*
-		 * // 获取自身的登录名、uid String loginName = intent.getStringExtra("name");
-		 * myUid = intent.getStringExtra("uid");
-		 * 
-		 * // 永远将自己放置在玩家1的位置 player1Name = (TextView)
-		 * findViewById(R.id.game_player_one_name);
-		 * player1Name.setText(loginName);
-		 * 
-		 * // test TODO current_player_layout = (RelativeLayout)
-		 * findViewById(R.id.game_player_one_layout);
-		 * current_player_layout.setBackgroundColor(Color.RED);
-		 * current_player_layout
-		 * .setBackgroundResource(R.drawable.player_area_background);
-		 */
-
-		countDownThread();
+		// 3. 向服务端发送刷新房间信息请求
+		RefreshRoomRequestMsg req = new RefreshRoomRequestMsg();
+		req.setType(Constants.Type.REFRESHROOM_REQ);
+		req.setGid(gid);
+		app.sendMessage(req);
 
 	}
 
@@ -136,62 +117,169 @@ public class Game extends Activity implements IMessageHandler {
 	 * Logic Action
 	 ************************************************************************************************************************/
 
+	// 封装uid与layoutid之间的关系，便于找到当前玩家
+	int[] layoutArray = { R.id.game_player_one_layout,
+			R.id.game_player_two_layout, R.id.game_player_three_layout };
+	int[] playerNameArray = { R.id.game_player_one_name,
+			R.id.game_player_two_name, R.id.game_player_three_name };
+
 	@Override
 	public void onMesssageReceived(IMessage msg) {
-		// TODO Auto-generated method stub
-		if(msg == null){
+		if (msg == null) {
 			Log.e(tag, "msg is null !");
 			return;
 		}
-		//开始游戏通知
-		if(msg instanceof StartNotifyMsg){
-			StartNotifyMsg startNotify = (StartNotifyMsg)msg;
+
+		// 刷新房间信息
+		if (msg instanceof RefreshRoomResponseMsg) {
+			RefreshRoomResponseMsg resp = (RefreshRoomResponseMsg) msg;
+			Log.i(tag, "----->>> RefreshRoom Response  = " + resp.toString());
+			List<User> users = resp.getUsers();
+			if (users.size() > 3) {
+				Log.e(tag, "users.size()>3");
+				return;
+			}
+
+			// 显示玩家名
+			showPlayerNames(users);
+		}
+
+		// RoomNotify
+		if (msg instanceof RoomNotifyMsg) {
+
+			RoomNotifyMsg resp = (RoomNotifyMsg) msg;
+			Log.i(tag, "----->>> RoomNotifyMsg   = " + resp.toString());
+
+			List<User> users = resp.getUsers();
+			if (users.size() > 3) {
+				Log.e(tag, "users.size()>3");
+				return;
+			}
+
+			// 显示玩家名
+			showPlayerNames(users);
+		}
+
+		// 开始游戏通知
+		if (msg instanceof StartNotifyMsg) {
+			StartNotifyMsg startNotify = (StartNotifyMsg) msg;
+			Log.i(tag, "----->>> StartNotifyMsg   = " + startNotify.toString());
+
 			currentUid = startNotify.getFirstuid();
 			currentWord = startNotify.getWord();
 			List<User> users = startNotify.getUsers();
-			
-			if(users.size() != 3){
+
+			if (users.size() != 3) {
 				Log.e(tag, "users.size() != 3");
 			}
-			
-			//封装uid与layoutid之间的关系，便于找到当前玩家
-			int[] layoutArray = {R.id.game_player_one_layout,R.id.game_player_two_layout,R.id.game_player_three_layout};
-			int[] playerNameArray = {R.id.game_player_one_name, R.id.game_player_two_name,R.id.game_player_three_name};
-			
-			for(int i=0;i<3;i++){
-				userIdLayoutIdMap.put(users.get(i).getUid(),layoutArray[i]);
-				//显示玩家信息
-				TextView playerName = (TextView) findViewById(playerNameArray[i]);
-				playerName.setText(users.get(i).getName());
+
+			// 显示玩家名
+			showPlayerNames(users);
+
+			// 切换玩家角色背景
+			changePlayerBackground(currentUid);
+
+			// 判断是否是自己出牌
+			if (currentUid.equals(myUid)) {
+				idiom_write_et.setClickable(true);
 			}
-			
-			
-			
-			
-			
+
+			// 显示word
+			showIdiomThread(0,currentWord);
 		}
-		
-		
-		if(msg instanceof InputResponseMsg){
-			InputResponseMsg inputRes = (InputResponseMsg)msg;
-			
-			//1. 显示填写的成语
-			currentWord = inputRes.getWord();
-			showIdiomThread(currentWord);
-			
-			//2. 显示结果正确与否,显示对号，叉号
-			if(inputRes.getStatus().equals(Constants.Response.SUCCESS)){
+
+		// inputResponse
+		if (msg instanceof InputResponseMsg) {
+			InputResponseMsg inputRes = (InputResponseMsg) msg;
+			Log.i(tag, "----->>> InputResponseMsg = " + inputRes.toString());
+
+			// 2. 显示结果正确与否,显示对号，叉号
+			if (inputRes.getStatus().equals(Constants.Response.SUCCESS)) {
+				
 				idiomCheckThread(true);
-			}else if(inputRes.getStatus().equals(Constants.Response.FAILED)){
+			} else if (inputRes.getStatus().equals(Constants.Response.FAILED)) {
+				//显示玩家的错误成语
+				String answer = inputRes.getAnswer();
+				showIdiomThread(0, answer);
 				idiomCheckThread(false);
+				
+			}
+			
+			// 1. 显示填写的成语
+			currentWord = inputRes.getWord();
+			showIdiomThread(2000,currentWord);
+
+			// 3. 判断是否是自己出牌
+			currentUid = inputRes.getNextUid();
+			if (currentUid.equals(myUid)) {// 可编辑
+				idiom_write_et.setClickable(true);
+			} else {// 不可编辑
+				idiom_write_et.setClickable(false);
+			}
+
+			// 切换玩家角色背景
+			changePlayerBackground(currentUid);
+		}
+
+		// 超时响应
+		if (msg instanceof TimeoutResponseMsg) {
+			TimeoutResponseMsg resp = (TimeoutResponseMsg) msg;
+			Log.i(tag, "----->>> TimeoutResponseMsg = "
+					+ resp.toString());
+			currentWord = resp.getWord();
+			currentUid = resp.getNextuid();
+			// 显示word
+			showIdiomThread(0,currentWord);
+			// 显示叉号
+			idiomCheckThread(false);
+
+			// 切换背景颜色
+			changePlayerBackground(currentUid);
+
+			// 判断是否是自己出牌
+			if (currentUid.equals(myUid)) {// 可编辑
+				idiom_write_et.setClickable(true);
+			} else {// 不可编辑
+				idiom_write_et.setClickable(false);
 			}
 		}
+
+	}
+
+	private void changePlayerBackground(String currentUserId) {
+		Log.i(tag, "-------------->>>  changePlayerBackground");
+		// 1. 恢复所有background
+		for (int i = 0; i < layoutArray.length; i++) {
+			RelativeLayout rl = (RelativeLayout) findViewById(layoutArray[i]);
+			rl.setBackgroundResource(R.drawable.player_area_background);
+		}
+		// 设置当前玩家背景
+		current_player_layout = (RelativeLayout) findViewById(layoutArray[Integer
+				.parseInt(currentUid.substring(currentUid.length() - 1))]);
+		current_player_layout.setBackgroundColor(Color.RED);
+
+	}
+
+	private void showPlayerNames(List<User> userList) {
+		Log.i(tag, "-------------->>>   showPlayerNames");
+		for (User user : userList) {
+			String tempUid = user.getUid();
+			String index = user.getUid().substring(tempUid.length() - 1);
+			TextView playerName = (TextView) findViewById(playerNameArray[Integer
+					.parseInt(index)]);
+			playerName.setText(user.getName());
+		}
+
 	}
 
 	// 超時操作
 	private void doTimeOutAction() {
-		// TODO Auto-generated method stub
-
+		// 发送timeout请求
+		TimeoutRequestMsg req = new TimeoutRequestMsg();
+		req.setType(Constants.Type.TIMEOUT_REQ);
+		req.setGid(gid);
+		req.setUid(myUid);
+		app.sendMessage(req);
 	}
 
 	/************************************************************************************************************************
@@ -204,14 +292,15 @@ public class Game extends Activity implements IMessageHandler {
 
 	// 提交成语操作
 	private void doSubmitAction() {
-		
+
 		// 1. 停倒计时表
-		this.clockStop = true;
-		
+		// this.clockStop = true;
+
 		// 2. 发送提交请求
 		String idiom_write = idiom_write_et.getText().toString();
-		if(idiom_write == null || idiom_write.trim().length()!= 4){
-			ToastUtil.toast(this, "成语格式错误!", android.R.drawable.ic_dialog_alert);
+		if (idiom_write == null || idiom_write.trim().length() != 4) {
+			ToastUtil
+					.toast(this, "成语格式错误!", android.R.drawable.ic_dialog_alert);
 			return;
 		}
 		InputRequestMsg inputReq = new InputRequestMsg();
@@ -219,10 +308,8 @@ public class Game extends Activity implements IMessageHandler {
 		inputReq.setType(Constants.Type.INPUT_REQ);
 		inputReq.setUid(myUid);
 		inputReq.setWord(idiom_write.toString());
+		Log.i(tag, ">>>>> input request = " + inputReq.toString());
 		app.sendMessage(inputReq);
-		
-//		//3. 显示填写的成语
-//		showIdiomThread(idiom_write);
 	}
 
 	// 锦囊操作
@@ -235,17 +322,31 @@ public class Game extends Activity implements IMessageHandler {
 	 * Handler
 	 ************************************************************************************************************************/
 	// showIdiomHandler
-	private void showIdiomThread(final String idiom) {
-		// TODO Auto-generated method stub
+	private void showIdiomThread(final int delayms, final String idiom) {
+		// 倒计时
+		if (lastRunner != null) {
+			lastRunner.shutDownThread();
+		}
+		countDownThread();
+
 		new Thread() {
 			public void run() {
+				//等待delayms
+				try {
+					Thread.sleep(delayms);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 				if (idiom != null) {
 					for (int i = 0; i <= idiom.length(); i++) {
-						showIdiomHandler.sendEmptyMessage(i);
+						Message msg = new Message();
+						Bundle b = new Bundle();// 存放数据
+			            b.putString("idiom", idiom.substring(0, i));
+			            msg.setData(b);
+						showIdiomHandler.sendMessage(msg);
 						try {
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -257,9 +358,10 @@ public class Game extends Activity implements IMessageHandler {
 	private Handler showIdiomHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			Log.i("test", msg.what + "");
-			String idiomStr = currentWord.substring(0, msg.what);
-			idiom_show_tv.setText(idiomStr);
+			
+			Bundle b = msg.getData();
+            String idiom = b.getString("idiom");
+			idiom_show_tv.setText(idiom);
 		}
 	};
 
@@ -308,27 +410,46 @@ public class Game extends Activity implements IMessageHandler {
 	};
 
 	// clockHandler
+	private Runner lastRunner = null;
+
 	private void countDownThread() {
-		new Thread() {
-			public void run() {
-				for (int i = COUNT_DOWN_SECOND; i >= 0; i--) {
-					if (!clockStop) {
-						clockHandler.sendEmptyMessage(i);
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-		}.start();
+		Runner r = new Runner();
+		lastRunner = r;
+		new Thread(r).start();
 	}
 
+	class Runner implements Runnable {
+		private boolean flag = true;
+
+		public void run() {
+			int i = COUNT_DOWN_SECOND;
+			while (isShutDown() && i >= 0) {
+
+				clockHandler.sendEmptyMessage(i);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			i--;
+			}
+		}
+
+		public synchronized void shutDownThread() {
+			flag = false;
+		}
+
+		public synchronized boolean isShutDown() {
+			return flag;
+		}
+	}
+
+	
 	private Handler clockHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-
+			
+			clock_show_tv.setTextSize(40);
 			if (msg.what != 0) {
 				clock_show_tv.setText(msg.what + "");
 				Log.d("test", msg.what + "");
@@ -342,6 +463,7 @@ public class Game extends Activity implements IMessageHandler {
 			if (msg.what == 0 && myUid != null && currentUid != null
 					&& myUid.equals(currentUid)) {
 
+				Log.i(tag, "------------>>>>>> time out !! " + "uid = " + myUid);
 				doTimeOutAction();
 			}
 		}
@@ -416,15 +538,15 @@ public class Game extends Activity implements IMessageHandler {
 		builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
 			public void onClick(DialogInterface dialog, int whichButton) {
-				
-				//1. 发送退出房间通知
+
+				// 1. 发送退出房间通知
 				QuitNotifyMsg quitNotify = new QuitNotifyMsg();
 				quitNotify.setType(Constants.Type.QUIT_NOTIFY);
 				quitNotify.setGid(gid);
 				quitNotify.setUid(myUid);
 				app.sendMessage(quitNotify);
 
-				//2. finish activity
+				// 2. finish activity
 				Game.this.finish();
 			}
 		});
@@ -450,24 +572,20 @@ public class Game extends Activity implements IMessageHandler {
 
 		public GridAdapter(OnTabChangeListener onTabChangeListener,
 				List<String> asList) {
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return list.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 

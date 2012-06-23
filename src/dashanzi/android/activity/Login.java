@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -163,6 +165,15 @@ public class Login extends Activity implements IMessageHandler {
 			app.sendMessage(loginMsg);
 			// testLoginResult();
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// 在首页监听back键， 点击返回键时完全退出程序
+			Login.this.finish();
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	/**********************************************************************************************

@@ -42,6 +42,7 @@ public class Constants {
 		public static final String LOGIN_RESP = "LOGIN_RESP";
 		public static final String REFRESH_REQ = "REFRESH_REQ";
 		public static final String REFRESH_RESP = "REFRESH_RESP";
+		public static final String REFRESHROOM_REQ = "REFRESHROOM_REQ";
 		public static final String REFRESHROOM_RESP = "REFRESHROOM_RESP";
 		public static final String JOIN_REQ = "JOIN_REQ";
 		public static final String JOIN_RESP = "JOIN_RESP";

@@ -16,6 +16,4 @@ public class RoomNotifyMsg extends RequestMsg {
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
-	
-	
 }

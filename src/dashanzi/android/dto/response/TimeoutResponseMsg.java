@@ -40,5 +40,9 @@ public class TimeoutResponseMsg extends ResponseMsg {
 		this.nextuid = nextuid;
 	}
 
-
+	@Override
+	public String toString() {
+		return "TimeoutResponseMsg [gid=" + gid + ", word=" + word + ", uid="
+				+ uid + ", nextuid=" + nextuid + "]";
+	}
 }

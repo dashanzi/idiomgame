@@ -87,12 +87,9 @@ public class House extends ListActivity implements IMessageHandler {
 
 	@Override
 	public void onMesssageReceived(IMessage msg) {
-		Log.i(tag, "00000000000000000000000000000 + msg type="
-				+ msg.getClass().getCanonicalName());
 		if (msg instanceof RefreshResponseMsg) {
 			// refresh response
 			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
-			Log.i(tag, "1111111111111111");
 			// 1. 获得所有房间信息、初始化房间列表
 			List<GroupInfo> groups = refreshRes.getGroupInfoList();
 			for (GroupInfo group : groups) {
@@ -106,7 +103,6 @@ public class House extends ListActivity implements IMessageHandler {
 				groupIdStateMap.put(group.getGid(), group.getState());
 
 				houseList.add(houseInfo);
-				Log.i(tag, "222222222222222= " + houseList.size());
 			}
 
 			// 2. 生成一个SimpleAdapter类型的变量来填充数据
@@ -120,7 +116,6 @@ public class House extends ListActivity implements IMessageHandler {
 			// 3. 设置显示ListView
 			setListAdapter(houseListAdapter);
 		} else if (msg instanceof JoinResponseMsg) {
-			Log.i(tag, "7777777777777777777777777777");
 			JoinResponseMsg joinRes = (JoinResponseMsg) msg;
 
 			if (joinRes.getStatus().equals(Constants.Response.SUCCESS)) {
@@ -238,10 +233,11 @@ public class House extends ListActivity implements IMessageHandler {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						
 						//1. 发送退出游戏通知
-						LogoutNotifyMsg quitGame = new LogoutNotifyMsg();
-						quitGame.setType(Constants.Type.LOGOUT_NOTIFY);
-						quitGame.setName(userName);
-						app.sendMessage(quitGame);
+						Log.i(tag, "--------------->>> Logout !!!!");
+						LogoutNotifyMsg logout = new LogoutNotifyMsg();
+						logout.setType(Constants.Type.LOGOUT_NOTIFY);
+						logout.setName(userName);
+						app.sendMessage(logout);
 
 						//2. finish activity
 						House.this.finish();
