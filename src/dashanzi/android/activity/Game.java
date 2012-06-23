@@ -184,6 +184,13 @@ public class Game extends Activity implements IMessageHandler {
 
 		// 开始游戏通知
 		if (msg instanceof StartNotifyMsg) {
+			//判断游戏是否就绪
+			if(!this.isGameReady()){
+				Log.e(tag, "revieve StartNotifyMsg , but game is not ready !!");
+				ToastUtil.toast(this, "房间未满,不能游戏!", android.R.drawable.ic_dialog_alert);
+				return;
+			}
+			
 			StartNotifyMsg startNotify = (StartNotifyMsg) msg;
 			Log.i(tag, "----->>> StartNotifyMsg   = " + startNotify.toString());
 
@@ -212,6 +219,14 @@ public class Game extends Activity implements IMessageHandler {
 
 		// inputResponse
 		if (msg instanceof InputResponseMsg) {
+			
+			//判断游戏是否就绪
+			if(!this.isGameReady()){
+				Log.e(tag, "revieve InputResponseMsg , but game is not ready !!");
+				ToastUtil.toast(this, "房间未满,不能游戏!", android.R.drawable.ic_dialog_alert);
+				return;
+			}
+			
 			InputResponseMsg inputRes = (InputResponseMsg) msg;
 			Log.i(tag, "----->>> InputResponseMsg = " + inputRes.toString());
 
@@ -245,6 +260,12 @@ public class Game extends Activity implements IMessageHandler {
 
 		// 超时响应
 		if (msg instanceof TimeoutResponseMsg) {
+			//判断游戏是否就绪
+			if(!this.isGameReady()){
+				Log.e(tag, "revieve TimeoutResponseMsg , but game is not ready !!");
+				ToastUtil.toast(this, "房间未满,不能游戏!", android.R.drawable.ic_dialog_alert);
+				return;
+			}
 			TimeoutResponseMsg resp = (TimeoutResponseMsg) msg;
 			Log.i(tag, "----->>> TimeoutResponseMsg = " + resp.toString());
 			currentWord = resp.getWord();
@@ -286,7 +307,7 @@ public class Game extends Activity implements IMessageHandler {
 		//1. 首先要清空所有用户信息
 		for(int i=0;i<playerNameArray.length;i++){
 			TextView playerName = (TextView) findViewById(playerNameArray[i]);
-			playerName.setText("");
+			playerName.setText(" ");
 		}
 		
 		//2. 重新显示用户信息
@@ -320,9 +341,6 @@ public class Game extends Activity implements IMessageHandler {
 
 	// 提交成语操作
 	private void doSubmitAction() {
-
-		// 1. 停倒计时表
-		// this.clockStop = true;
 
 		// 2. 发送提交请求
 		String idiom_write = idiom_write_et.getText().toString();
