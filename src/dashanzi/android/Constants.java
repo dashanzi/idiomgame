@@ -63,6 +63,7 @@ public class Constants {
 		public static final int CORRECT = 100;
 		public static final int WORING = 101;
 		public static final int TIME_OUT = 102;
+		public static final int HELP = 103;
 	}
 
 	public static final int PLAYER_NUM = 3;

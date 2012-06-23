@@ -37,9 +37,12 @@ import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
+import dashanzi.android.dto.request.HelpRequestMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.request.RefreshRoomRequestMsg;
+import dashanzi.android.dto.request.StartRequestMsg;
 import dashanzi.android.dto.request.TimeoutRequestMsg;
+import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
@@ -65,7 +68,7 @@ public class Game extends Activity implements IMessageHandler {
 	private static final int HELP = 2;
 
 	// 倒计时秒数
-	private static final int COUNT_DOWN_SECOND = 10;
+	private static final int COUNT_DOWN_SECOND = 60;
 
 	// 组件
 	private RelativeLayout current_player_layout;// 当前活跃玩家layout，背景颜色区别于观看玩家
@@ -151,10 +154,13 @@ public class Game extends Activity implements IMessageHandler {
 				//设置游戏为就绪状态
 				this.setGameReady(true);
 				
-				//向服务端发送startNotifyRequest TODO
-				
-				
+				//向服务端发送startNotifyRequest
+				StartRequestMsg req = new StartRequestMsg();
+				req.setType(Constants.Type.START_REQ);
+				req.setGid(gid);
+				app.sendMessage(req);
 			}
+			
 			// 显示玩家名
 			showPlayerNames(users);
 		}
@@ -171,12 +177,18 @@ public class Game extends Activity implements IMessageHandler {
 				return;
 			}
 
-			if(users.size() < Constants.PLAYER_NUM){//房间未满
-				
-				//设置房间为未就绪状态
-				this.setGameReady(false);
+			if(users.size() == Constants.PLAYER_NUM){//房间未满
+				//设置房间为就绪状态
+				this.setGameReady(true);
+			}else{
+				//判断当前游戏状态
+				if(this.isGameReady()){//说明此时有人退出
+					//1. 停表
+					
+					//2. 提示
+					ToastUtil.toast(this, "有人退出房间! 游戏终止!", android.R.drawable.ic_dialog_alert);
+				}
 			}
-			
 			
 			// 显示玩家名
 			showPlayerNames(users);
@@ -222,7 +234,7 @@ public class Game extends Activity implements IMessageHandler {
 			
 			//判断游戏是否就绪
 			if(!this.isGameReady()){
-				Log.e(tag, "revieve InputResponseMsg , but game is not ready !!");
+				Log.e(tag, "revieve InputResponseMsg, but game is not ready !!");
 				ToastUtil.toast(this, "房间未满,不能游戏!", android.R.drawable.ic_dialog_alert);
 				return;
 			}
@@ -259,21 +271,34 @@ public class Game extends Activity implements IMessageHandler {
 		}
 
 		// 超时响应
-		if (msg instanceof TimeoutResponseMsg) {
+		if ((msg instanceof TimeoutResponseMsg) || (msg instanceof HelpResponseMsg)) {
+			//判断游戏是否就绪
 			//判断游戏是否就绪
 			if(!this.isGameReady()){
-				Log.e(tag, "revieve TimeoutResponseMsg , but game is not ready !!");
+				Log.e(tag, "revieve TimeoutResponseMsg || HelpResponseMsg, but game is not ready !!");
 				ToastUtil.toast(this, "房间未满,不能游戏!", android.R.drawable.ic_dialog_alert);
 				return;
 			}
-			TimeoutResponseMsg resp = (TimeoutResponseMsg) msg;
-			Log.i(tag, "----->>> TimeoutResponseMsg = " + resp.toString());
-			currentWord = resp.getWord();
-			currentUid = resp.getNextuid();
+			
+			if(msg instanceof TimeoutResponseMsg){
+				TimeoutResponseMsg resp = (TimeoutResponseMsg) msg;
+				Log.i(tag, "----->>> TimeoutResponseMsg = " + resp.toString());
+				currentWord = resp.getWord();
+				currentUid = resp.getNextuid();
+				// 显示超时
+				idiomCheckThread(Constants.CheckResultType.TIME_OUT);
+			}else if(msg instanceof HelpResponseMsg){
+				HelpResponseMsg resp = (HelpResponseMsg) msg;
+				Log.i(tag, "----->>> TimeoutResponseMsg = " + resp.toString());
+				currentWord = resp.getWord();
+				currentUid = resp.getNextUid();
+				
+				// 显示超时
+				idiomCheckThread(Constants.CheckResultType.TIME_OUT);
+			}
+			
 			// 显示word
 			showIdiomThread(0, currentWord);
-			// 显示超时
-			idiomCheckThread(Constants.CheckResultType.TIME_OUT);
 
 			// 切换背景颜色
 			changePlayerBackground(currentUid);
@@ -285,7 +310,6 @@ public class Game extends Activity implements IMessageHandler {
 				idiom_write_et.setClickable(false);
 			}
 		}
-
 	}
 
 	private void changePlayerBackground(String currentUserId) {
@@ -354,14 +378,20 @@ public class Game extends Activity implements IMessageHandler {
 		inputReq.setType(Constants.Type.INPUT_REQ);
 		inputReq.setUid(myUid);
 		inputReq.setWord(idiom_write.toString());
-		Log.i(tag, ">>>>> input request = " + inputReq.toString());
 		app.sendMessage(inputReq);
 	}
 
 	// 锦囊操作
 	private void doHelpAction() {
-		// TODO Auto-generated method stub
-		// 1. 发送锦囊请求
+		Log.i(tag, "----- >>>>> doHelpAction !" );
+
+		// 发送锦囊请求
+		HelpRequestMsg req = new HelpRequestMsg();
+		req.setType(Constants.Type.HELP_REQ);
+		req.setGid(gid);
+		req.setUid(myUid);
+		app.sendMessage(req);
+		
 	}
 
 	/************************************************************************************************************************
@@ -369,11 +399,11 @@ public class Game extends Activity implements IMessageHandler {
 	 ************************************************************************************************************************/
 	// showIdiomHandler
 	private void showIdiomThread(final int delayms, final String idiom) {
-		// 倒计时
-		if (lastRunner != null) {
-			lastRunner.shutDownThread();
-		}
-		countDownThread();
+		//终止当前计时器
+		stopTimer();
+		
+		//重新启动新的定时器
+		restartTimer();
 
 		new Thread() {
 			public void run() {
@@ -477,11 +507,17 @@ public class Game extends Activity implements IMessageHandler {
 	};
 
 	// clockHandler
-	private Runner lastRunner = null;
-
-	private void countDownThread() {
+	private Runner currentTimerRunner = null;
+	
+	private void stopTimer() {
+		if (currentTimerRunner != null) {
+			currentTimerRunner.shutDownThread();
+		}
+	}
+	
+	private void restartTimer() {
 		Runner r = new Runner();
-		lastRunner = r;
+		currentTimerRunner = r;
 		new Thread(r).start();
 	}
 
