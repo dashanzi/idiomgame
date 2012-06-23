@@ -53,10 +53,15 @@ public class IdiomGameApp extends Application {
 
 	public void disconnect() {
 		networkService.disconnect();
+		destroyService();
 	}
 
 	// ------------- private methods ----------------------------
 	private void onMessageReceived(String s) throws JSONException {
+		if (s.trim().length() == 0) {
+			Log.i("==APP==", "message length=0");
+			return;
+		}
 		IMessage msg = Json2BeansUtil.getMessageFromJsonStr(s);
 		currentActivity.onMesssageReceived(msg);
 	}
@@ -73,6 +78,10 @@ public class IdiomGameApp extends Application {
 		filter.addAction("android.intent.action.test");
 		IdiomGameApp.this.registerReceiver(receiver, filter);
 
+	}
+
+	private void destroyService() {
+		unbindService(connection);
 	}
 
 	private ServiceConnection connection = new ServiceConnection() {
@@ -108,7 +117,7 @@ public class IdiomGameApp extends Application {
 		}
 
 		public MyReceiver() {
-//			System.out.println("MyReceiver");
+			// System.out.println("MyReceiver");
 		}
 
 	}

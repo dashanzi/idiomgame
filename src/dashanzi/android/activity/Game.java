@@ -184,7 +184,7 @@ public class Game extends Activity implements IMessageHandler {
 				//判断当前游戏状态
 				if(this.isGameReady()){//说明此时有人退出
 					//1. 停表
-					
+					this.stopTimer();
 					//2. 提示
 					ToastUtil.toast(this, "有人退出房间! 游戏终止!", android.R.drawable.ic_dialog_alert);
 				}

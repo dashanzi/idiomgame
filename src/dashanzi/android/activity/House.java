@@ -118,6 +118,8 @@ public class House extends ListActivity implements IMessageHandler {
 		} else if (msg instanceof JoinResponseMsg) {
 			JoinResponseMsg joinRes = (JoinResponseMsg) msg;
 
+			Log.e(tag, "===JOIN RESPONSE===" + msg.toString());
+
 			if (joinRes.getStatus().equals(Constants.Response.SUCCESS)) {
 				// 页面转向Game房间
 				Intent intent = new Intent();
@@ -222,38 +224,44 @@ public class House extends ListActivity implements IMessageHandler {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			
-				AlertDialog.Builder builder = new AlertDialog.Builder(House.this);
 
-				builder.setIcon(android.R.drawable.ic_dialog_alert);
-				builder.setTitle("确定退出游戏吗?");
+			AlertDialog.Builder builder = new AlertDialog.Builder(House.this);
 
-				builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+			builder.setIcon(android.R.drawable.ic_dialog_alert);
+			builder.setTitle("确定退出游戏吗?");
 
-					public void onClick(DialogInterface dialog, int whichButton) {
-						
-						//1. 发送退出游戏通知
-						Log.i(tag, "--------------->>> Logout !!!!");
-						LogoutNotifyMsg logout = new LogoutNotifyMsg();
-						logout.setType(Constants.Type.LOGOUT_NOTIFY);
-						logout.setName(userName);
-						app.sendMessage(logout);
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
 
-						//2. finish activity
-						House.this.finish();
-					}
-				});
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
 
-				builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
+							// 1. 发送退出游戏通知
+							Log.i(tag, "--------------->>> Logout !!!!");
+							LogoutNotifyMsg logout = new LogoutNotifyMsg();
+							logout.setType(Constants.Type.LOGOUT_NOTIFY);
+							logout.setName(userName);
+							app.sendMessage(logout);
 
-					}
-				});
-				builder.create().show();
-			}
+							// 2. finish activity
+							House.this.finish();
+
+							app.disconnect();
+						}
+					});
+
+			builder.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+
+						}
+					});
+			builder.create().show();
+		}
 		return false;
 	}
-	
+
 	private void sendJionRequest(String gid_selected, String userName) {
 		JoinRequestMsg joinReq = new JoinRequestMsg();
 		joinReq.setType(Constants.Type.JOIN_REQ);
@@ -261,5 +269,12 @@ public class House extends ListActivity implements IMessageHandler {
 		joinReq.setName(userName);
 		app.sendMessage(joinReq);
 
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		app.setCurrentActivity(this);
 	}
 }

@@ -26,6 +26,8 @@ public class NetworkService extends Service {
 	private BufferedReader is;
 	private PrintWriter os;
 
+	public boolean readFlag = true;
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		// Log.i("NetworkService", "service onBind");
@@ -43,7 +45,7 @@ public class NetworkService extends Service {
 		try {
 			// 1. connect
 			socket = new Socket(ip, port);
-			socket.setSoTimeout(5000);
+			// socket.setSoTimeout(5000);
 			is = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			// os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
@@ -104,6 +106,7 @@ public class NetworkService extends Service {
 			socket.close();
 			is.close();
 			os.close();
+			readFlag = false;
 			Log.i("==NET==",
 					"socket closed: socket.isClosed=" + socket.isClosed()
 							+ ", socket.isConnected=" + socket.isConnected());
@@ -128,7 +131,7 @@ public class NetworkService extends Service {
 		@Override
 		public void run() {
 			String content;
-			while (true) {
+			while (readFlag) {
 				if (socket.isConnected()) {
 					if (!socket.isInputShutdown()) {
 						try {
@@ -190,6 +193,7 @@ public class NetworkService extends Service {
 	public void onDestroy() {
 		Log.i("==NET==", "service destroyed");
 		isStop = true;
+		readFlag = false;
 		super.onDestroy();
 	}
 }
