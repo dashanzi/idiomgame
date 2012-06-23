@@ -55,7 +55,13 @@ public class Constants {
 		public static final String QUIT_NOTIFY = "QUIT_NOTIFY";
 		public static final String LOGOUT_NOTIFY = "LOGOUT_NOTIFY";
 		// mmm:notify response!!
-
+	}
+	
+	public static class CheckResultType{
+		public static final int CORRECT = 100;
+		public static final int WORING = 101;
+		public static final int TIME_OUT = 102;
 	}
 
+	public static final int PLAYER_NUM = 3;
 }
