@@ -267,7 +267,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
-                        android:text="10"
+                        android:text=""
                         android:gravity="center"
                         android:textColor="@android:color/black"
                         android:textSize="40dip" />
@@ -402,7 +402,8 @@
                         android:layout_height="fill_parent"
                         android:layout_alignParentRight="true"
                         android:layout_toRightOf="@+id/game_idiom_write_text"
-                        android:gravity="center_vertical" >
+                        android:gravity="center_vertical"
+                        >
                     </EditText>
 
                     <!--
