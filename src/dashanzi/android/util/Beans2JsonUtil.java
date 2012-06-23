@@ -8,11 +8,13 @@ import dashanzi.android.Constants;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
+import dashanzi.android.dto.request.HelpRequestMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.LoginRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.request.RefreshRoomRequestMsg;
+import dashanzi.android.dto.request.StartRequestMsg;
 import dashanzi.android.dto.request.TimeoutRequestMsg;
 
 public class Beans2JsonUtil {
@@ -80,6 +82,20 @@ public class Beans2JsonUtil {
 		return json.toString();
 	}
 
+	private static String getJsonStrFromStartRequest(StartRequestMsg bean)
+			throws JSONException {
+		JSONObject json = new JSONObject();
+
+		JSONObject header = new JSONObject();
+		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
+		json.put(Constants.JSON.HEADER, header);
+
+		JSONObject body = new JSONObject();
+		body.put("gid", bean.getGid());
+		json.put(Constants.JSON.BODY, body);
+		return json.toString();
+	}
+
 	private static String getJsonStrFromInputRequest(InputRequestMsg bean)
 			throws JSONException {
 
@@ -93,6 +109,21 @@ public class Beans2JsonUtil {
 		body.put("gid", bean.getGid());
 		body.put("uid", bean.getUid());
 		body.put("word", bean.getWord());
+		json.put(Constants.JSON.BODY, body);
+		return json.toString();
+	}
+
+	private static String getJsonStrFromHelpRequest(HelpRequestMsg bean)
+			throws JSONException {
+		JSONObject json = new JSONObject();
+
+		JSONObject header = new JSONObject();
+		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
+		json.put(Constants.JSON.HEADER, header);
+
+		JSONObject body = new JSONObject();
+		body.put("gid", bean.getGid());
+		body.put("uid", bean.getUid());
 		json.put(Constants.JSON.BODY, body);
 		return json.toString();
 	}
@@ -180,9 +211,27 @@ public class Beans2JsonUtil {
 			} finally {
 
 			}
+		} else if (msg instanceof StartRequestMsg) {
+			try {
+				s = getJsonStrFromStartRequest((StartRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
 		} else if (msg instanceof InputRequestMsg) {
 			try {
 				s = getJsonStrFromInputRequest((InputRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof HelpRequestMsg) {
+			try {
+				s = getJsonStrFromHelpRequest((HelpRequestMsg) msg);
 				s += "\r\n\r\n";
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -224,4 +273,5 @@ public class Beans2JsonUtil {
 		return s;
 
 	}
+
 }

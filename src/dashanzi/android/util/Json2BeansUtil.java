@@ -15,6 +15,7 @@ import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
+import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.LoginResponseMsg;
@@ -39,6 +40,8 @@ public class Json2BeansUtil {
 			msg = getJoinResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.INPUT_RESP)) {
 			msg = getInputResponseFromJsonStr(jsonStr);
+		} else if (type.equals(Constants.Type.HELP_RESP)) {
+			msg = getHelpResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.TIMEOUT_RESP)) {
 			msg = getTimeoutResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.ROOM_NOTIFY)) {
@@ -156,6 +159,29 @@ public class Json2BeansUtil {
 		result.setGid(body.getString("gid"));
 		result.setWord(body.getString("word"));
 		result.setAnswer(body.getString("answer"));
+		result.setUid(body.getString("uid"));
+		result.setNextUid(body.getString("nextuid"));
+
+		return result;
+	}
+
+	private static HelpResponseMsg getHelpResponseFromJsonStr(String jsonStr)
+			throws JSONException {
+		if (jsonStr == null) {
+			return null;
+		}
+
+		HelpResponseMsg result = new HelpResponseMsg();
+
+		JSONObject dataJson = new JSONObject(jsonStr);
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
+
+		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+
+		result.setGid(body.getString("gid"));
+		result.setWord(body.getString("word"));
 		result.setUid(body.getString("uid"));
 		result.setNextUid(body.getString("nextuid"));
 
@@ -326,13 +352,13 @@ public class Json2BeansUtil {
 
 		TimeoutResponseMsg result = new TimeoutResponseMsg();
 		JSONObject dataJson = new JSONObject(jsonStr);
-		
+
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		result.setType(header.getString("type"));
 		result.setStatus(header.getString("status"));
-		
+
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
-		
+
 		result.setGid(body.getString("gid"));
 		result.setWord(body.getString("word"));
 		result.setUid(body.getString("uid"));

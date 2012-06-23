@@ -47,17 +47,19 @@ public class Constants {
 		public static final String JOIN_REQ = "JOIN_REQ";
 		public static final String JOIN_RESP = "JOIN_RESP";
 		public static final String ROOM_NOTIFY = "ROOM_NOTIFY";
+		public static final String START_REQ = "START_REQ";
 		public static final String START_NOTIFY = "START_NOTIFY";
 		public static final String INPUT_REQ = "INPUT_REQ";
 		public static final String INPUT_RESP = "INPUT_RESP";
+		public static final String HELP_REQ = "HELP_REQ";
+		public static final String HELP_RESP = "HELP_RESP";
 		public static final String TIMEOUT_REQ = "TIMEOUT_REQ";
 		public static final String TIMEOUT_RESP = "TIMEOUT_RESP";
 		public static final String QUIT_NOTIFY = "QUIT_NOTIFY";
 		public static final String LOGOUT_NOTIFY = "LOGOUT_NOTIFY";
-		// mmm:notify response!!
 	}
-	
-	public static class CheckResultType{
+
+	public static class CheckResultType {
 		public static final int CORRECT = 100;
 		public static final int WORING = 101;
 		public static final int TIME_OUT = 102;
