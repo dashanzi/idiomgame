@@ -37,7 +37,7 @@
                     android:layout_width="50dip"
                     android:layout_height="50dip"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/player_1" />
+                    android:src="@drawable/game_player_space_header_image" />
 
                 <TableLayout
                     android:layout_width="fill_parent"
@@ -120,7 +120,7 @@
                     android:layout_width="180dip"
                     android:layout_height="fill_parent"
                     android:gravity="center"
-                    android:text="好事成双"
+                    android:text="头脑风暴"
                     android:textColor="@android:color/black"
                     android:textSize="30dip" />
             </RelativeLayout>
@@ -186,7 +186,7 @@
                             android:layout_width="50dip"
                             android:layout_height="50dip"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/player_2" />
+                            android:src="@drawable/game_player_space_header_image" />
 
                         <TableLayout
                             android:layout_width="fill_parent"
@@ -301,7 +301,7 @@
                             android:layout_width="50dip"
                             android:layout_height="50dip"
                             android:layout_gravity="center_horizontal"
-                            android:src="@drawable/player_3" />
+                            android:src="@drawable/game_player_space_header_image" />
 
                         <TableLayout
                             android:layout_width="fill_parent"
@@ -403,21 +403,10 @@
                         android:layout_alignParentRight="true"
                         android:layout_toRightOf="@+id/game_idiom_write_text"
                         android:gravity="center_vertical"
+                        android:focusable="false"
                         >
                     </EditText>
 
-                    <!--
-                <Button
-                    android:id="@+id/game_idiom_submit_btn"
-                    android:layout_width="50dip"
-                    android:layout_height="fill_parent"
-                    android:layout_alignParentTop="true"
-                    android:layout_toRightOf="@+id/game_idiom_edit_text"
-                    android:gravity="center_vertical"
-                    android:text="提交"
-                    android:textColor="@android:color/black"
-                    android:textSize="15dip" />
-                    -->
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
