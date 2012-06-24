@@ -38,5 +38,10 @@ public class HelpResponseMsg extends ResponseMsg {
 		this.nextUid = nextUid;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "HelpResponseMsg [gid=" + gid + ", uid=" + uid + ", word="
+				+ word + ", nextUid=" + nextUid + ", getType()=" + getType()
+				+ ", getStatus()=" + getStatus() + "]";
+	}
 }

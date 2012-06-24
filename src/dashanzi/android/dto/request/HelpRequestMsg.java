@@ -19,4 +19,10 @@ public class HelpRequestMsg extends RequestMsg {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
+
+	@Override
+	public String toString() {
+		return "HelpRequestMsg [gid=" + gid + ", uid=" + uid + ", getType()="
+				+ getType() + "]";
+	}
 }

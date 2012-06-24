@@ -13,4 +13,10 @@ public class LogoutNotifyMsg extends RequestMsg {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return "LogoutNotifyMsg [name=" + name + ", getType()=" + getType()
+				+ "]";
+	}
 }

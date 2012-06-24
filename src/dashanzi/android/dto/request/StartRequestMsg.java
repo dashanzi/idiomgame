@@ -10,4 +10,10 @@ public class StartRequestMsg extends RequestMsg {
 	public void setGid(String gid) {
 		this.gid = gid;
 	}
+
+	@Override
+	public String toString() {
+		return "StartRequestMsg [gid=" + gid + ", getType()=" + getType() + "]";
+	}
+	
 }

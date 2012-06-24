@@ -27,5 +27,11 @@ public class JoinResponseMsg extends ResponseMsg {
 	public void setUsers(List<User> users) {
 		this.users = users;
 	}
+	@Override
+	public String toString() {
+		return "JoinResponseMsg [gid=" + gid + ", uid=" + uid + ", users="
+				+ users + ", getType()=" + getType() + ", getStatus()="
+				+ getStatus() + "]";
+	}
 	
 }

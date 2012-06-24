@@ -43,6 +43,7 @@ public class TimeoutResponseMsg extends ResponseMsg {
 	@Override
 	public String toString() {
 		return "TimeoutResponseMsg [gid=" + gid + ", word=" + word + ", uid="
-				+ uid + ", nextuid=" + nextuid + "]";
+				+ uid + ", nextuid=" + nextuid + ", getType()=" + getType()
+				+ ", getStatus()=" + getStatus() + "]";
 	}
 }

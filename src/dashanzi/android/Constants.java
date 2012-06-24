@@ -66,5 +66,12 @@ public class Constants {
 		public static final int HELP = 103;
 	}
 
-	public static final int PLAYER_NUM = 3;
+
+	
+	public static class Player {
+		public static final int PLAYER_NUM = 3;
+		public static final int PlAYER_ONE = 0;
+		public static final int PlAYER_TWO = 1;
+		public static final int PlAYER_THREE = 2;
+	}
 }

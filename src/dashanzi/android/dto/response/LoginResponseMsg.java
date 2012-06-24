@@ -16,4 +16,11 @@ public class LoginResponseMsg extends ResponseMsg{
 		this.groupInfoList = groupInfoList;
 	}
 
+	@Override
+	public String toString() {
+		return "LoginResponseMsg [groupInfoList=" + groupInfoList
+				+ ", getType()=" + getType() + ", getStatus()=" + getStatus()
+				+ "]";
+	}
+
 }

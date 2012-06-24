@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,6 +53,7 @@ public class Login extends Activity implements IMessageHandler {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.i(tag, "......... Login onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 
@@ -91,6 +93,7 @@ public class Login extends Activity implements IMessageHandler {
 		}
 
 		LoginResponseMsg loginRes = (LoginResponseMsg) msg;
+		Log.i(tag, "<<<<--- get LoginResponseMsg = "+ msg.toString());
 		// 终止登陆thread
 		hasLoginResult = true;
 
@@ -110,30 +113,6 @@ public class Login extends Activity implements IMessageHandler {
 		}
 	}
 
-	// test TODO
-	private void testLoginResult() {
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				hasLoginResult = true;
-
-				Intent intent = new Intent();
-				intent.putExtra("name", userName.getText().toString());
-				intent.putExtra("uid", "001");
-				intent.setClass(Login.this, House.class);
-				Login.this.startActivity(intent);
-				Login.this.finish();
-			}
-
-		}.start();
-	}
-
 	/**********************************************************************************************
 	 * 按钮监听
 	 **********************************************************************************************/
@@ -141,7 +120,7 @@ public class Login extends Activity implements IMessageHandler {
 	class MyOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			Log.d("click", "--->> onClickListener !");
+			Log.i(tag, "--->> login btn onClickListener !");
 
 			// 封装loginMsg
 			loginMsg.setType(Constants.Type.LOGIN_REQ);
@@ -157,23 +136,52 @@ public class Login extends Activity implements IMessageHandler {
 				loginMsg.setRememberPassword(false);
 			}
 
+			// 建立连接
+			Log.i(tag, "--->>>> connecting to server");
+			app.setServerIp("210.75.225.158");
+			app.setServerPort(8888);
+			app.connect(new IConnectHandler() {
+				public void handle() {
+
+					// 连接成功后，向服务端发送登陆请求
+					Log.i(tag, "---->>> connect success !! send LogMsg = " + loginMsg.toString());
+					app.sendMessage(loginMsg);
+				}
+			});
+
 			// 显示加载动画
 			initImage(loading_ll);
 			playAnimationThread();
-
-			// 发送登陆请求 TODO，接收登陆响应，成功则跳转至游戏界面，否则提示登陆错误
-			app.sendMessage(loginMsg);
-			// testLoginResult();
 		}
 	}
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			// 在首页监听back键， 点击返回键时完全退出程序
-			Login.this.finish();
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+			builder.setIcon(android.R.drawable.ic_menu_help);
+			builder.setTitle("确定退出游戏吗?");
+
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							//退出
+							Login.this.finish();
+						}
+					});
+
+			builder.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+						}
+					});
+			builder.create().show();
 		}
-		return super.onKeyDown(keyCode, event);
+		return false;
 	}
 
 	/**********************************************************************************************
@@ -192,7 +200,6 @@ public class Login extends Activity implements IMessageHandler {
 				while (!hasLoginResult) {
 					if (runcount < 2) {
 						for (int i = 0; i <= 6; i++) {
-							// Log.d("loading", "loading...");
 							handler.sendEmptyMessage(i);
 							try {
 								Thread.sleep(300);
@@ -308,5 +315,11 @@ public class Login extends Activity implements IMessageHandler {
 		g.setLayoutParams(param2);
 		layout.addView(g);
 		images.add(g);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		app.setCurrentActivity(this);
 	}
 }

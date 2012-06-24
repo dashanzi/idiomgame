@@ -25,7 +25,6 @@ import dashanzi.android.R;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
-import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
@@ -54,6 +53,7 @@ public class House extends ListActivity implements IMessageHandler {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i(tag, ".......... House onCreate! ");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.house);
 		// 0. app
@@ -75,6 +75,7 @@ public class House extends ListActivity implements IMessageHandler {
 		RefreshRequestMsg refreshReq = new RefreshRequestMsg();
 		refreshReq.setType(Constants.Type.REFRESH_REQ);
 		app.sendMessage(refreshReq);
+		Log.i(tag, "--->>> send RefreshRequestMsg =" + refreshReq.toString());
 
 		// 4. 设置快速加入监听
 		quickSelectBtn = (Button) findViewById(R.id.house_quick_select_btn);
@@ -90,6 +91,7 @@ public class House extends ListActivity implements IMessageHandler {
 		if (msg instanceof RefreshResponseMsg) {
 			// refresh response
 			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
+			Log.i(tag, "<<<--- get RefreshResponseMsg = " + msg.toString());
 			// 1. 获得所有房间信息、初始化房间列表
 			List<GroupInfo> groups = refreshRes.getGroupInfoList();
 			for (GroupInfo group : groups) {
@@ -118,7 +120,7 @@ public class House extends ListActivity implements IMessageHandler {
 		} else if (msg instanceof JoinResponseMsg) {
 			JoinResponseMsg joinRes = (JoinResponseMsg) msg;
 
-			Log.e(tag, "===JOIN RESPONSE===" + msg.toString());
+			Log.i(tag, "<<<--- get JoinResponseMsg = " + msg.toString());
 
 			if (joinRes.getStatus().equals(Constants.Response.SUCCESS)) {
 				// 页面转向Game房间
@@ -135,17 +137,17 @@ public class House extends ListActivity implements IMessageHandler {
 		}
 	}
 
-	// 用于生成test数据 TODO
-	private void getHouseList() {
-		for (int i = 0; i < 20; i++) {
-			HashMap<String, Object> houseInfo = new HashMap<String, Object>();
-			houseInfo.put(Constants.HouseList.HEADER_IMAGE,
-					R.drawable.house_list_image);
-			houseInfo.put(Constants.HouseList.HOUSE_NUM, i + 10 + "");
-			houseInfo.put(Constants.HouseList.HOUSE_REST_PLACE_NUM, "3/3");
-			houseList.add(houseInfo);
-		}
-	}
+	// // 用于生成test数据 TODO
+	// private void getHouseList() {
+	// for (int i = 0; i < 20; i++) {
+	// HashMap<String, Object> houseInfo = new HashMap<String, Object>();
+	// houseInfo.put(Constants.HouseList.HEADER_IMAGE,
+	// R.drawable.house_list_image);
+	// houseInfo.put(Constants.HouseList.HOUSE_NUM, i + 10 + "");
+	// houseInfo.put(Constants.HouseList.HOUSE_REST_PLACE_NUM, "3/3");
+	// houseList.add(houseInfo);
+	// }
+	// }
 
 	/********************************************************************************************************************************
 	 * 按键监听
@@ -157,6 +159,7 @@ public class House extends ListActivity implements IMessageHandler {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 
+			@SuppressWarnings("unchecked")
 			HashMap<String, Object> item = (HashMap<String, Object>) houseListAdapter
 					.getItem(arg2);
 			gid_selected = (String) item.get(Constants.HouseList.HOUSE_NUM);
@@ -228,7 +231,7 @@ public class House extends ListActivity implements IMessageHandler {
 			AlertDialog.Builder builder = new AlertDialog.Builder(House.this);
 
 			builder.setIcon(android.R.drawable.ic_dialog_alert);
-			builder.setTitle("确定退出游戏吗?");
+			builder.setTitle("确定退出大厅吗?");
 
 			builder.setPositiveButton("确定",
 					new DialogInterface.OnClickListener() {
@@ -237,16 +240,22 @@ public class House extends ListActivity implements IMessageHandler {
 								int whichButton) {
 
 							// 1. 发送退出游戏通知
-							Log.i(tag, "--------------->>> Logout !!!!");
 							LogoutNotifyMsg logout = new LogoutNotifyMsg();
 							logout.setType(Constants.Type.LOGOUT_NOTIFY);
 							logout.setName(userName);
 							app.sendMessage(logout);
-
+							Log.i(tag, "--->>> send  LogoutNotifyMsg = " + logout.toString());
+							
+							//回到新的登陆页面
+							startActivity(new Intent(House.this, Login.class));
+							
 							// 2. finish activity
 							House.this.finish();
 
+							//3. 断开tcp连接
 							app.disconnect();
+							
+							
 						}
 					});
 
@@ -268,12 +277,11 @@ public class House extends ListActivity implements IMessageHandler {
 		joinReq.setGid(gid_selected);
 		joinReq.setName(userName);
 		app.sendMessage(joinReq);
-
+		Log.i(tag, "--->>> send JoinRequestMsg = " + joinReq.toString());
 	}
-	
+
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		app.setCurrentActivity(this);
 	}

@@ -19,4 +19,10 @@ public class QuitNotifyMsg extends RequestMsg {
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
+	@Override
+	public String toString() {
+		return "QuitNotifyMsg [gid=" + gid + ", uid=" + uid + ", getType()="
+				+ getType() + "]";
+	}
+	
 }

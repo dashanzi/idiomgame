@@ -15,4 +15,12 @@ public class RefreshResponseMsg extends ResponseMsg {
 	public void setGroupInfoList(List<GroupInfo> groupInfoList) {
 		this.groupInfoList = groupInfoList;
 	}
+
+	@Override
+	public String toString() {
+		return "RefreshResponseMsg [groupInfoList=" + groupInfoList
+				+ ", getType()=" + getType() + ", getStatus()=" + getStatus()
+				+ "]";
+	}
+
 }

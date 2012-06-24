@@ -77,6 +77,7 @@ public class IdiomGameApp extends Application {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.test");
 		IdiomGameApp.this.registerReceiver(receiver, filter);
+		Log.i("==APP==", "receiver registered");
 
 	}
 

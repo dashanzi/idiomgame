@@ -30,4 +30,12 @@ public class LoginRequestMsg extends RequestMsg{
 	public void setRememberPassword(boolean isRememberPassword) {
 		this.isRememberPassword = isRememberPassword;
 	}
+
+	@Override
+	public String toString() {
+		return "LoginRequestMsg [name=" + name + ", password=" + password
+				+ ", isRememberPassword=" + isRememberPassword + ", getType()="
+				+ getType() + "]";
+	}
+	
 }

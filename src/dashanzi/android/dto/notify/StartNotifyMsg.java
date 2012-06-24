@@ -45,5 +45,11 @@ public class StartNotifyMsg extends RequestMsg{
 	public void setWord(String word) {
 		this.word = word;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "StartNotifyMsg [gid=" + gid + ", users=" + users
+				+ ", firstuid=" + firstuid + ", word=" + word + ", getType()="
+				+ getType() + "]";
+	}
 }

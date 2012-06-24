@@ -16,6 +16,11 @@ public class TimeoutRequestMsg extends RequestMsg{
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
+	@Override
+	public String toString() {
+		return "TimeoutRequestMsg [gid=" + gid + ", uid=" + uid
+				+ ", getType()=" + getType() + "]";
+	}
 	
 
 }

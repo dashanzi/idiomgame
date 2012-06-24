@@ -48,4 +48,12 @@ public class InputResponseMsg extends ResponseMsg {
 	public void setNextUid(String nextUid) {
 		this.nextUid = nextUid;
 	}
+
+	@Override
+	public String toString() {
+		return "InputResponseMsg [gid=" + gid + ", word=" + word + ", answer="
+				+ answer + ", uid=" + uid + ", nextUid=" + nextUid
+				+ ", getType()=" + getType() + ", getStatus()=" + getStatus()
+				+ "]";
+	}
 }

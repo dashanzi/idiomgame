@@ -16,4 +16,10 @@ public class JoinRequestMsg extends RequestMsg {
 	public void setName(String name) {
 		this.name = name;
 	}
+	@Override
+	public String toString() {
+		return "JoinRequestMsg [gid=" + gid + ", name=" + name + ", getType()="
+				+ getType() + "]";
+	}
+	
 }

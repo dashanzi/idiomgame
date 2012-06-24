@@ -10,4 +10,11 @@ public class RefreshRoomRequestMsg extends RequestMsg {
 	public void setGid(String gid) {
 		this.gid = gid;
 	}
+
+	@Override
+	public String toString() {
+		return "RefreshRoomRequestMsg [gid=" + gid + ", getType()=" + getType()
+				+ "]";
+	}
+
 }

@@ -17,6 +17,9 @@ public class RefreshRoomResponseMsg extends ResponseMsg {
 
 	@Override
 	public String toString() {
-		return "RefreshRoomResponseMsg [users=" + users + "]";
+		return "RefreshRoomResponseMsg [users=" + users + ", getType()="
+				+ getType() + ", getStatus()=" + getStatus() + "]";
 	}
+
+
 }
