@@ -14,12 +14,14 @@ import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
+import dashanzi.android.dto.response.GetUserInfoResponseMsg;
 import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.LoginResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
 import dashanzi.android.dto.response.RefreshRoomResponseMsg;
+import dashanzi.android.dto.response.RegisterResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 
 public class Json2BeansUtil {
@@ -28,7 +30,9 @@ public class Json2BeansUtil {
 		IMessage msg = null;
 		String type = null;
 		type = getType(jsonStr);
-		if (type.equals(Constants.Type.LOGIN_RESP)) {
+		if (type.equals(Constants.Type.REGISTER_RESP)) {
+			msg = getRegisterResponseFromJsonStr(jsonStr);
+		} else if (type.equals(Constants.Type.LOGIN_RESP)) {
 			msg = getLoginResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.REFRESH_RESP)) {
 			msg = getRefreshResponseFromJsonStr(jsonStr);
@@ -46,6 +50,8 @@ public class Json2BeansUtil {
 			msg = getRoomNotifyFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.START_NOTIFY)) {
 			msg = getStartNotifyFromJsonStr(jsonStr);
+		} else if (type.equals(Constants.Type.GETUSERINFO_RESP)) {
+			msg = getGetUserInfoResponseFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.QUIT_NOTIFY)) {
 			msg = getQuitNotifyFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.LOGOUT_NOTIFY)) {
@@ -61,6 +67,22 @@ public class Json2BeansUtil {
 		JSONObject dataJson = new JSONObject(jsonStr);
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		return header.getString("type");
+	}
+
+	private static RegisterResponseMsg getRegisterResponseFromJsonStr(
+			String jsonStr) throws JSONException {
+		if (jsonStr == null) {
+			return null;
+		}
+		RegisterResponseMsg result = new RegisterResponseMsg();
+
+		JSONObject dataJson = new JSONObject(jsonStr);
+
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
+
+		return result;
 	}
 
 	/**
@@ -329,6 +351,29 @@ public class Json2BeansUtil {
 			users.add(user);
 		}
 		result.setUsers(users);
+
+		return result;
+	}
+
+	private static GetUserInfoResponseMsg getGetUserInfoResponseFromJsonStr(
+			String jsonStr) throws JSONException {
+		if (jsonStr == null) {
+			return null;
+		}
+
+		GetUserInfoResponseMsg result = new GetUserInfoResponseMsg();
+		JSONObject dataJson = new JSONObject(jsonStr);
+
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
+
+		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+
+		result.setName(body.getString("name"));
+		result.setGender(body.getString("gender"));
+		result.setScore(body.getString("score"));
+		result.setLevel(body.getString("level"));
 
 		return result;
 	}

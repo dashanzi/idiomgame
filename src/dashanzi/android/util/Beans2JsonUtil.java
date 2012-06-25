@@ -7,16 +7,35 @@ import dashanzi.android.Constants;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
+import dashanzi.android.dto.request.GetUserInfoRequestMsg;
 import dashanzi.android.dto.request.HelpRequestMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.LoginRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.request.RefreshRoomRequestMsg;
+import dashanzi.android.dto.request.RegisterRequestMsg;
 import dashanzi.android.dto.request.StartRequestMsg;
 import dashanzi.android.dto.request.TimeoutRequestMsg;
 
 public class Beans2JsonUtil {
+
+	private static String getJsonStrFromRegisterequest(RegisterRequestMsg bean)
+			throws JSONException {
+		JSONObject json = new JSONObject();
+
+		JSONObject header = new JSONObject();
+		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
+		json.put(Constants.JSON.HEADER, header);
+
+		JSONObject body = new JSONObject();
+		body.put("name", bean.getName());
+		body.put("password", bean.getPassword());
+		body.put("gender", bean.getGender());
+		body.put("headerImageId", bean.getHeaderImageId());
+		json.put(Constants.JSON.BODY, body);
+		return json.toString();
+	}
 
 	private static String getJsonStrFromLoginRequest(LoginRequestMsg bean)
 			throws JSONException {
@@ -142,6 +161,21 @@ public class Beans2JsonUtil {
 		return json.toString();
 	}
 
+	private static String getJsonStrFromGetUserInfoRequest(
+			GetUserInfoRequestMsg bean) throws JSONException {
+		JSONObject json = new JSONObject();
+
+		JSONObject header = new JSONObject();
+		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
+		json.put(Constants.JSON.HEADER, header);
+
+		JSONObject body = new JSONObject();
+		body.put("uid", bean.getUid());
+		body.put("gid", bean.getGid());
+		json.put(Constants.JSON.BODY, body);
+		return json.toString();
+	}
+
 	private static String getJsonStrFromQuitNotify(QuitNotifyMsg bean)
 			throws JSONException {
 		JSONObject json = new JSONObject();
@@ -173,7 +207,16 @@ public class Beans2JsonUtil {
 
 	public static String getJsonStr(IMessage msg) {
 		String s = null;
-		if (msg instanceof LoginRequestMsg) {
+		if (msg instanceof RegisterRequestMsg) {
+			try {
+				s = getJsonStrFromRegisterequest((RegisterRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof LoginRequestMsg) {
 			try {
 				s = getJsonStrFromLoginRequest((LoginRequestMsg) msg);
 				s += "\r\n\r\n";
@@ -239,6 +282,15 @@ public class Beans2JsonUtil {
 		} else if (msg instanceof TimeoutRequestMsg) {
 			try {
 				s = getJsonStrFromTimeOutRequest((TimeoutRequestMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof GetUserInfoRequestMsg) {
+			try {
+				s = getJsonStrFromGetUserInfoRequest((GetUserInfoRequestMsg) msg);
 				s += "\r\n\r\n";
 			} catch (JSONException e) {
 				e.printStackTrace();
