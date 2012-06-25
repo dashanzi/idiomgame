@@ -58,7 +58,7 @@ public class Game extends Activity implements IMessageHandler {
 	private final int player1ImageBtnTag = 1;
 	private final int player2ImageBtnTag = 2;
 	private final int player3ImageBtnTag = 3;
-	
+
 	private IdiomGameApp app = null;
 
 	// 游戏是否就绪
@@ -119,7 +119,7 @@ public class Game extends Activity implements IMessageHandler {
 		p1ImageBtn = (ImageButton) findViewById(R.id.game_player_one_header_image);
 		p2ImageBtn = (ImageButton) findViewById(R.id.game_player_two_header_image);
 		p3ImageBtn = (ImageButton) findViewById(R.id.game_player_three_header_image);
-		//设置tag
+		// 设置tag
 		p1ImageBtn.setTag(player1ImageBtnTag);
 		p2ImageBtn.setTag(player2ImageBtnTag);
 		p3ImageBtn.setTag(player3ImageBtnTag);
@@ -154,7 +154,20 @@ public class Game extends Activity implements IMessageHandler {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
+			
+			int tag = (Integer) v.getTag();
+			switch (tag) {
+			case player1ImageBtnTag:
+				
+				break;
+			case player2ImageBtnTag:
+				break;
+			case player3ImageBtnTag:
+				break;
+			default:
+				break;
 
+			}
 		}
 	}
 
