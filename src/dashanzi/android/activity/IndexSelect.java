@@ -101,35 +101,6 @@ public class IndexSelect extends TabActivity {
 		});
 	}
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					IndexSelect.this);
-			builder.setIcon(android.R.drawable.ic_menu_help);
-			builder.setTitle("确定退出游戏吗?");
-
-			builder.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							// 退出
-							IndexSelect.this.finish();
-						}
-					});
-
-			builder.setNegativeButton("取消",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-						}
-					});
-			builder.create().show();
-		}
-		return false;
-	}
 
 	@Override
 	protected void onResume() {

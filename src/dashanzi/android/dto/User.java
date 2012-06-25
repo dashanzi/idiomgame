@@ -6,21 +6,21 @@ public class User {
 	private String name;
 	
 	//add
-	private int gender;//性别
-	private int score;//积分
+	private String gender;//性别
+	private String score;//积分
 	private String headerImageId;//头像id
 	
 	
-	public int getGender() {
+	public String getGender() {
 		return gender;
 	}
-	public void setGender(int gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public int getScore() {
+	public String getScore() {
 		return score;
 	}
-	public void setScore(int score) {
+	public void setScore(String score) {
 		this.score = score;
 	}
 	public String getHeaderImageId() {
@@ -43,6 +43,8 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [uid=" + uid + ", name=" + name + "]";
+		return "User [uid=" + uid + ", name=" + name + ", gender=" + gender
+				+ ", score=" + score + ", headerImageId=" + headerImageId + "]";
 	}
+	
 }

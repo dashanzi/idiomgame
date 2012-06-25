@@ -47,8 +47,13 @@ public class IdiomGameApp extends Application {
 	 * used by all welcome activity
 	 */
 	public void connect(IConnectHandler handler) {
-		this.handler = handler;
-		initService();
+		if (networkService == null) {
+			this.handler = handler;
+			initService();
+		} else {
+			Log.i("==APP==", "service already binded, reusing...");
+			handler.handle();
+		}
 		// connnectService();
 	}
 
@@ -125,18 +130,17 @@ public class IdiomGameApp extends Application {
 	}
 
 	// ------------- setters and getters ----------------------------
-	
 
 	public String getServerIp() {
 		return serverIp;
 	}
 
-
 	public boolean isAboutThreadIsInterrupt() {
 		return aboutThreadIsInterrupt;
 	}
 
-	public synchronized void setAboutThreadIsInterrupt(boolean aboutThreadIsInterrupt) {
+	public synchronized void setAboutThreadIsInterrupt(
+			boolean aboutThreadIsInterrupt) {
 		this.aboutThreadIsInterrupt = aboutThreadIsInterrupt;
 	}
 

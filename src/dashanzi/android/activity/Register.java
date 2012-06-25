@@ -1,8 +1,11 @@
 package dashanzi.android.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -24,7 +27,7 @@ public class Register extends Activity implements IMessageHandler {
 	private EditText name = null;
 	private EditText password = null;
 	private RadioGroup gender = null;
-	private int gender_select = -1;
+	private int gender_select = 0;//默认为man
 	private Button registerBtn = null;
 
 	@Override
@@ -67,6 +70,39 @@ public class Register extends Activity implements IMessageHandler {
 	/*******************************************************************************
 	 * 按钮监听
 	 ******************************************************************************/
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					Register.this);
+			builder.setIcon(android.R.drawable.ic_menu_help);
+			builder.setTitle("确定退出游戏吗?");
+
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// 退出
+							Register.this.finish();
+
+							//3. 断开tcp连接
+							app.disconnect();
+						}
+					});
+
+			builder.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+						}
+					});
+			builder.create().show();
+		}
+		return false;
+	}
+	
 	class MyBtnOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
@@ -83,13 +119,22 @@ public class Register extends Activity implements IMessageHandler {
 				return;
 			}
 			// 封装注册信息，向服务端发送注册请求 
-			RegisterRequestMsg req = new RegisterRequestMsg();
-			req.setName(name.getText().toString());
-			req.setPassword(password.getText().toString());
-			req.setGender(gender_select);
-			req.setType(Constants.Type.REGISTER_REQ);
-			app.sendMessage(req);
-			Log.i(tag, "--->>> send RegisterRequestMsg = " + req.toString());
+			app.setServerIp("210.75.225.158");
+			app.setServerPort(8888);
+			app.connect(new IConnectHandler() {
+				
+				@Override
+				public void handle() {
+					// TODO Auto-generated method stub
+					RegisterRequestMsg req = new RegisterRequestMsg();			
+					req.setName(name.getText().toString());
+					req.setPassword(password.getText().toString());
+					req.setGender(gender_select);
+					req.setType(Constants.Type.REGISTER_REQ);
+					app.sendMessage(req);
+					Log.i(tag, "--->>> send RegisterRequestMsg = " + req.toString());
+				}
+			});
 		}
 	}
 

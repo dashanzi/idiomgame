@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -129,6 +130,39 @@ public class Login extends Activity implements IMessageHandler {
 	/**********************************************************************************************
 	 * 按钮监听
 	 **********************************************************************************************/
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					Login.this);
+			builder.setIcon(android.R.drawable.ic_menu_help);
+			builder.setTitle("确定退出游戏吗?");
+
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							// 退出
+							Login.this.finish();
+
+							//3. 断开tcp连接
+							app.disconnect();
+						}
+					});
+
+			builder.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+						}
+					});
+			builder.create().show();
+		}
+		return false;
+	}
+	
 	// 登陆按钮监听
 	class MyOnClickListener implements OnClickListener {
 		@Override

@@ -251,11 +251,6 @@ public class House extends ListActivity implements IMessageHandler {
 							
 							// 2. finish activity
 							House.this.finish();
-
-							//3. 断开tcp连接
-							app.disconnect();
-							
-							
 						}
 					});
 

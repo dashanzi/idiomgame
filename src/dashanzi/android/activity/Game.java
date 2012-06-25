@@ -41,11 +41,13 @@ import dashanzi.android.dto.User;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
+import dashanzi.android.dto.request.GetUserInfoRequestMsg;
 import dashanzi.android.dto.request.HelpRequestMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.request.RefreshRoomRequestMsg;
 import dashanzi.android.dto.request.StartRequestMsg;
 import dashanzi.android.dto.request.TimeoutRequestMsg;
+import dashanzi.android.dto.response.GetUserInfoResponseMsg;
 import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.RefreshRoomResponseMsg;
@@ -54,10 +56,10 @@ import dashanzi.android.util.ToastUtil;
 
 public class Game extends Activity implements IMessageHandler {
 
-	private static final String tag = "Game";
-	private final int player1ImageBtnTag = 1;
-	private final int player2ImageBtnTag = 2;
-	private final int player3ImageBtnTag = 3;
+	private final String tag = "Game";
+	private final int player1ImageBtnTag = 0;// 需要与uid的末尾对应
+	private final int player2ImageBtnTag = 1;
+	private final int player3ImageBtnTag = 2;
 
 	private IdiomGameApp app = null;
 
@@ -148,27 +150,6 @@ public class Game extends Activity implements IMessageHandler {
 		app.sendMessage(req);
 		Log.i(tag, "--->>> send RefreshRoomRequestMsg = " + req.toString());
 
-	}
-
-	class MyOnClickListener implements OnClickListener {
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-			int tag = (Integer) v.getTag();
-			switch (tag) {
-			case player1ImageBtnTag:
-				
-				break;
-			case player2ImageBtnTag:
-				break;
-			case player3ImageBtnTag:
-				break;
-			default:
-				break;
-
-			}
-		}
 	}
 
 	/************************************************************************************************************************
@@ -335,7 +316,6 @@ public class Game extends Activity implements IMessageHandler {
 		if ((msg instanceof TimeoutResponseMsg)
 				|| (msg instanceof HelpResponseMsg)) {
 			// 判断游戏是否就绪
-			// 判断游戏是否就绪
 			if (!this.isGameReady()) {
 				Log.e(tag,
 						"revieve TimeoutResponseMsg || HelpResponseMsg, but game is not ready !!");
@@ -373,6 +353,22 @@ public class Game extends Activity implements IMessageHandler {
 
 			// 判断是否是自己出牌
 			checkPlayOrder(currentUid, myUid);
+		}
+
+		// 查看玩家信息
+		if (msg instanceof GetUserInfoResponseMsg) {
+			// 判断游戏是否就绪
+			if (!this.isGameReady()) {
+				Log.e(tag,
+						"revieve TimeoutResponseMsg || HelpResponseMsg, but game is not ready !!");
+				ToastUtil.toast(this, "不在游戏中,禁止查看!",
+						android.R.drawable.ic_dialog_alert);
+				return;
+			}
+			GetUserInfoResponseMsg resp = (GetUserInfoResponseMsg)msg;
+			Log.i(tag, "<<<---  GetUserInfoResponseMsg  = " + resp.toString());
+			
+			Log.e(tag, resp.toString());
 		}
 	}
 
@@ -712,6 +708,22 @@ public class Game extends Activity implements IMessageHandler {
 	/********************************************************************************************************************************
 	 * 按键监听
 	 ********************************************************************************************************************************/
+
+	// 玩家头像btn监听
+	class MyOnClickListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			GetUserInfoRequestMsg req = new GetUserInfoRequestMsg();
+			req.setType(Constants.Type.GETUSERINFO_REQ);
+			req.setGid(gid);
+
+			int tag = (Integer) v.getTag();
+			req.setUid(positionUidMap.get(tag));// tag与uid末尾对应
+			app.sendMessage(req);
+			Log.i(Game.this.tag, "--->>> send GetUserInfoRequestMsg = " + req.toString());
+		}
+	}
+
 	// GridView监听
 	class MyOnItemClickListener implements OnItemClickListener {
 		@Override
