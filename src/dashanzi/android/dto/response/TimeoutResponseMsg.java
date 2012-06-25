@@ -1,13 +1,17 @@
 package dashanzi.android.dto.response;
 
+import java.util.List;
+
+import dashanzi.android.dto.User;
+
 public class TimeoutResponseMsg extends ResponseMsg {
 
 	private String gid;
 	private String word;
 	private String uid;
 	private String nextuid;
+	private List<User> users;
 
-	
 	public String getGid() {
 		return gid;
 	}
@@ -40,10 +44,20 @@ public class TimeoutResponseMsg extends ResponseMsg {
 		this.nextuid = nextuid;
 	}
 
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
 	@Override
 	public String toString() {
 		return "TimeoutResponseMsg [gid=" + gid + ", word=" + word + ", uid="
 				+ uid + ", nextuid=" + nextuid + ", getType()=" + getType()
 				+ ", getStatus()=" + getStatus() + "]";
 	}
+
 }

@@ -46,6 +46,8 @@ public class StartNotifyMsg extends RequestMsg{
 		this.word = word;
 	}
 
+	
+	
 	@Override
 	public String toString() {
 		return "StartNotifyMsg [gid=" + gid + ", users=" + users

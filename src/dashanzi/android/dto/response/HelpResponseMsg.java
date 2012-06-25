@@ -1,10 +1,15 @@
 package dashanzi.android.dto.response;
 
+import java.util.List;
+
+import dashanzi.android.dto.User;
+
 public class HelpResponseMsg extends ResponseMsg {
 	private String gid;
 	private String uid;
 	private String word;
 	private String nextUid;
+	private List<User> users;
 
 	public String getGid() {
 		return gid;
@@ -36,6 +41,14 @@ public class HelpResponseMsg extends ResponseMsg {
 
 	public void setNextUid(String nextUid) {
 		this.nextUid = nextUid;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 	@Override

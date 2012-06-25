@@ -152,6 +152,7 @@ public class Json2BeansUtil {
 			User user = new User();
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -180,6 +181,21 @@ public class Json2BeansUtil {
 		result.setUid(body.getString("uid"));
 		result.setNextUid(body.getString("nextuid"));
 
+		// List<User>
+		JSONArray listJson = body.getJSONArray("users");
+		List<User> users = new ArrayList<User>();
+
+		for (int i = 0; i < listJson.length(); i++) {
+
+			JSONObject userJson = listJson.optJSONObject(i);
+			User user = new User();
+			user.setUid(userJson.getString("uid"));
+			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
+			users.add(user);
+		}
+		result.setUsers(users);
+
 		return result;
 	}
 
@@ -202,6 +218,21 @@ public class Json2BeansUtil {
 		result.setWord(body.getString("word"));
 		result.setUid(body.getString("uid"));
 		result.setNextUid(body.getString("nextuid"));
+
+		// List<User>
+		JSONArray listJson = body.getJSONArray("users");
+		List<User> users = new ArrayList<User>();
+
+		for (int i = 0; i < listJson.length(); i++) {
+
+			JSONObject userJson = listJson.optJSONObject(i);
+			User user = new User();
+			user.setUid(userJson.getString("uid"));
+			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
+			users.add(user);
+		}
+		result.setUsers(users);
 
 		return result;
 	}
@@ -230,6 +261,7 @@ public class Json2BeansUtil {
 			User user = new User();
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -307,6 +339,7 @@ public class Json2BeansUtil {
 			User user = new User();
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -348,6 +381,7 @@ public class Json2BeansUtil {
 			User user = new User();
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -404,6 +438,21 @@ public class Json2BeansUtil {
 		result.setWord(body.getString("word"));
 		result.setUid(body.getString("uid"));
 		result.setNextuid(body.getString("nextuid"));
+
+		// List<User>
+		JSONArray listJson = body.getJSONArray("users");
+		List<User> users = new ArrayList<User>();
+
+		for (int i = 0; i < listJson.length(); i++) {
+
+			JSONObject userJson = listJson.optJSONObject(i);
+			User user = new User();
+			user.setUid(userJson.getString("uid"));
+			user.setName(userJson.getString("name"));
+			user.setScore(userJson.getString("score"));
+			users.add(user);
+		}
+		result.setUsers(users);
 
 		return result;
 	}
