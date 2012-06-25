@@ -61,6 +61,8 @@ public class Constants {
 		public static final String TIMEOUT_RESP = "TIMEOUT_RESP";
 		public static final String QUIT_NOTIFY = "QUIT_NOTIFY";
 		public static final String LOGOUT_NOTIFY = "LOGOUT_NOTIFY";
+		public static final String GETUSERINFO_REQ = "GETUSERINFO_REQ";
+		public static final String GETUSERINFO_RESP = "GETUSERINFO_RESP";
 	}
 
 	public static class CheckResultType {
