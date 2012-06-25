@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <TextView
+            android:id="@+id/about_title_tv"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text=""
+            android:textSize="15dip" 
+            android:background="@drawable/about_title_background"/>
+
+        <RelativeLayout
+            android:id="@+id/about_frame_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/about_title_tv" 
+            android:background="@drawable/about_frame_background">
+
+            <TextView 
+                android:id="@+id/about_frame_top"
+                android:layout_width="fill_parent"
+                android:layout_height="32dip"
+                android:layout_alignParentLeft="true"
+                />
+            <TextView 
+                android:id="@+id/about_frame_bottom"
+                android:layout_width="fill_parent"
+                android:layout_height="32dip"
+                android:layout_alignParentBottom="true"
+                />
+            <TextView 
+                android:id="@+id/about_frame_left"
+                android:layout_width="18dip"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                />
+            <TextView 
+                android:id="@+id/about_frame_right"
+                android:layout_width="18dip"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                />
+            
+            <RelativeLayout
+                android:id="@+id/viewId"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                >
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

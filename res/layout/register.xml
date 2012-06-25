@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/father"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/game_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="350dip" >
+
+            <RelativeLayout
+                android:id="@+id/register_input_area"
+                android:layout_width="280dip"
+                android:layout_height="240dip"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/login_input_area_background" >
+
+                <LinearLayout
+                    android:layout_width="240dip"
+                    android:layout_height="200dip"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="100dip"
+                        android:orientation="horizontal" >
+
+                        <LinearLayout
+                            android:layout_width="80dip"
+                            android:layout_height="fill_parent"
+                            android:background="@drawable/login_input_area_logo_background"
+                            android:orientation="vertical" >
+
+                            <ImageView
+                                android:layout_width="fill_parent"
+                                android:layout_height="80dip"
+                                android:layout_gravity="center_horizontal"
+                                android:src="@drawable/logo_in_login" />
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="20dip"
+                                android:gravity="center_horizontal"
+                                android:text="@string/login_input_area_logo_text"
+                                android:textColor="@android:color/white" />
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:layout_width="160dip"
+                            android:layout_height="fill_parent"
+                            android:paddingLeft="10dip" >
+
+                            <LinearLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="48dip"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentTop="true"
+                                android:orientation="horizontal" >
+
+                                <TextView
+                                    android:layout_width="42dip"
+                                    android:layout_height="50dip"
+                                    android:text="@string/login_input_area_username"
+                                    android:textColor="@android:color/white" />
+
+                                <EditText
+                                    android:id="@+id/register_edittext_username"
+                                    android:layout_width="108dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="@android:drawable/edit_text"
+                                    android:padding="5dip"
+                                    android:singleLine="true"
+                                    android:textColor="@android:color/black" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="fill_parent"
+                                android:layout_height="48dip"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentLeft="true"
+                                android:orientation="horizontal" >
+
+                                <TextView
+                                    android:layout_width="42dip"
+                                    android:layout_height="50dip"
+                                    android:text="@string/login_input_area_password"
+                                    android:textColor="@android:color/white" />
+
+                                <EditText
+                                    android:id="@+id/register_edittext_password"
+                                    android:layout_width="108dip"
+                                    android:layout_height="fill_parent"
+                                    android:background="@android:drawable/edit_text"
+                                    android:padding="5dip"
+                                    android:password="true"
+                                    android:singleLine="true"
+                                    android:textColor="@android:color/black" />
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent" >
+
+                        <RadioGroup
+                            android:id="@+id/register_gender"
+                            android:layout_width="100dip"
+                            android:layout_height="100dip"
+                            android:paddingLeft="5dip" >
+
+                            <RadioButton
+                                android:id="@+id/register_gender_man"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="男"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold" />
+
+                            <RadioButton
+                                android:id="@+id/register_gender_female"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="女"
+                                android:textColor="@android:color/black"
+                                android:textStyle="bold" />
+
+                        </RadioGroup>
+
+                        <Button
+                            android:id="@+id/register_button_register"
+                            android:layout_width="120dip"
+                            android:layout_height="50dip"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:background="@android:drawable/btn_default"
+                            android:gravity="center"
+                            android:text="@string/register_button_register_text"
+                            android:textColor="@android:color/black" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/loading_linear_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

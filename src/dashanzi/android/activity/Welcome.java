@@ -31,7 +31,7 @@ public class Welcome extends Activity implements IMessageHandler {
 			@Override
 			public void run() {
 				Log.i(tag, "---->>> forward to Login activity...");
-				startActivity(new Intent(Welcome.this, Login.class));
+				startActivity(new Intent(Welcome.this, IndexSelect.class));
 				Welcome.this.finish();
 			}
 

@@ -21,6 +21,7 @@ import dashanzi.android.util.Json2BeansUtil;
 public class IdiomGameApp extends Application {
 	private IMessageHandler currentActivity;
 	private NetworkService networkService;
+	private boolean aboutThreadIsInterrupt = false;
 
 	private String serverIp = "127.0.0.1";
 	private int serverPort = 12345;
@@ -124,9 +125,19 @@ public class IdiomGameApp extends Application {
 	}
 
 	// ------------- setters and getters ----------------------------
+	
 
 	public String getServerIp() {
 		return serverIp;
+	}
+
+
+	public boolean isAboutThreadIsInterrupt() {
+		return aboutThreadIsInterrupt;
+	}
+
+	public synchronized void setAboutThreadIsInterrupt(boolean aboutThreadIsInterrupt) {
+		this.aboutThreadIsInterrupt = aboutThreadIsInterrupt;
 	}
 
 	public IMessageHandler getCurrentActivity() {

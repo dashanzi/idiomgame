@@ -38,6 +38,10 @@ public class Constants {
 
 	public static class Type {
 
+
+		public static final String REGISTER_REQ = "REGISTER_REQ";
+		public static final String REGISTER_RESP = "REGISTER_RESP";
+		
 		public static final String LOGIN_REQ = "LOGIN_REQ";
 		public static final String LOGIN_RESP = "LOGIN_RESP";
 		public static final String REFRESH_REQ = "REFRESH_REQ";

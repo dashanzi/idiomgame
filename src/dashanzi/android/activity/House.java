@@ -247,7 +247,7 @@ public class House extends ListActivity implements IMessageHandler {
 							Log.i(tag, "--->>> send  LogoutNotifyMsg = " + logout.toString());
 							
 							//回到新的登陆页面
-							startActivity(new Intent(House.this, Login.class));
+							startActivity(new Intent(House.this, IndexSelect.class));
 							
 							// 2. finish activity
 							House.this.finish();

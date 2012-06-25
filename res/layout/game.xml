@@ -28,8 +28,8 @@
                     android:id="@+id/game_player_one_title"
                     android:layout_width="fill_parent"
                     android:layout_height="20dip"
-                    android:gravity="center"
                     android:background="@drawable/game_player_list_background"
+                    android:gravity="center"
                     android:text="@string/game_player_one" />
 
                 <ImageButton
@@ -66,7 +66,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:paddingLeft="3dip"
-                            android:text="张三"
+                            android:singleLine="true"
+                            android:text=""
                             android:textColor="@android:color/black"
                             android:textSize="12dip" />
                     </TableRow>
@@ -92,7 +93,8 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:paddingLeft="3dip"
-                            android:text="100"
+                            android:singleLine="true"
+                            android:text=""
                             android:textColor="@android:color/black"
                             android:textSize="12dip" />
                     </TableRow>
@@ -137,10 +139,8 @@
                     android:id="@+id/game_idiom_check_image"
                     android:layout_width="60dip"
                     android:layout_height="60dip"
-                    android:gravity="center"
-                    />
+                    android:gravity="center" />
             </RelativeLayout>
-            
         </RelativeLayout>
 
         <RelativeLayout
@@ -177,8 +177,8 @@
                             android:id="@+id/game_player_two_title"
                             android:layout_width="fill_parent"
                             android:layout_height="20dip"
-                            android:gravity="center"
                             android:background="@drawable/game_player_list_background"
+                            android:gravity="center"
                             android:text="@string/game_player_two" />
 
                         <ImageButton
@@ -213,7 +213,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:paddingLeft="3dip"
-                                    android:text="李四"
+                                    android:singleLine="true"
+                                    android:text=""
                                     android:textColor="@android:color/black"
                                     android:textSize="12dip" />
                             </TableRow>
@@ -239,7 +240,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:paddingLeft="3dip"
-                                    android:text="90"
+                                    android:singleLine="true"
+                                    android:text=""
                                     android:textColor="@android:color/black"
                                     android:textSize="12dip" />
                             </TableRow>
@@ -267,8 +269,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
-                        android:text=""
                         android:gravity="center"
+                        android:text=""
                         android:textColor="@android:color/black"
                         android:textSize="40dip" />
                 </RelativeLayout>
@@ -292,8 +294,8 @@
                             android:id="@+id/game_player_three_title"
                             android:layout_width="fill_parent"
                             android:layout_height="20dip"
-                            android:gravity="center"
                             android:background="@drawable/game_player_list_background"
+                            android:gravity="center"
                             android:text="@string/game_player_three" />
 
                         <ImageButton
@@ -328,7 +330,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:paddingLeft="3dip"
-                                    android:text="王五"
+                                    android:singleLine="true"
+                                    android:text=""
                                     android:textColor="@android:color/black"
                                     android:textSize="12dip" />
                             </TableRow>
@@ -354,7 +357,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:paddingLeft="3dip"
-                                    android:text="80"
+                                    android:singleLine="true"
+                                    android:text=""
                                     android:textColor="@android:color/black"
                                     android:textSize="12dip" />
                             </TableRow>
@@ -384,9 +388,8 @@
                     android:layout_width="240dip"
                     android:layout_height="40dip"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    >
-
+                    android:layout_centerVertical="true" >
+
                     <TextView
                         android:id="@+id/game_idiom_write_text"
                         android:layout_width="50dip"
@@ -394,7 +397,7 @@
                         android:layout_alignParentLeft="true"
                         android:background="@drawable/game_write_pen"
                         android:gravity="center_vertical"
-                        android:paddingLeft="10dip"/>
+                        android:paddingLeft="10dip" />
 
                     <EditText
                         android:id="@+id/game_idiom_edit_text"
@@ -402,11 +405,9 @@
                         android:layout_height="fill_parent"
                         android:layout_alignParentRight="true"
                         android:layout_toRightOf="@+id/game_idiom_write_text"
-                        android:gravity="center_vertical"
                         android:focusable="false"
-                        >
+                        android:gravity="center_vertical" >
                     </EditText>
-
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>

@@ -29,7 +29,7 @@ public class Beans2JsonUtil {
 
 		JSONObject body = new JSONObject();
 		body.put("name", bean.getName());
-		body.put("possword", bean.getPassword());
+		body.put("password", bean.getPassword());
 		json.put(Constants.JSON.BODY, body);
 		return json.toString();
 

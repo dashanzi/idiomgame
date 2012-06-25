@@ -1,7 +1,9 @@
 package dashanzi.android.activity;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -18,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
@@ -52,6 +55,10 @@ import dashanzi.android.util.ToastUtil;
 public class Game extends Activity implements IMessageHandler {
 
 	private static final String tag = "Game";
+	private final int player1ImageBtnTag = 1;
+	private final int player2ImageBtnTag = 2;
+	private final int player3ImageBtnTag = 3;
+	
 	private IdiomGameApp app = null;
 
 	// 游戏是否就绪
@@ -79,6 +86,10 @@ public class Game extends Activity implements IMessageHandler {
 	private ImageView idiom_check_iv;// 成语词条正误标识图片
 	private TextView clock_show_tv;// 显示倒计时内容的tv
 	private EditText idiom_write_et;// 录入成语词条的et
+	private ImageButton p1ImageBtn;
+	private ImageButton p2ImageBtn;
+	private ImageButton p3ImageBtn;
+
 	private GridView configGrid;// 按钮gridview
 	private String configData[] = { "退出", "提交", "锦囊" };
 
@@ -105,6 +116,17 @@ public class Game extends Activity implements IMessageHandler {
 		idiom_check_iv = (ImageView) findViewById(R.id.game_idiom_check_image);
 		clock_show_tv = (TextView) findViewById(R.id.clock_value);
 		idiom_write_et = (EditText) findViewById(R.id.game_idiom_edit_text);
+		p1ImageBtn = (ImageButton) findViewById(R.id.game_player_one_header_image);
+		p2ImageBtn = (ImageButton) findViewById(R.id.game_player_two_header_image);
+		p3ImageBtn = (ImageButton) findViewById(R.id.game_player_three_header_image);
+		//设置tag
+		p1ImageBtn.setTag(player1ImageBtnTag);
+		p2ImageBtn.setTag(player2ImageBtnTag);
+		p3ImageBtn.setTag(player3ImageBtnTag);
+		p1ImageBtn.setOnClickListener(new MyOnClickListener());
+		p2ImageBtn.setOnClickListener(new MyOnClickListener());
+		p3ImageBtn.setOnClickListener(new MyOnClickListener());
+
 		// 配置页gridview的设置
 		configGrid = (GridView) findViewById(R.id.game_gridview);
 		configGrid.setNumColumns(configData.length);
@@ -128,6 +150,14 @@ public class Game extends Activity implements IMessageHandler {
 
 	}
 
+	class MyOnClickListener implements OnClickListener {
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+
+		}
+	}
+
 	/************************************************************************************************************************
 	 * Logic Action
 	 ************************************************************************************************************************/
@@ -140,8 +170,10 @@ public class Game extends Activity implements IMessageHandler {
 	int[] playerHeaderArray = { R.id.game_player_one_header_image,
 			R.id.game_player_two_header_image,
 			R.id.game_player_three_header_image };
-	//TODO 
-	int[] headerImageArray ={R.drawable.player_1,R.drawable.player_2,R.drawable.player_3};
+	// TODO
+	int[] headerImageArray = { R.drawable.player_1, R.drawable.player_2,
+			R.drawable.player_3 };
+	Map<Integer, String> positionUidMap = new HashMap<Integer, String>();
 
 	@Override
 	public void onMesssageReceived(IMessage msg) {
@@ -393,21 +425,27 @@ public class Game extends Activity implements IMessageHandler {
 			ImageButton headerImage = (ImageButton) findViewById(playerHeaderArray[i]);
 			headerImage
 					.setImageResource(R.drawable.game_player_space_header_image);
+
+			// 清空map
+			positionUidMap.clear();
 		}
 
 		// 2. 重新显示用户信息
 		for (User user : userList) {
 			String tempUid = user.getUid();
 			String index = user.getUid().substring(tempUid.length() - 1);
+			int position = Integer.parseInt(index);
 
 			// 用户名
-			TextView playerName = (TextView) findViewById(playerNameArray[Integer
-					.parseInt(index)]);
+			TextView playerName = (TextView) findViewById(playerNameArray[position]);
 			playerName.setText(user.getName());
-			
+
+			// 记录imageBtn与uid的关系
+			positionUidMap.put(position, tempUid);
+
 			// 用户头像 TODO
-			ImageButton headerImage = (ImageButton) findViewById(playerHeaderArray[Integer.parseInt(index)]);
-			headerImage.setImageResource(headerImageArray[Integer.parseInt(index)]);
+			ImageButton headerImage = (ImageButton) findViewById(playerHeaderArray[position]);
+			headerImage.setImageResource(headerImageArray[position]);
 		}
 	}
 
@@ -653,7 +691,6 @@ public class Game extends Activity implements IMessageHandler {
 			if (msg.what == 0 && myUid != null && currentUid != null
 					&& myUid.equals(currentUid)) {
 
-				Log.i(tag, "------------>>>>>> time out !! " + "uid = " + myUid);
 				doTimeOutAction();
 			}
 		}
@@ -704,7 +741,7 @@ public class Game extends Activity implements IMessageHandler {
 				Game.this.startActivity(intent);
 			}
 		} else {
-			System.out.println("item is null ");
+			Log.e(tag, "onMenuItemSelected item is null ");
 		}
 
 		return super.onMenuItemSelected(featureId, item);

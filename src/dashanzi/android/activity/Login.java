@@ -1,5 +1,7 @@
 package dashanzi.android.activity;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,14 +14,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,14 +36,16 @@ import dashanzi.android.util.ToastUtil;
 public class Login extends Activity implements IMessageHandler {
 
 	private static final String tag = "Login";
+	private final int configBtnTag = 1;
+	private final int loginBtnTag = 2;
 	private IdiomGameApp app;
 	// 组件
 	private LinearLayout father_ll;// 父linearLayout
 	private LinearLayout loading_ll;// loading_linearLayout，用于显示loading动画
 	private EditText userName = null;
 	private EditText passWord = null;
-	private CheckBox rememberPasswordCheck = null;
 	private Button loginBtn = null;
+	private ImageButton configBtn = null;
 
 	// loading动画
 	private Animation anm;// loading动画
@@ -50,6 +54,8 @@ public class Login extends Activity implements IMessageHandler {
 
 	private LoginRequestMsg loginMsg = new LoginRequestMsg();
 	private boolean hasLoginResult = false;// 是否返回了登陆结果
+	public String serverIp = "210.75.225.158";
+	public int serverPort = 8888;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,16 +65,23 @@ public class Login extends Activity implements IMessageHandler {
 
 		app = (IdiomGameApp) this.getApplication();
 		app.setCurrentActivity(this);
+		app.setAboutThreadIsInterrupt(true);// 终止about thread
 
 		// 获得组件，login relativelayout, 设置透明度
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.login_input_area);
 		rl.getBackground().setAlpha(190);
 		userName = (EditText) findViewById(R.id.login_edittext_username);
 		passWord = (EditText) findViewById(R.id.login_edittext_password);
-		rememberPasswordCheck = (CheckBox) findViewById(R.id.login_checkbox_remember_password);
+
+		// 服务器ip配置监听
+		configBtn = (ImageButton) findViewById(R.id.login_server_ip_config);
+		configBtn.setOnClickListener(new MyOnClickListener());
+		configBtn.setTag(configBtnTag);
+
 		// 设置登陆监听
 		loginBtn = (Button) findViewById(R.id.login_button_login);
 		loginBtn.setOnClickListener(new MyOnClickListener());
+		loginBtn.setTag(loginBtnTag);
 
 		// 预加载loading动画，此时不显示
 		father_ll = (LinearLayout) findViewById(R.id.father_linear_layout);
@@ -93,7 +106,7 @@ public class Login extends Activity implements IMessageHandler {
 		}
 
 		LoginResponseMsg loginRes = (LoginResponseMsg) msg;
-		Log.i(tag, "<<<<--- get LoginResponseMsg = "+ msg.toString());
+		Log.i(tag, "<<<<--- get LoginResponseMsg = " + msg.toString());
 		// 终止登陆thread
 		hasLoginResult = true;
 
@@ -121,67 +134,127 @@ public class Login extends Activity implements IMessageHandler {
 		@Override
 		public void onClick(View v) {
 			Log.i(tag, "--->> login btn onClickListener !");
-
-			// 封装loginMsg
-			loginMsg.setType(Constants.Type.LOGIN_REQ);
-			if (userName != null && userName.getText() != null) {
-				loginMsg.setName(userName.getText().toString());
-			}
-			if (passWord != null && passWord.getText() != null) {
-				loginMsg.setPassword(passWord.getText().toString());
-			}
-			if (rememberPasswordCheck.isChecked()) {
-				loginMsg.setRememberPassword(true);
-			} else {
-				loginMsg.setRememberPassword(false);
-			}
-
-			// 建立连接
-			Log.i(tag, "--->>>> connecting to server");
-			app.setServerIp("210.75.225.158");
-			app.setServerPort(8888);
-			app.connect(new IConnectHandler() {
-				public void handle() {
-
-					// 连接成功后，向服务端发送登陆请求
-					Log.i(tag, "---->>> connect success !! send LogMsg = " + loginMsg.toString());
-					app.sendMessage(loginMsg);
+			int viewTag = (Integer) v.getTag();
+			if (viewTag == loginBtnTag) {
+				// 封装loginMsg
+				loginMsg.setType(Constants.Type.LOGIN_REQ);
+				if (userName != null && userName.getText() != null) {
+					loginMsg.setName(userName.getText().toString());
 				}
-			});
+				if (passWord != null && passWord.getText() != null) {
+					loginMsg.setPassword(passWord.getText().toString());
+				}
 
-			// 显示加载动画
-			initImage(loading_ll);
-			playAnimationThread();
+				// 建立连接
+				Log.i(tag, "--->>>> connecting to server");
+				// app.setServerIp("210.75.225.158");
+				// app.setServerPort(8888);
+				app.setServerIp(getServerIp());
+				app.setServerPort(getServerPort());
+				Log.e(tag, "IP = " + getServerIp() + ": PORT = "
+						+ getServerPort());
+				app.connect(new IConnectHandler() {
+					public void handle() {
+
+						// 连接成功后，向服务端发送登陆请求
+						Log.i(tag, "---->>> connect success !! send LogMsg = "
+								+ loginMsg.toString());
+						app.sendMessage(loginMsg);
+					}
+				});
+
+				// 显示加载动画
+				initImage(loading_ll);
+				playAnimationThread();
+			} else if (viewTag == configBtnTag) {
+
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						Login.this);
+				LayoutInflater factory = LayoutInflater.from(Login.this);
+				View textEntryView = factory.inflate(R.layout.networkconfig,
+						null);
+				builder.setIcon(R.drawable.login_config_image);
+				builder.setTitle("网络配置");
+				builder.setView(textEntryView);
+
+				final EditText serverIpEt = (EditText) textEntryView
+						.findViewById(R.id.config_server_ip_edit_text);
+
+				// 操作
+				builder.setPositiveButton("完成",
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								boolean formatCorrect = true;
+
+								if (serverIpEt == null
+										|| serverIpEt.getText() == null) {
+									Log.e(tag, "ip is null");
+									ToastUtil.toast(Login.this,
+											"Ip形式错误! 参考：210.75.225.158",
+											android.R.drawable.ic_dialog_alert);
+									formatCorrect = false;
+									return;
+								}
+								String temp_ip = serverIpEt.getText()
+										.toString();
+
+								if (!temp_ip.contains(".")) {
+									Log.e(tag, "format error 111 not contains '.' ");
+									ToastUtil.toast(Login.this,
+											"Ip形式错误! 参考：210.75.225.158",
+											android.R.drawable.ic_dialog_alert);
+									formatCorrect = false;
+									return;
+								}
+								
+								//判断是否为4段
+								String temp = temp_ip.replace(".", ":");
+								if(temp.contains(":")){
+									String[] v = temp.split(":");
+									if(v.length!=4){
+										Log.e(tag, "format error 222 not four block");
+										ToastUtil.toast(Login.this,
+												"Ip形式错误! 参考：210.75.225.158",
+												android.R.drawable.ic_dialog_alert);
+										formatCorrect = false;
+										return;
+									}
+								}
+
+								try {
+									InetAddress ip = InetAddress.getByName(temp_ip);
+
+								} catch (UnknownHostException e1) {
+									//ip形式错误
+									e1.printStackTrace();
+									Log.e(tag, "format error 333 ip format error! ");
+									ToastUtil.toast(Login.this,
+											"Ip形式错误! 参考：210.75.225.158",
+											android.R.drawable.ic_dialog_alert);
+									formatCorrect = false;
+									return;
+								}
+
+								if (formatCorrect) {
+									Log.e(tag, "---SET ip =" + temp_ip);
+									Login.this.setServerIp(temp_ip);
+								}
+							}
+						});
+				// 操作
+				builder.setNegativeButton("返回",
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+
+							}
+						});
+				builder.create().show();
+			}
 		}
-	}
-	
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-			builder.setIcon(android.R.drawable.ic_menu_help);
-			builder.setTitle("确定退出游戏吗?");
-
-			builder.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							//退出
-							Login.this.finish();
-						}
-					});
-
-			builder.setNegativeButton("取消",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-						}
-					});
-			builder.create().show();
-		}
-		return false;
 	}
 
 	/**********************************************************************************************
@@ -316,10 +389,32 @@ public class Login extends Activity implements IMessageHandler {
 		layout.addView(g);
 		images.add(g);
 	}
-	
+
 	@Override
 	protected void onResume() {
+		Log.e("login", "onResume");
 		super.onResume();
 		app.setCurrentActivity(this);
+		// stop about thread
+		app.setAboutThreadIsInterrupt(true);
+	}
+
+	/**********************************************************************************************
+	 * getter and setter
+	 **********************************************************************************************/
+	public String getServerIp() {
+		return serverIp;
+	}
+
+	public void setServerIp(String serverIp) {
+		this.serverIp = serverIp;
+	}
+
+	public int getServerPort() {
+		return serverPort;
+	}
+
+	public void setServerPort(int serverPort) {
+		this.serverPort = serverPort;
 	}
 }
