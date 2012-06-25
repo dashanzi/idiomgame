@@ -217,6 +217,7 @@ public class Json2BeansUtil {
 		result.setGid(body.getString("gid"));
 		result.setWord(body.getString("word"));
 		result.setUid(body.getString("uid"));
+		result.setHelpNum(body.getString("helpNum"));
 		result.setNextUid(body.getString("nextuid"));
 
 		// List<User>

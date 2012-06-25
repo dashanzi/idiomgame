@@ -7,6 +7,7 @@ import dashanzi.android.dto.User;
 public class HelpResponseMsg extends ResponseMsg {
 	private String gid;
 	private String uid;
+	private String helpNum;
 	private String word;
 	private String nextUid;
 	private List<User> users;
@@ -56,5 +57,13 @@ public class HelpResponseMsg extends ResponseMsg {
 		return "HelpResponseMsg [gid=" + gid + ", uid=" + uid + ", word="
 				+ word + ", nextUid=" + nextUid + ", getType()=" + getType()
 				+ ", getStatus()=" + getStatus() + "]";
+	}
+
+	public String getHelpNum() {
+		return helpNum;
+	}
+
+	public void setHelpNum(String helpNum) {
+		this.helpNum = helpNum;
 	}
 }
