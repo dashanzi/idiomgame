@@ -132,7 +132,7 @@ public class About extends Activity {
 	
 	@Override
 	protected void onResume() {
-		Log.e("About", "onResume");
+		Log.i("About", "onResume");
 		super.onResume();
 		//再次进入该界面时，重复播放
 		app.setAboutThreadIsInterrupt(false);//开启放映thread

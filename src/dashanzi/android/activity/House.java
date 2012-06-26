@@ -29,6 +29,7 @@ import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
+import dashanzi.android.heartbeat.HeartBeat;
 import dashanzi.android.util.ToastUtil;
 
 public class House extends ListActivity implements IMessageHandler {
@@ -80,6 +81,9 @@ public class House extends ListActivity implements IMessageHandler {
 		// 4. 设置快速加入监听
 		quickSelectBtn = (Button) findViewById(R.id.house_quick_select_btn);
 		quickSelectBtn.setOnClickListener(new MyOnClickListener());
+		
+		//TODO
+		HeartBeat.startHeartBeat(app);
 	}
 
 	/********************************************************************************************************************************
@@ -89,6 +93,9 @@ public class House extends ListActivity implements IMessageHandler {
 	@Override
 	public void onMesssageReceived(IMessage msg) {
 		if (msg instanceof RefreshResponseMsg) {
+			
+			//清空一下
+			houseList.clear();
 			// refresh response
 			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
 			Log.i(tag, "<<<--- get RefreshResponseMsg = " + msg.toString());
@@ -127,6 +134,7 @@ public class House extends ListActivity implements IMessageHandler {
 				Intent intent = new Intent();
 				intent.putExtra("gid", gid_selected);
 				intent.putExtra("uid", joinRes.getUid());
+				intent.putExtra("helpNum", joinRes.getHelpNum());
 				intent.setClass(House.this, Game.class);
 				startActivity(intent);
 			} else {

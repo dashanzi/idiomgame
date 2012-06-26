@@ -1,14 +1,19 @@
 package dashanzi.android.activity;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
+import dashanzi.android.Constants;
 import dashanzi.android.R;
+import dashanzi.android.db.DBUtil;
+import dashanzi.android.db.DatabaseHelper;
 import dashanzi.android.dto.IMessage;
 
 public class Welcome extends Activity implements IMessageHandler {
@@ -25,8 +30,8 @@ public class Welcome extends Activity implements IMessageHandler {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.welcome);
-		
-		//自动跳转至login界面
+
+		// 自动跳转至login界面
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -36,6 +41,9 @@ public class Welcome extends Activity implements IMessageHandler {
 			}
 
 		}, SPLASH_DELAY_TIME);
+
+		// 初始化server ip数据
+		DBUtil.initDB(this);
 	}
 
 	@Override
@@ -46,7 +54,7 @@ public class Welcome extends Activity implements IMessageHandler {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
-	
+
 	@Override
 	public void onMesssageReceived(IMessage msg) {
 		// TODO Auto-generated method stub

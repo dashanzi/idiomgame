@@ -105,21 +105,20 @@ public class Json2BeansUtil {
 		result.setType(header.getString("type"));
 		result.setStatus(header.getString("status"));
 
-		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
-
-		// List<GroupInfo>
-		JSONArray groups = body.getJSONArray("groups");
-		List<GroupInfo> groupList = new ArrayList<GroupInfo>();
-
-		for (int i = 0; i < groups.length(); i++) {
-
-			JSONObject groupJson = groups.optJSONObject(i);
-			GroupInfo group = new GroupInfo();
-			group.setGid(groupJson.getString("gid"));
-			group.setState(groupJson.getString("state"));
-			groupList.add(group);
-		}
-		result.setGroupInfoList(groupList);
+//		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+//		// List<GroupInfo> 
+//		JSONArray groups = body.getJSONArray("groups");
+//		List<GroupInfo> groupList = new ArrayList<GroupInfo>();
+//
+//		for (int i = 0; i < groups.length(); i++) {
+//
+//			JSONObject groupJson = groups.optJSONObject(i);
+//			GroupInfo group = new GroupInfo();
+//			group.setGid(groupJson.getString("gid"));
+//			group.setState(groupJson.getString("state"));
+//			groupList.add(group);
+//		}
+//		result.setGroupInfoList(groupList);
 		return result;
 	}
 

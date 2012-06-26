@@ -107,35 +107,42 @@
                             </LinearLayout>
                         </RelativeLayout>
                     </LinearLayout>
-
+
                     <RelativeLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent" >
 
-                        <RadioGroup
-                            android:id="@+id/register_gender"
-                            android:layout_width="100dip"
-                            android:layout_height="100dip"
-                            android:paddingLeft="5dip" >
-
-                            <RadioButton
-                                android:id="@+id/register_gender_man"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:checked="true"
-                                android:text="男"
-                                android:textColor="@android:color/black"
-                                android:textStyle="bold" />
-
-                            <RadioButton
-                                android:id="@+id/register_gender_female"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:text="女"
-                                android:textColor="@android:color/black"
-                                android:textStyle="bold" />
 
-                        </RadioGroup>
+                        <RelativeLayout
+                            android:layout_width="120dip"
+                            android:layout_height="50dip"
+                            android:layout_alignParentRight="true" >
+
+                            <RadioGroup
+                                android:id="@+id/register_gender"
+                                android:layout_width="fill_parent"
+                                android:layout_height="100dip"
+                                android:orientation="horizontal"
+                                android:paddingLeft="5dip" >
+
+                                <RadioButton
+                                    android:id="@+id/register_gender_man"
+                                    android:layout_width="60dip"
+                                    android:layout_height="wrap_content"
+                                    android:checked="true"
+                                    android:text="男"
+                                    android:textColor="@android:color/black"
+                                    android:textStyle="bold" />
+
+                                <RadioButton
+                                    android:id="@+id/register_gender_female"
+                                    android:layout_width="60dip"
+                                    android:layout_height="wrap_content"
+                                    android:text="女"
+                                    android:textColor="@android:color/black"
+                                    android:textStyle="bold" />
+                            </RadioGroup>
+                        </RelativeLayout>
 
                         <Button
                             android:id="@+id/register_button_register"
@@ -147,6 +154,25 @@
                             android:gravity="center"
                             android:text="@string/register_button_register_text"
                             android:textColor="@android:color/black" />
+
+                        <ImageButton
+                            android:id="@+id/register_server_ip_config"
+                            android:layout_width="40dip"
+                            android:layout_height="40dip"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/login_config_image" />
+                        <TextView
+                            android:layout_width="100dip"
+                            android:layout_height="20dip"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentLeft="true"
+                            android:paddingLeft="5dip"
+                            android:text="网络配置"
+                            android:textColor="@android:color/black"
+                            android:textSize="15dip" />
+
                     </RelativeLayout>
                 </LinearLayout>
             </RelativeLayout>

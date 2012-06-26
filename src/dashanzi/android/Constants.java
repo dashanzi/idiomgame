@@ -71,13 +71,37 @@ public class Constants {
 		public static final int TIME_OUT = 102;
 		public static final int HELP = 103;
 	}
-
-
 	
 	public static class Player {
 		public static final int PLAYER_NUM = 3;
 		public static final int PlAYER_ONE = 0;
 		public static final int PlAYER_TWO = 1;
 		public static final int PlAYER_THREE = 2;
+		
+		public static final int FEMALE = 0;
+		public static final int MAN = 1;
+		
+	}
+	
+	public static class ButtonTag{
+		public static final int SERVER_CONFIG_BTN = 1;
+		public static final int LOGIN_BTN = 2;
+	}
+	
+	public static class DataBase{
+		public static final String DB_NAME = "idiom_game_db";
+		public static final int DB_VERSION = 1;
+		public static final String SERVER_CONFIG_TABLE = "serverConfigTable"; 
+		
+		public static final String ID = "id"; 
+		public static final String VALUE_IP = "ipValue"; 
+		public static final String VALUE_PORT = "portValue"; 
+		public static final String DEFAULT_ID = "123456"; 
+		public static final String DEFAULT_IP = "210.75.225.158"; 
+		public static final int DEFAULT_PORT = 8888; 
+	}
+	
+	public static class HeatBeat{
+		public static final int HEARTBEAT_INTERVAl = 10000;
 	}
 }

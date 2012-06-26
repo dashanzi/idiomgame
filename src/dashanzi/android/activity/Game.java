@@ -1,5 +1,6 @@
 package dashanzi.android.activity;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,21 +68,13 @@ public class Game extends Activity implements IMessageHandler {
 	// 游戏是否就绪
 	private boolean gameReady = false;
 
-	public boolean isGameReady() {
-		return gameReady;
-	}
-
-	public void setGameReady(boolean gameReady) {
-		this.gameReady = gameReady;
-	}
-
 	// gridView
 	private static final int EXIT = 0;
 	private static final int SUBMIT = 1;
 	private static final int HELP = 2;
 
 	// 倒计时秒数
-	private static final int COUNT_DOWN_SECOND = 10;
+	private static final int COUNT_DOWN_SECOND = 60;
 
 	// 组件
 	private RelativeLayout current_player_layout;// 当前活跃玩家layout，背景颜色区别于观看玩家
@@ -101,6 +95,7 @@ public class Game extends Activity implements IMessageHandler {
 	private String currentWord = null;
 	private String myUid = null;
 	private String gid = null;
+	private int helpNum = 0;
 	private GridAdapter gridAdapter;
 
 	@Override
@@ -140,7 +135,9 @@ public class Game extends Activity implements IMessageHandler {
 		Intent intent = this.getIntent();
 		gid = intent.getStringExtra("gid");
 		myUid = intent.getStringExtra("uid");
-		Log.i("uid", myUid);
+		String help_num = intent.getStringExtra("helpNum");
+		helpNum = Integer.parseInt(help_num.trim());
+		
 		this.setTitle("成语接龙" + "-" + gid + "号房间");
 
 		// 3. 向服务端发送刷新房间信息请求
@@ -161,6 +158,8 @@ public class Game extends Activity implements IMessageHandler {
 			R.id.game_player_two_layout, R.id.game_player_three_layout };
 	int[] playerNameArray = { R.id.game_player_one_name,
 			R.id.game_player_two_name, R.id.game_player_three_name };
+	int[] playerScoreArray = { R.id.game_player_one_score,
+			R.id.game_player_two_score, R.id.game_player_three_score };
 	int[] playerHeaderArray = { R.id.game_player_one_header_image,
 			R.id.game_player_two_header_image,
 			R.id.game_player_three_header_image };
@@ -302,6 +301,9 @@ public class Game extends Activity implements IMessageHandler {
 				ToastUtil.showIdiomToast(this, answer, getLastUid(currentUid));
 			}
 
+			// 显示玩家信息
+			showPlayerInfo(inputRes.getUsers());
+
 			// 成语显示区域显示当前成语
 			showIdiomThread(2000, currentWord);
 
@@ -315,6 +317,10 @@ public class Game extends Activity implements IMessageHandler {
 		// 超时响应
 		if ((msg instanceof TimeoutResponseMsg)
 				|| (msg instanceof HelpResponseMsg)) {
+
+			// 玩家信息
+			List<User> users = new ArrayList<User>();
+
 			// 判断游戏是否就绪
 			if (!this.isGameReady()) {
 				Log.e(tag,
@@ -329,6 +335,7 @@ public class Game extends Activity implements IMessageHandler {
 				Log.i(tag, "<<<---  TimeoutResponseMsg  = " + resp.toString());
 				currentWord = resp.getWord();
 				currentUid = resp.getNextuid();
+				users = resp.getUsers();
 				// 显示超时
 				idiomCheckThread(Constants.CheckResultType.TIME_OUT);
 				// 冒泡上一个玩家超时
@@ -338,12 +345,17 @@ public class Game extends Activity implements IMessageHandler {
 				Log.i(tag, "<<<---  HelpResponseMsg  = " + resp.toString());
 				currentWord = resp.getWord();
 				currentUid = resp.getNextUid();
-
+				users = resp.getUsers();
+				
 				// 显示使用锦囊
 				idiomCheckThread(Constants.CheckResultType.HELP);
-				// 冒泡上一个玩家超时
+				// 冒泡上一个玩家使用锦囊
 				ToastUtil.showIdiomToast(this, "使用锦囊!", getLastUid(currentUid));
+				
 			}
+
+			// 显示玩家信息
+			showPlayerInfo(users);
 
 			// 显示word
 			showIdiomThread(0, currentWord);
@@ -365,10 +377,46 @@ public class Game extends Activity implements IMessageHandler {
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
-			GetUserInfoResponseMsg resp = (GetUserInfoResponseMsg)msg;
+			GetUserInfoResponseMsg resp = (GetUserInfoResponseMsg) msg;
 			Log.i(tag, "<<<---  GetUserInfoResponseMsg  = " + resp.toString());
+
+			if(resp.getStatus().equals(Constants.Response.FAILED)){
+				Log.e(tag, " GetUserInfoResponseMsg failed ");
+				return;
+			}
 			
-			Log.e(tag, resp.toString());
+			//对话框显示玩家信息
+			AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
+			LayoutInflater factory = LayoutInflater.from(Game.this);
+			View textEntryView = factory.inflate(R.layout.userinfo, null);
+			builder.setIcon(android.R.drawable.ic_dialog_info);
+			builder.setTitle("玩家信息");
+			builder.setView(textEntryView);
+			
+			TextView name_tv = (TextView) textEntryView.findViewById(R.id.user_name_show_tv);
+			TextView gender_tv = (TextView) textEntryView.findViewById(R.id.user_gender_show_tv);
+			TextView score_tv = (TextView) textEntryView.findViewById(R.id.user_score_show_tv);
+			TextView level_tv = (TextView) textEntryView.findViewById(R.id.user_level_show_tv);
+			name_tv.setText(resp.getName());
+			if(resp.getGender().equals(Constants.Player.MAN+"")){
+				gender_tv.setText("男");
+			}else if(resp.getGender().equals(Constants.Player.FEMALE+"")){
+				gender_tv.setText("女");
+			}else{
+				gender_tv.setText("?");
+			}
+			score_tv.setText(resp.getScore());
+			level_tv.setText(resp.getLevel());
+			
+			builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					// do nothing
+				}
+			});
+			//显示对话框
+			builder.create().show();
 		}
 	}
 
@@ -430,6 +478,10 @@ public class Game extends Activity implements IMessageHandler {
 			// 用户名
 			TextView playerName = (TextView) findViewById(playerNameArray[i]);
 			playerName.setText(" ");
+			// 积分
+			TextView playerScore = (TextView) findViewById(playerScoreArray[i]);
+			playerScore.setText(" ");
+
 			// 头像
 			ImageButton headerImage = (ImageButton) findViewById(playerHeaderArray[i]);
 			headerImage
@@ -448,6 +500,10 @@ public class Game extends Activity implements IMessageHandler {
 			// 用户名
 			TextView playerName = (TextView) findViewById(playerNameArray[position]);
 			playerName.setText(user.getName());
+
+			// 积分
+			TextView playerScore = (TextView) findViewById(playerScoreArray[position]);
+			playerScore.setText(user.getScore());
 
 			// 记录imageBtn与uid的关系
 			positionUidMap.put(position, tempUid);
@@ -506,10 +562,21 @@ public class Game extends Activity implements IMessageHandler {
 	private void doHelpAction() {
 		// 1. 判断是否是自己出成语
 		if (!myUid.equals(currentUid)) {
-			ToastUtil.toast(this, "未到自己游戏时间!\n\t  稍安勿躁!",
+			ToastUtil.toast(this, "剩余锦囊 "+helpNum+" 个!"+"\n\t稍安勿躁!",
 					android.R.drawable.ic_dialog_alert);
 			return;
 		}
+		
+		//判断锦囊是否有剩余
+		if(helpNum <= 0){
+			ToastUtil.toast(this, "锦囊已经用尽！", android.R.drawable.ic_dialog_alert);
+			return;
+		}else{
+			//锦囊数减去1
+			helpNum--;
+			ToastUtil.toast(this, "剩余锦囊 " + helpNum + " 个!", android.R.drawable.ic_dialog_alert);
+		}
+		
 		// 发送锦囊请求
 		HelpRequestMsg req = new HelpRequestMsg();
 		req.setType(Constants.Type.HELP_REQ);
@@ -687,6 +754,7 @@ public class Game extends Activity implements IMessageHandler {
 		public void handleMessage(Message msg) {
 
 			clock_show_tv.setTextSize(40);
+			clock_show_tv.setTextColor(Color.BLACK);
 			if (msg.what != 0) {
 				clock_show_tv.setText(msg.what + "");
 				// Log.i("test", msg.what + "");
@@ -720,7 +788,8 @@ public class Game extends Activity implements IMessageHandler {
 			int tag = (Integer) v.getTag();
 			req.setUid(positionUidMap.get(tag));// tag与uid末尾对应
 			app.sendMessage(req);
-			Log.i(Game.this.tag, "--->>> send GetUserInfoRequestMsg = " + req.toString());
+			Log.i(Game.this.tag,
+					"--->>> send GetUserInfoRequestMsg = " + req.toString());
 		}
 	}
 
@@ -868,4 +937,16 @@ public class Game extends Activity implements IMessageHandler {
 			return tv;
 		}
 	}
+	
+	/********************************************************************************************************************************
+	 * getter and setter
+	 ********************************************************************************************************************************/
+	public boolean isGameReady() {
+		return gameReady;
+	}
+
+	public void setGameReady(boolean gameReady) {
+		this.gameReady = gameReady;
+	}
+
 }

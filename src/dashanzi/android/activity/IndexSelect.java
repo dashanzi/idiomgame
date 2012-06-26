@@ -109,4 +109,34 @@ public class IndexSelect extends TabActivity {
 		// stop about thread
 		app.setAboutThreadIsInterrupt(true);
 	}
+	
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN
+				&& event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("您确定退出游戏吗？")
+					.setTitle("友情提示")
+					.setNegativeButton("取消",
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+									arg0.cancel();
+								}
+							})
+					.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int id) {
+									//断开连接
+									app.disconnect();
+									IndexSelect.this.finish();
+								}
+							});
+			AlertDialog alert = builder.create();
+			alert.show();
+	                return false;
+		}
+		return super.dispatchKeyEvent(event);
+	};
 }

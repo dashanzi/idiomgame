@@ -1,23 +1,24 @@
 package dashanzi.android.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
+import dashanzi.android.db.DBUtil;
 import dashanzi.android.dto.IMessage;
+import dashanzi.android.dto.ServerInfo;
 import dashanzi.android.dto.request.RegisterRequestMsg;
 import dashanzi.android.dto.response.RegisterResponseMsg;
+import dashanzi.android.listener.MyConfigOnClickListener;
 import dashanzi.android.util.ToastUtil;
 
 public class Register extends Activity implements IMessageHandler {
@@ -27,8 +28,9 @@ public class Register extends Activity implements IMessageHandler {
 	private EditText name = null;
 	private EditText password = null;
 	private RadioGroup gender = null;
-	private int gender_select = 0;//默认为man
+	private int gender_select = Constants.Player.MAN;//默认为man
 	private Button registerBtn = null;
+	private ImageButton configBtn = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,9 @@ public class Register extends Activity implements IMessageHandler {
 		gender.setOnCheckedChangeListener(new GenderCheckedChangeListener());
 		registerBtn = (Button) findViewById(R.id.register_button_register);
 		registerBtn.setOnClickListener(new MyBtnOnClickListener());
+		configBtn = (ImageButton) findViewById(R.id.register_server_ip_config);
+		configBtn.setTag(Constants.ButtonTag.SERVER_CONFIG_BTN);
+		configBtn.setOnClickListener(new MyConfigOnClickListener(this));
 	}
 
 	/*******************************************************************************
@@ -70,38 +75,6 @@ public class Register extends Activity implements IMessageHandler {
 	/*******************************************************************************
 	 * 按钮监听
 	 ******************************************************************************/
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					Register.this);
-			builder.setIcon(android.R.drawable.ic_menu_help);
-			builder.setTitle("确定退出游戏吗?");
-
-			builder.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-							// 退出
-							Register.this.finish();
-
-							//3. 断开tcp连接
-							app.disconnect();
-						}
-					});
-
-			builder.setNegativeButton("取消",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,
-								int whichButton) {
-						}
-					});
-			builder.create().show();
-		}
-		return false;
-	}
 	
 	class MyBtnOnClickListener implements OnClickListener {
 		@Override
@@ -119,10 +92,16 @@ public class Register extends Activity implements IMessageHandler {
 				return;
 			}
 			// 封装注册信息，向服务端发送注册请求 
-			app.setServerIp("210.75.225.158");
-			app.setServerPort(8888);
+			ServerInfo dto = DBUtil.getServerInfo(Register.this);
+			if(dto == null || dto.getIp()==null || dto.getPort()==0){
+				Log.e(tag, " DBUtil.getServerInfo error !");
+				return;
+			}
+			app.setServerIp(dto.getIp());
+			app.setServerPort(dto.getPort());
+			Log.e(tag, " Register  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
+			
 			app.connect(new IConnectHandler() {
-				
 				@Override
 				public void handle() {
 					// TODO Auto-generated method stub
@@ -143,10 +122,10 @@ public class Register extends Activity implements IMessageHandler {
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			switch (checkedId) {
 			case R.id.register_gender_man:
-				gender_select = 1;// man
+				gender_select = Constants.Player.MAN;// man
 				break;
 			case R.id.register_gender_female:
-				gender_select = 0;// female
+				gender_select = Constants.Player.FEMALE;// female
 				break;
 			default:
 				// do nothing
@@ -157,10 +136,17 @@ public class Register extends Activity implements IMessageHandler {
 
 	@Override
 	protected void onResume() {
-		Log.e("Register", "onResume");
+		Log.i("Register", "onResume");
 		super.onResume();
 		app.setCurrentActivity(this);
 		// stop about thread
 		app.setAboutThreadIsInterrupt(true);
+	}
+	
+	@Override
+	protected void onDestroy() {
+	    super.onDestroy();
+	    //关闭dbHelper
+	    DBUtil.closeDBHelper();
 	}
 }
