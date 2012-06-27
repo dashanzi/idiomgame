@@ -29,7 +29,6 @@ import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
-import dashanzi.android.util.GroupComparator;
 import dashanzi.android.util.ToastUtil;
 
 public class House extends ListActivity implements IMessageHandler,
