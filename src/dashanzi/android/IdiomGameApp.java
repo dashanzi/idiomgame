@@ -58,8 +58,8 @@ public class IdiomGameApp extends Application {
 	}
 
 	public void disconnect() {
-		//TODO edit by juzm
-		if(networkService!=null){
+		// TODO edit by juzm
+		if (networkService != null) {
 			networkService.disconnect();
 			destroyService();
 		}
@@ -118,11 +118,22 @@ public class IdiomGameApp extends Application {
 			// TODO Auto-generated method stub
 			Log.i("==APP==", "message received");
 			Bundle bundle = intent.getExtras();
-			String strMsg = bundle.getString("msg");
-			try {
-				onMessageReceived(strMsg);
-			} catch (JSONException e) {
-				e.printStackTrace();
+			String strStatus = bundle.getString("status");
+			if (strStatus.equals("ok")) {
+				String strMsg = bundle.getString("msg");
+				try {
+					onMessageReceived(strMsg);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+
+			} else if (strStatus.equals("error")) {
+				String strCode = bundle.getString("code");
+				if (strCode.equals("1")) {// connection error
+					((IExceptionHandler) currentActivity).exceptionCatch(1);
+				} else if (strCode.equals("2")) {// send message error
+					((IExceptionHandler) currentActivity).exceptionCatch(2);
+				}
 			}
 		}
 

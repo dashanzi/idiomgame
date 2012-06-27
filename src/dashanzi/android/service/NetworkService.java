@@ -74,8 +74,15 @@ public class NetworkService extends Service {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			Log.i("==NET==", "IOException caught when connecting: " + e);
+
+			Intent intent = new Intent();
+			intent.putExtra("status", "error");
+			intent.putExtra("code", "1");
+			intent.setAction("android.intent.action.test");
+			sendBroadcast(intent);
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 
 	}
@@ -98,8 +105,15 @@ public class NetworkService extends Service {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
-					Log.i("==NET==","socket.isConnected()="+socket.isConnected());
-					Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
+//					Log.i("==NET==","socket.isConnected()="+socket.isConnected());
+//					Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
+					
+					Intent intent = new Intent();
+					intent.putExtra("status", "error");
+					intent.putExtra("code", "2");
+					intent.setAction("android.intent.action.test");
+					sendBroadcast(intent);
+					
 					e.printStackTrace();
 				}
 
@@ -126,6 +140,7 @@ public class NetworkService extends Service {
 		Log.i("==NET==", "message received: " + strMsg);
 
 		Intent intent = new Intent();
+		intent.putExtra("status", "oks");
 		intent.putExtra("msg", strMsg);
 		intent.setAction("android.intent.action.test");
 		sendBroadcast(intent);
