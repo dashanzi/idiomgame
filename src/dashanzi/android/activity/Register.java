@@ -113,6 +113,13 @@ public class Register extends Activity implements IMessageHandler {
 					app.sendMessage(req);
 					Log.i(tag, "--->>> send RegisterRequestMsg = " + req.toString());
 				}
+
+				@Override
+				public void exceptionCatch() {
+					// TODO Auto-generated method stub
+					Log.e(tag, "socket connect exception !");
+					ToastUtil.toast(Register.this, "网络连接异常,注册失败!", android.R.drawable.ic_dialog_alert);
+				}
 			});
 		}
 	}

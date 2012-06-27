@@ -162,6 +162,14 @@ public class Login extends Activity implements IMessageHandler {
 							+ loginMsg.toString());
 					app.sendMessage(loginMsg);
 				}
+
+				@Override
+				public void exceptionCatch() {
+					Log.e(tag, "socket connect exception !");
+					ToastUtil.toast(Login.this, "网络连接异常,登陆失败!", android.R.drawable.ic_dialog_alert);
+					//终止登陆动画
+					hasLoginResult = true;
+				}
 			});
 
 			// 显示加载动画
@@ -188,7 +196,7 @@ public class Login extends Activity implements IMessageHandler {
 						for (int i = 0; i <= 6; i++) {
 							handler.sendEmptyMessage(i);
 							try {
-								Thread.sleep(300);
+								Thread.sleep(100);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
