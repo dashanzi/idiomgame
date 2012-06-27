@@ -29,7 +29,7 @@ public class About extends Activity {
 	private RelativeLayout layout;
 	private TextView title_tv;
 	private final int pageNum = 5;
-	private String[] titles ={"第一步：注册","第二步：登陆","第三步：选择房间","第四步：开始游戏","游戏规则"};
+	private String[] titles ={"游戏宗旨","注册与登陆","选择房间","接龙游戏","具体规则"};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

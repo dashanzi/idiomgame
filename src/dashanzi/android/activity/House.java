@@ -24,7 +24,6 @@ import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
-import dashanzi.android.dto.notify.LogoutNotifyMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
@@ -83,7 +82,7 @@ public class House extends ListActivity implements IMessageHandler {
 		quickSelectBtn.setOnClickListener(new MyOnClickListener());
 		
 		//TODO
-		HeartBeat.startHeartBeat(app);
+//		HeartBeat.startHeartBeat(app);
 	}
 
 	/********************************************************************************************************************************
@@ -247,15 +246,11 @@ public class House extends ListActivity implements IMessageHandler {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
 
-							// 1. 发送退出游戏通知
-							LogoutNotifyMsg logout = new LogoutNotifyMsg();
-							logout.setType(Constants.Type.LOGOUT_NOTIFY);
-							logout.setName(userName);
-							app.sendMessage(logout);
-							Log.i(tag, "--->>> send  LogoutNotifyMsg = " + logout.toString());
-							
 							//回到新的登陆页面
-							startActivity(new Intent(House.this, IndexSelect.class));
+							Intent intent = new Intent();
+							intent.putExtra("name", userName);
+							intent.setClass(House.this, IndexSelect.class);
+							House.this.startActivity(intent);
 							
 							// 2. finish activity
 							House.this.finish();

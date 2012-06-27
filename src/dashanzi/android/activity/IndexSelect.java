@@ -14,13 +14,18 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
+import dashanzi.android.dto.notify.LogoutNotifyMsg;
 
 public class IndexSelect extends TabActivity {
+	private static final String tag ="IndexSelect";
 	private IdiomGameApp app;
 	private TabHost mTabHost;
 	private TabWidget mTabWidget;
+	
+	private String userName = null;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -30,6 +35,13 @@ public class IndexSelect extends TabActivity {
 		app = (IdiomGameApp) this.getApplication();
 		app.setAboutThreadIsInterrupt(true);// 终止about thread
 
+		Intent intent = this.getIntent();
+		if(intent != null){
+			userName = intent.getStringExtra("name");
+		}else{
+			Log.e(tag, " user name is null");
+		}
+		
 		mTabHost = this.getTabHost();
 		/* 去除标签下方的白线 */
 		mTabHost.setPadding(mTabHost.getPaddingLeft(),
@@ -128,6 +140,15 @@ public class IndexSelect extends TabActivity {
 					.setPositiveButton("确定",
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,int id) {
+									
+									// 1. 发送退出游戏通知
+									LogoutNotifyMsg logout = new LogoutNotifyMsg();
+									logout.setType(Constants.Type.LOGOUT_NOTIFY);
+									logout.setName(userName);
+									app.sendMessage(logout);
+									Log.i(tag, "--->>> send  LogoutNotifyMsg = " + logout.toString());
+									
+									
 									//断开连接
 									app.disconnect();
 									IndexSelect.this.finish();

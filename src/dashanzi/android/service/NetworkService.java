@@ -81,6 +81,8 @@ public class NetworkService extends Service {
 	}
 
 	public void sendMessage(IMessage msg) {
+		Log.i("==NET==","socket.isConnected()="+socket.isConnected());
+		Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
 		if (socket.isConnected()) {
 			if (!socket.isOutputShutdown()) {
 				// os.print("Are you sb?");
@@ -89,11 +91,15 @@ public class NetworkService extends Service {
 					// socket.getOutputStream()
 					// .write("{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"zhangsan\",\"gid\":\"g01\"}}\r\n"
 					// .getBytes("utf-8"));
+					Log.i("==NET==","write 1");
 					socket.getOutputStream().write(
 							Beans2JsonUtil.getJsonStr(msg).getBytes("utf-8"));
+					Log.i("==NET==","write 2");
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
+					Log.i("==NET==","socket.isConnected()="+socket.isConnected());
+					Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
 					e.printStackTrace();
 				}
 
@@ -130,6 +136,8 @@ public class NetworkService extends Service {
 
 		@Override
 		public void run() {
+			Log.i("==NET==","socket.isConnected()="+socket.isConnected());
+			Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
 			String content;
 			while (readFlag) {
 				if (socket.isConnected()) {
