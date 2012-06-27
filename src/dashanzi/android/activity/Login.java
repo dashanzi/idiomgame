@@ -31,7 +31,7 @@ import dashanzi.android.dto.response.LoginResponseMsg;
 import dashanzi.android.listener.MyConfigOnClickListener;
 import dashanzi.android.util.ToastUtil;
 
-public class Login extends Activity implements IMessageHandler {
+public class Login extends Activity implements IMessageHandler ,IExceptionHandler{
 
 	private static final String tag = "Login";
 	private final int configBtnTag = 1;
@@ -163,13 +163,7 @@ public class Login extends Activity implements IMessageHandler {
 					app.sendMessage(loginMsg);
 				}
 
-				@Override
-				public void exceptionCatch() {
-					Log.e(tag, "socket connect exception !");
-					ToastUtil.toast(Login.this, "网络连接异常,登陆失败!", android.R.drawable.ic_dialog_alert);
-					//终止登陆动画
-					hasLoginResult = true;
-				}
+				
 			});
 
 			// 显示加载动画
@@ -327,7 +321,12 @@ public class Login extends Activity implements IMessageHandler {
 	    DBUtil.closeDBHelper();
 	}
 
-	/**********************************************************************************************
-	 * getter and setter
-	 **********************************************************************************************/
+	@Override
+	public void exceptionCatch() {
+		Log.e(tag, "socket connect exception !");
+		ToastUtil.toast(Login.this, "网络连接异常!", android.R.drawable.ic_dialog_alert);
+		//终止登陆动画
+		hasLoginResult = true;
+	}
+	
 }

@@ -7,8 +7,4 @@ public interface IConnectHandler {
 	 */
 	public void handle();
 	
-	/**
-	 * socket连接失败、异常回调方法
-	 */
-	public void exceptionCatch();
 }

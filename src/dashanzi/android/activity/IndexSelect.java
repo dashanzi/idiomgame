@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -160,4 +161,15 @@ public class IndexSelect extends TabActivity {
 		}
 		return super.dispatchKeyEvent(event);
 	};
+	
+	
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		//用于解决activity中有ViewFlipper不响应
+		getCurrentActivity().onTouchEvent(event);
+		return super.onTouchEvent(event);
+	}
+	
 }

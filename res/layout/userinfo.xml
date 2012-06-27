@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="200dip"
+            android:layout_height="100dip"
+            android:layout_centerInParent="true" >
+
+            <TableLayout
+                android:id="@+id/game_user_info_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:stretchColumns="1" >
+
+                <TableRow
+                    android:id="@+id/user_name_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/user_name_tv"
+                        android:layout_width="50dip"
+                        android:layout_height="wrap_content"
+                        android:text="昵称："
+                        android:textSize="15dip" />
+
+                    <TextView
+                        android:id="@+id/user_name_show_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dip" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/user_gender_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/user_gender_tv"
+                        android:layout_width="50dip"
+                        android:layout_height="wrap_content"
+                        android:text="性别："
+                        android:textSize="15dip" />
+
+                    <TextView
+                        android:id="@+id/user_gender_show_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dip" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/user_score_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/user_score_tv"
+                        android:layout_width="50dip"
+                        android:layout_height="wrap_content"
+                        android:text="积分："
+                        android:textSize="15dip" />
+
+                    <TextView
+                        android:id="@+id/user_score_show_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dip" />
+                </TableRow>
+                <TableRow
+                    android:id="@+id/user_level_row"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:id="@+id/user_level_tv"
+                        android:layout_width="50dip"
+                        android:layout_height="wrap_content"
+                        android:text="等级："
+                        android:textSize="15dip" />
+
+                    <TextView
+                        android:id="@+id/user_level_show_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dip" />
+                </TableRow>
+            </TableLayout>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

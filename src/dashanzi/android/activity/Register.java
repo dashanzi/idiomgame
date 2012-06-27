@@ -21,14 +21,15 @@ import dashanzi.android.dto.response.RegisterResponseMsg;
 import dashanzi.android.listener.MyConfigOnClickListener;
 import dashanzi.android.util.ToastUtil;
 
-public class Register extends Activity implements IMessageHandler {
+public class Register extends Activity implements IMessageHandler,
+		IExceptionHandler {
 
 	private static final String tag = "Register";
 	private IdiomGameApp app = null;
 	private EditText name = null;
 	private EditText password = null;
 	private RadioGroup gender = null;
-	private int gender_select = Constants.Player.MAN;//默认为man
+	private int gender_select = Constants.Player.MAN;// 默认为man
 	private Button registerBtn = null;
 	private ImageButton configBtn = null;
 
@@ -39,7 +40,7 @@ public class Register extends Activity implements IMessageHandler {
 
 		app = (IdiomGameApp) this.getApplication();
 		app.setCurrentActivity(this);
-		app.setAboutThreadIsInterrupt(true);//终止about thread
+		app.setAboutThreadIsInterrupt(true);// 终止about thread
 
 		name = (EditText) findViewById(R.id.register_edittext_username);
 		password = (EditText) findViewById(R.id.register_edittext_password);
@@ -57,17 +58,17 @@ public class Register extends Activity implements IMessageHandler {
 	 ******************************************************************************/
 	@Override
 	public void onMesssageReceived(IMessage msg) {
-		if(!(msg instanceof RegisterResponseMsg)){
+		if (!(msg instanceof RegisterResponseMsg)) {
 			Log.e(tag, "msg instanceof RegisterResponseMsg is error !");
 			return;
 		}
-		
-		RegisterResponseMsg resp = (RegisterResponseMsg)msg;
+
+		RegisterResponseMsg resp = (RegisterResponseMsg) msg;
 		Log.i(tag, "<<<---  RegisterResponseMsg  = " + resp.toString());
-		
-		if(resp.getStatus().equals(Constants.Response.SUCCESS)){
+
+		if (resp.getStatus().equals(Constants.Response.SUCCESS)) {
 			ToastUtil.toast(this, "注册成功!", R.drawable.game_idiom_check_correct);
-		}else{
+		} else {
 			ToastUtil.toast(this, "注册失败!", android.R.drawable.ic_dialog_alert);
 		}
 	}
@@ -75,7 +76,7 @@ public class Register extends Activity implements IMessageHandler {
 	/*******************************************************************************
 	 * 按钮监听
 	 ******************************************************************************/
-	
+
 	class MyBtnOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
@@ -91,34 +92,30 @@ public class Register extends Activity implements IMessageHandler {
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
-			// 封装注册信息，向服务端发送注册请求 
+			// 封装注册信息，向服务端发送注册请求
 			ServerInfo dto = DBUtil.getServerInfo(Register.this);
-			if(dto == null || dto.getIp()==null || dto.getPort()==0){
+			if (dto == null || dto.getIp() == null || dto.getPort() == 0) {
 				Log.e(tag, " DBUtil.getServerInfo error !");
 				return;
 			}
 			app.setServerIp(dto.getIp());
 			app.setServerPort(dto.getPort());
-			Log.e(tag, " Register  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
-			
+			Log.e(tag,
+					" Register  IP = " + dto.getIp() + ": PORT = "
+							+ dto.getPort());
+
 			app.connect(new IConnectHandler() {
 				@Override
 				public void handle() {
-					// TODO Auto-generated method stub
-					RegisterRequestMsg req = new RegisterRequestMsg();			
+					RegisterRequestMsg req = new RegisterRequestMsg();
 					req.setName(name.getText().toString());
 					req.setPassword(password.getText().toString());
 					req.setGender(gender_select);
 					req.setType(Constants.Type.REGISTER_REQ);
 					app.sendMessage(req);
-					Log.i(tag, "--->>> send RegisterRequestMsg = " + req.toString());
-				}
-
-				@Override
-				public void exceptionCatch() {
-					// TODO Auto-generated method stub
-					Log.e(tag, "socket connect exception !");
-					ToastUtil.toast(Register.this, "网络连接异常,注册失败!", android.R.drawable.ic_dialog_alert);
+					Log.i(tag,
+							"--->>> send RegisterRequestMsg = "
+									+ req.toString());
 				}
 			});
 		}
@@ -149,11 +146,18 @@ public class Register extends Activity implements IMessageHandler {
 		// stop about thread
 		app.setAboutThreadIsInterrupt(true);
 	}
-	
+
 	@Override
 	protected void onDestroy() {
-	    super.onDestroy();
-	    //关闭dbHelper
-	    DBUtil.closeDBHelper();
+		super.onDestroy();
+		// 关闭dbHelper
+		DBUtil.closeDBHelper();
+	}
+
+	@Override
+	public void exceptionCatch() {
+		Log.e(tag, "socket connect exception !");
+		ToastUtil.toast(Register.this, "网络连接异常!",
+				android.R.drawable.ic_dialog_alert);
 	}
 }

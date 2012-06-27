@@ -56,7 +56,7 @@ import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 import dashanzi.android.util.ToastUtil;
 
-public class Game extends Activity implements IMessageHandler {
+public class Game extends Activity implements IMessageHandler,IExceptionHandler {
 
 	private final String tag = "Game";
 	private final int player1ImageBtnTag = 0;// 需要与uid的末尾对应
@@ -949,4 +949,10 @@ public class Game extends Activity implements IMessageHandler {
 		this.gameReady = gameReady;
 	}
 
+	@Override
+	public void exceptionCatch() {
+		Log.e(tag, "socket connect exception !");
+		ToastUtil.toast(Game.this, "网络连接异常!",
+				android.R.drawable.ic_dialog_alert);
+	}
 }

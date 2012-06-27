@@ -28,10 +28,10 @@ import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
-import dashanzi.android.heartbeat.HeartBeat;
 import dashanzi.android.util.ToastUtil;
 
-public class House extends ListActivity implements IMessageHandler {
+public class House extends ListActivity implements IMessageHandler,
+		IExceptionHandler {
 
 	private final static String tag = "House";
 
@@ -80,9 +80,9 @@ public class House extends ListActivity implements IMessageHandler {
 		// 4. 设置快速加入监听
 		quickSelectBtn = (Button) findViewById(R.id.house_quick_select_btn);
 		quickSelectBtn.setOnClickListener(new MyOnClickListener());
-		
-		//TODO
-//		HeartBeat.startHeartBeat(app);
+
+		// TODO
+		// HeartBeat.startHeartBeat(app);
 	}
 
 	/********************************************************************************************************************************
@@ -92,8 +92,8 @@ public class House extends ListActivity implements IMessageHandler {
 	@Override
 	public void onMesssageReceived(IMessage msg) {
 		if (msg instanceof RefreshResponseMsg) {
-			
-			//清空一下
+
+			// 清空一下
 			houseList.clear();
 			// refresh response
 			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
@@ -246,12 +246,12 @@ public class House extends ListActivity implements IMessageHandler {
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
 
-							//回到新的登陆页面
+							// 回到新的登陆页面
 							Intent intent = new Intent();
 							intent.putExtra("name", userName);
 							intent.setClass(House.this, IndexSelect.class);
 							House.this.startActivity(intent);
-							
+
 							// 2. finish activity
 							House.this.finish();
 						}
@@ -282,5 +282,12 @@ public class House extends ListActivity implements IMessageHandler {
 	protected void onResume() {
 		super.onResume();
 		app.setCurrentActivity(this);
+	}
+
+	@Override
+	public void exceptionCatch() {
+		Log.e(tag, "socket connect exception !");
+		ToastUtil.toast(House.this, "网络连接异常!",
+				android.R.drawable.ic_dialog_alert);
 	}
 }

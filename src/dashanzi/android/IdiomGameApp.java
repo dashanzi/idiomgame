@@ -58,8 +58,11 @@ public class IdiomGameApp extends Application {
 	}
 
 	public void disconnect() {
-		networkService.disconnect();
-		destroyService();
+		//TODO edit by juzm
+		if(networkService!=null){
+			networkService.disconnect();
+			destroyService();
+		}
 	}
 
 	// ------------- private methods ----------------------------

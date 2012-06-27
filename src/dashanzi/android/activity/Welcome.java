@@ -1,19 +1,15 @@
 package dashanzi.android.activity;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.WindowManager;
-import dashanzi.android.Constants;
 import dashanzi.android.R;
 import dashanzi.android.db.DBUtil;
-import dashanzi.android.db.DatabaseHelper;
 import dashanzi.android.dto.IMessage;
 
 public class Welcome extends Activity implements IMessageHandler {
