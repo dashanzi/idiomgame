@@ -2,6 +2,16 @@ package dashanzi.android;
 
 public class Constants {
 
+	public static class Game{
+		
+		public static final int PLAYER_1_IMAGEBTN_TAG = 0;// 需要与uid的末尾对应
+		public static final int PLAYER_2_IMAGEBTN_TAG = 1;
+		public static final int PLAYER_3_IMAGEBTN_TAG = 2;
+		// gridView
+		public static final int EXIT = 0;
+		public static final int SUBMIT = 1;
+		public static final int HELP = 2;
+	}
 	public static class PlayerList {
 		public static final String HEADER_IMAGE = "image";
 		public static final String NAME = "name";

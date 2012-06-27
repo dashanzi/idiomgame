@@ -80,7 +80,7 @@
                     android:layout_height="fill_parent"
                     android:layout_alignParentRight="true"
                     android:paddingLeft="25dip"
-                    android:text="剩余席位"
+                    android:text="席位状态"
                     android:textColor="@android:color/white"
                     android:textSize="20dip" />
             </RelativeLayout>

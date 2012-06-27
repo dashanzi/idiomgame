@@ -1,6 +1,7 @@
 package dashanzi.android.activity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
+import dashanzi.android.util.GroupComparator;
 import dashanzi.android.util.ToastUtil;
 
 public class House extends ListActivity implements IMessageHandler,
@@ -41,7 +43,7 @@ public class House extends ListActivity implements IMessageHandler,
 	private TextView welcomeTv = null;// 欢迎tv
 	private Button quickSelectBtn = null;// 快速登陆btn
 	// houseList
-	private ArrayList<HashMap<String, Object>> houseList = new ArrayList<HashMap<String, Object>>();
+	private List<HashMap<String, Object>> houseList = new ArrayList<HashMap<String, Object>>();
 	private SimpleAdapter houseListAdapter = null;
 
 	// 变量
@@ -100,6 +102,10 @@ public class House extends ListActivity implements IMessageHandler,
 			Log.i(tag, "<<<--- get RefreshResponseMsg = " + msg.toString());
 			// 1. 获得所有房间信息、初始化房间列表
 			List<GroupInfo> groups = refreshRes.getGroupInfoList();
+			
+			//对Groups按从gid从小到大排序
+			Collections.sort(groups, new GroupComparator());
+			
 			for (GroupInfo group : groups) {
 				HashMap<String, Object> houseInfo = new HashMap<String, Object>();
 				houseInfo.put(Constants.HouseList.HEADER_IMAGE,
