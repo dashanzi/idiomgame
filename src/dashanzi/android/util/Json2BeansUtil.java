@@ -105,20 +105,20 @@ public class Json2BeansUtil {
 		result.setType(header.getString("type"));
 		result.setStatus(header.getString("status"));
 
-//		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
-//		// List<GroupInfo> 
-//		JSONArray groups = body.getJSONArray("groups");
-//		List<GroupInfo> groupList = new ArrayList<GroupInfo>();
-//
-//		for (int i = 0; i < groups.length(); i++) {
-//
-//			JSONObject groupJson = groups.optJSONObject(i);
-//			GroupInfo group = new GroupInfo();
-//			group.setGid(groupJson.getString("gid"));
-//			group.setState(groupJson.getString("state"));
-//			groupList.add(group);
-//		}
-//		result.setGroupInfoList(groupList);
+		// JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
+		// // List<GroupInfo>
+		// JSONArray groups = body.getJSONArray("groups");
+		// List<GroupInfo> groupList = new ArrayList<GroupInfo>();
+		//
+		// for (int i = 0; i < groups.length(); i++) {
+		//
+		// JSONObject groupJson = groups.optJSONObject(i);
+		// GroupInfo group = new GroupInfo();
+		// group.setGid(groupJson.getString("gid"));
+		// group.setState(groupJson.getString("state"));
+		// groupList.add(group);
+		// }
+		// result.setGroupInfoList(groupList);
 		return result;
 	}
 
@@ -153,6 +153,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -341,6 +343,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);
