@@ -1,14 +1,24 @@
 package dashanzi.android.activity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.RadioGroup;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.SimpleAdapter;
 import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
@@ -25,12 +35,19 @@ public class Register extends Activity implements IMessageHandler,
 
 	private static final String tag = "Register";
 	private IdiomGameApp app = null;
+	
+	private RegisterRequestMsg req = new RegisterRequestMsg();
 	private EditText name = null;
 	private EditText password = null;
 	private RadioGroup gender = null;
 	private int gender_select = Constants.Player.MAN;// 默认为man
+	private String headerImageId = "-1";
+
 	private Button registerBtn = null;
 	private Button configBtn = null;
+	private Button headerSelectBtn = null;
+	private SimpleAdapter manHeaderAdapter;
+	private SimpleAdapter femaleHeaderAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +67,91 @@ public class Register extends Activity implements IMessageHandler,
 		configBtn = (Button) findViewById(R.id.register_server_config_btn);
 		configBtn.setTag(Constants.ButtonTag.SERVER_CONFIG_BTN);
 		configBtn.setOnClickListener(new MyConfigOnClickListener(this));
+		headerSelectBtn = (Button) findViewById(R.id.register_header_select_btn);
+		headerSelectBtn.setOnClickListener(new MyHeaderSelectOnClickListener());
+
+		// 男生头像
+		ArrayList<HashMap<String, Object>> manHeaders = new ArrayList<HashMap<String, Object>>();
+		int[] manHeaderArray = app.getManHeaderIdArray();
+		for (int i = 0; i < manHeaderArray.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("HeaderImage", manHeaderArray[i]);// 添加图像资源的ID
+			map.put("ItemText", "NO." + String.valueOf(i + 1));// 按序号做ItemText
+			manHeaders.add(map);
+		}
+		// 女生头像
+		int[] femaleHeaderArray = app.getFemaleHeaderIdArray();
+		ArrayList<HashMap<String, Object>> femaleHeaders = new ArrayList<HashMap<String, Object>>();
+		for (int i = 0; i < femaleHeaderArray.length; i++) {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("HeaderImage", femaleHeaderArray[i]);// 添加图像资源的ID
+			map.put("ItemText", "NO." + String.valueOf(i + 1));// 按序号做ItemText
+			femaleHeaders.add(map);
+		}
+
+		// 男生头像adapter
+		manHeaderAdapter = new SimpleAdapter(this,
+				manHeaders,// 数据来源
+				R.layout.header_item,
+				new String[] { "HeaderImage", "ItemText" }, new int[] {
+						R.id.HeaderImage, R.id.ItemText });
+
+		femaleHeaderAdapter = new SimpleAdapter(this,
+				femaleHeaders,// 数据来源
+				R.layout.header_item,
+				new String[] { "HeaderImage", "ItemText" }, new int[] {
+						R.id.HeaderImage, R.id.ItemText });
+	}
+
+	class MyHeaderSelectOnClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			AlertDialog.Builder builder = new AlertDialog.Builder(Register.this);
+			builder.setTitle("请选择您的头像");
+			LayoutInflater factory = LayoutInflater.from(Register.this);
+			View dialog = factory.inflate(R.layout.headerselect, null);
+
+			GridView gridView = (GridView) dialog
+					.findViewById(R.id.dialogGridView);
+			builder.setView(dialog);
+
+			// 判断一下gender
+			if (gender_select == Constants.Player.MAN) {
+				// 添加并且显示
+				gridView.setAdapter(manHeaderAdapter);
+			} else {
+				// 添加并且显示
+				gridView.setAdapter(femaleHeaderAdapter);
+			}
+
+			// 添加消息处理
+			gridView.setOnItemClickListener(new ItemClickListener());
+
+			builder.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog,
+								int whichButton) {
+							
+							//设置headerImageId
+							req.setHeaderImageId(headerImageId);
+						}
+					});
+			builder.create().show();
+		}
+
+		// 当AdapterView被单击(触摸屏或者键盘)，则返回的Item单击事件
+		class ItemClickListener implements OnItemClickListener {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				
+				ToastUtil.toast(Register.this, "您选择了 "+ (arg2+1)+" 号头像", 0);
+				headerImageId = arg2+"";
+			}
+
+		}
 	}
 
 	/*******************************************************************************
@@ -66,9 +168,9 @@ public class Register extends Activity implements IMessageHandler,
 		Log.i(tag, "<<<---  RegisterResponseMsg  = " + resp.toString());
 
 		if (resp.getStatus().equals(Constants.Response.SUCCESS)) {
-			//在app中记录lastRegisterName
+			// 在app中记录lastRegisterName
 			app.setLastRegisterName(name.getText().toString());
-			
+
 			ToastUtil.toast(this, "注册成功!", R.drawable.game_idiom_check_correct);
 		} else {
 			ToastUtil.toast(this, "注册失败!", android.R.drawable.ic_dialog_alert);
@@ -107,13 +209,17 @@ public class Register extends Activity implements IMessageHandler,
 							+ dto.getPort());
 
 			app.connect(new IConnectHandler() {
+
 				@Override
 				public void handle() {
-					RegisterRequestMsg req = new RegisterRequestMsg();
 					req.setName(name.getText().toString());
 					req.setPassword(password.getText().toString());
 					req.setGender(gender_select);
 					req.setType(Constants.Type.REGISTER_REQ);
+					if(req.getHeaderImageId()==null){
+						//说明没有主动设置头像
+						req.setHeaderImageId("0");//设置默认第一个
+					}
 					app.sendMessage(req);
 					Log.i(tag,
 							"--->>> send RegisterRequestMsg = "

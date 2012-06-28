@@ -27,10 +27,18 @@ public class IdiomGameApp extends Application {
 	private String serverIp = "127.0.0.1";
 	private int serverPort = 12345;
 	private IConnectHandler handler;
-	
-	//add TODO
+
+	// add TODO
 	private String lastRegisterName;
+	private int[] femaleHeaderIdArray = { R.drawable.g000, R.drawable.g001,
+			R.drawable.g002, R.drawable.g003, R.drawable.g004, R.drawable.g005,
+			R.drawable.g006, R.drawable.g007, R.drawable.g008 };
 	
+	
+	private int[] manHeaderIdArray = { R.drawable.b000, R.drawable.b001,
+			R.drawable.b002, R.drawable.b003, R.drawable.b004, R.drawable.b005,
+			R.drawable.b006, R.drawable.b007, R.drawable.b008};
+
 	public void onCreate(Bundle savedInstanceState) {
 
 	}
@@ -193,5 +201,19 @@ public class IdiomGameApp extends Application {
 		this.lastRegisterName = lastRegisterName;
 	}
 
+	public int[] getFemaleHeaderIdArray() {
+		return femaleHeaderIdArray;
+	}
 
+	public void setFemaleHeaderIdArray(int[] femaleHeaderIdArray) {
+		this.femaleHeaderIdArray = femaleHeaderIdArray;
+	}
+
+	public int[] getManHeaderIdArray() {
+		return manHeaderIdArray;
+	}
+
+	public void setManHeaderIdArray(int[] manHeaderIdArray) {
+		this.manHeaderIdArray = manHeaderIdArray;
+	}
 }

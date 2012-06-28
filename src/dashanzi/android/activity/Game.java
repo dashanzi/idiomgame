@@ -159,6 +159,7 @@ public class Game extends Activity implements IMessageHandler,
 	// TODO
 	int[] headerImageArray = { R.drawable.player_1, R.drawable.player_2,
 			R.drawable.player_3 };
+
 	Map<Integer, String> positionUidMap = new HashMap<Integer, String>();
 
 	@Override
@@ -362,7 +363,7 @@ public class Game extends Activity implements IMessageHandler,
 
 		// 查看玩家信息
 		if (msg instanceof GetUserInfoResponseMsg) {
-			
+
 			GetUserInfoResponseMsg resp = (GetUserInfoResponseMsg) msg;
 			Log.i(tag, "<<<---  GetUserInfoResponseMsg  = " + resp.toString());
 
@@ -488,6 +489,9 @@ public class Game extends Activity implements IMessageHandler,
 			String index = user.getUid().substring(tempUid.length() - 1);
 			int position = Integer.parseInt(index);
 
+			// 记录imageBtn与uid的关系
+			positionUidMap.put(position, tempUid);
+
 			// 用户名
 			TextView playerName = (TextView) findViewById(playerNameArray[position]);
 			playerName.setText(user.getName());
@@ -496,12 +500,26 @@ public class Game extends Activity implements IMessageHandler,
 			TextView playerScore = (TextView) findViewById(playerScoreArray[position]);
 			playerScore.setText(user.getScore());
 
-			// 记录imageBtn与uid的关系
-			positionUidMap.put(position, tempUid);
-
-			// 用户头像 TODO
+			// 用户头像 
 			ImageButton headerImage = (ImageButton) findViewById(playerHeaderArray[position]);
-			headerImage.setImageResource(headerImageArray[position]);
+			if (user.getGender() == null) {
+				Log.e(tempUid, "gender is null ! uid =" + tempUid);
+				return;
+			}
+			if (user.getHeaderImageId() == null) {
+				Log.e(tempUid, "headerImageId is null ! uid =" + tempUid);
+				return;
+			}
+
+			if (Integer.parseInt(user.getGender()) == Constants.Player.MAN) {
+				headerImage.setImageResource(app.getManHeaderIdArray()[Integer
+						.parseInt(user.getHeaderImageId())]);
+			} else if (Integer.parseInt(user.getGender()) == Constants.Player.FEMALE) {
+				headerImage
+						.setImageResource(app.getFemaleHeaderIdArray()[Integer
+								.parseInt(user.getHeaderImageId())]);
+			}
+
 		}
 	}
 

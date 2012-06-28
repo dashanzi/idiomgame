@@ -116,7 +116,7 @@
                             android:id="@+id/relativeLayout2"
                             android:layout_width="120dip"
                             android:layout_height="50dip"
-                            android:layout_alignParentRight="true" >
+                            android:layout_alignParentLeft="true" >
 
                             <RadioGroup
                                 android:id="@+id/register_gender"
@@ -144,9 +144,27 @@
                             </RadioGroup>
                         </RelativeLayout>
 
+                        <RelativeLayout
+                            android:id="@+id/relativeLayout2"
+                            android:layout_width="80dip"
+                            android:layout_height="50dip"
+                            android:layout_alignParentRight="true" >
+
+                            <Button
+                                android:id="@+id/register_header_select_btn"
+                                android:layout_width="80dip"
+                                android:layout_height="40dip"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentRight="true"
+                                android:background="@android:drawable/btn_default"
+                                android:gravity="center"
+                                android:text="头像选择"
+                                android:textColor="@android:color/black" />
+                        </RelativeLayout>
+
                         <Button
                             android:id="@+id/register_button_register"
-                            android:layout_width="120dip"
+                            android:layout_width="110dip"
                             android:layout_height="50dip"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentRight="true"
@@ -176,6 +194,21 @@
                 android:orientation="horizontal" >
             </LinearLayout>
         </RelativeLayout>
+
+        <!--
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:columnWidth="90dp"
+            android:gravity="center"
+            android:horizontalSpacing="10dp"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dp"
+            android:background="@color/grey05" />
+            
+              -->
     </RelativeLayout>
 
 </LinearLayout>

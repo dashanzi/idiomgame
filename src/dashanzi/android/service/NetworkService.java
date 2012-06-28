@@ -131,7 +131,7 @@ public class NetworkService extends Service {
 	public void disconnect() {
 		try {
 			// edited by juzm TODO
-			if (socket == null || socket.isClosed() == true) {
+			if (socket == null || socket.isClosed() == true || is == null || os == null) {
 				return;
 			}
 			socket.close();
