@@ -16,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,7 +30,8 @@ import dashanzi.android.dto.response.LoginResponseMsg;
 import dashanzi.android.listener.MyConfigOnClickListener;
 import dashanzi.android.util.ToastUtil;
 
-public class Login extends Activity implements IMessageHandler ,IExceptionHandler{
+public class Login extends Activity implements IMessageHandler,
+		IExceptionHandler {
 
 	private static final String tag = "Login";
 	private final int configBtnTag = 1;
@@ -43,7 +43,7 @@ public class Login extends Activity implements IMessageHandler ,IExceptionHandle
 	private EditText userName = null;
 	private EditText passWord = null;
 	private Button loginBtn = null;
-	private ImageButton configBtn = null;
+	private Button configBtn = null;
 
 	// loading动画
 	private Animation anm;// loading动画
@@ -67,10 +67,13 @@ public class Login extends Activity implements IMessageHandler ,IExceptionHandle
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.login_input_area);
 		rl.getBackground().setAlpha(190);
 		userName = (EditText) findViewById(R.id.login_edittext_username);
+		// 将登陆名设置为lastRegisterName
+		userName.setText(app.getLastRegisterName());
+
 		passWord = (EditText) findViewById(R.id.login_edittext_password);
 
 		// 服务器ip配置监听
-		configBtn = (ImageButton) findViewById(R.id.login_server_ip_config);
+		configBtn = (Button) findViewById(R.id.login_server_config_btn);
 		configBtn.setOnClickListener(new MyConfigOnClickListener(this));
 		configBtn.setTag(configBtnTag);
 
@@ -117,7 +120,7 @@ public class Login extends Activity implements IMessageHandler ,IExceptionHandle
 			Login.this.finish();
 		} else if (loginRes.getStatus().equals(Constants.Response.FAILED)) {
 			// 提示登陆失败
-			ToastUtil.toast(this, "登陆失败,请重新登陆!",
+			ToastUtil.toast(this, "用户名或密码错误,请重新登陆!",
 					android.R.drawable.ic_dialog_alert);
 		}
 	}
@@ -144,16 +147,17 @@ public class Login extends Activity implements IMessageHandler ,IExceptionHandle
 			Log.i(tag, "--->>>> connecting to server");
 			// app.setServerIp("210.75.225.158");
 			// app.setServerPort(8888);
-			
+
 			ServerInfo dto = DBUtil.getServerInfo(Login.this);
-			if(dto == null || dto.getIp()==null || dto.getPort()==0){
+			if (dto == null || dto.getIp() == null || dto.getPort() == 0) {
 				Log.e(tag, " DBUtil.getServerInfo error !");
 				return;
 			}
 			app.setServerIp(dto.getIp());
 			app.setServerPort(dto.getPort());
-			
-			Log.e(tag, " Login  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
+
+			Log.e(tag,
+					" Login  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
 			app.connect(new IConnectHandler() {
 				public void handle() {
 
@@ -163,7 +167,6 @@ public class Login extends Activity implements IMessageHandler ,IExceptionHandle
 					app.sendMessage(loginMsg);
 				}
 
-				
 			});
 
 			// 显示加载动画
@@ -312,21 +315,25 @@ public class Login extends Activity implements IMessageHandler ,IExceptionHandle
 		app.setCurrentActivity(this);
 		// stop about thread
 		app.setAboutThreadIsInterrupt(true);
+
+		// 将登陆名设置为lastRegisterName
+		userName.setText(app.getLastRegisterName());
 	}
 
 	@Override
 	protected void onDestroy() {
-	    super.onDestroy();
-	    //关闭dbHelper
-	    DBUtil.closeDBHelper();
+		super.onDestroy();
+		// 关闭dbHelper
+		DBUtil.closeDBHelper();
 	}
 
 	@Override
 	public void exceptionCatch() {
 		Log.e(tag, "socket connect exception !");
-		ToastUtil.toast(Login.this, "网络连接异常!", android.R.drawable.ic_dialog_alert);
-		//终止登陆动画
+		ToastUtil.toast(Login.this, "网络连接异常!",
+				android.R.drawable.ic_dialog_alert);
+		// 终止登陆动画
 		hasLoginResult = true;
 	}
-	
+
 }

@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import dashanzi.android.Constants;
@@ -31,7 +30,7 @@ public class Register extends Activity implements IMessageHandler,
 	private RadioGroup gender = null;
 	private int gender_select = Constants.Player.MAN;// 默认为man
 	private Button registerBtn = null;
-	private ImageButton configBtn = null;
+	private Button configBtn = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class Register extends Activity implements IMessageHandler,
 		gender.setOnCheckedChangeListener(new GenderCheckedChangeListener());
 		registerBtn = (Button) findViewById(R.id.register_button_register);
 		registerBtn.setOnClickListener(new MyBtnOnClickListener());
-		configBtn = (ImageButton) findViewById(R.id.register_server_ip_config);
+		configBtn = (Button) findViewById(R.id.register_server_config_btn);
 		configBtn.setTag(Constants.ButtonTag.SERVER_CONFIG_BTN);
 		configBtn.setOnClickListener(new MyConfigOnClickListener(this));
 	}
@@ -67,6 +66,9 @@ public class Register extends Activity implements IMessageHandler,
 		Log.i(tag, "<<<---  RegisterResponseMsg  = " + resp.toString());
 
 		if (resp.getStatus().equals(Constants.Response.SUCCESS)) {
+			//在app中记录lastRegisterName
+			app.setLastRegisterName(name.getText().toString());
+			
 			ToastUtil.toast(this, "注册成功!", R.drawable.game_idiom_check_correct);
 		} else {
 			ToastUtil.toast(this, "注册失败!", android.R.drawable.ic_dialog_alert);

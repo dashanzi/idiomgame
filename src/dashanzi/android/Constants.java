@@ -107,7 +107,7 @@ public class Constants {
 		public static final String VALUE_IP = "ipValue"; 
 		public static final String VALUE_PORT = "portValue"; 
 		public static final String DEFAULT_ID = "123456"; 
-		public static final String DEFAULT_IP = "210.75.225.158"; 
+		public static final String DEFAULT_IP = "175.41.135.231"; 
 		public static final int DEFAULT_PORT = 8888; 
 	}
 	

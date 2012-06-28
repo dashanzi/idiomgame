@@ -117,25 +117,16 @@
                         android:gravity="center"
                         android:text="@string/login_button_login_text"
                         android:textColor="@android:color/black" />
-
-                    <ImageButton
-                        android:id="@+id/login_server_ip_config"
-                        android:layout_width="40dip"
-                        android:layout_height="40dip"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginLeft="14dp"
-                        android:src="@drawable/login_config_image" />
-
-                    <TextView
-                        android:layout_width="100dip"
-                        android:layout_height="20dip"
+
+                    <Button
+                        android:id="@+id/login_server_config_btn"
+                        android:layout_width="80dip"
+                        android:layout_height="50dip"
                         android:layout_alignParentBottom="true"
                         android:layout_alignParentLeft="true"
-                        android:paddingLeft="5dip"
-                        android:text="网络配置"
-                        android:textColor="@android:color/black"
-                        android:textSize="15dip" />
+                        android:gravity="center"
+                        android:text="@string/login_button_config_text"
+                        />
 
                 </RelativeLayout>
             </LinearLayout>

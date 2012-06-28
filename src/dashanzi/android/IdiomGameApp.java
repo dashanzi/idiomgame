@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import dashanzi.android.activity.IConnectHandler;
+import dashanzi.android.activity.IExceptionHandler;
 import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.service.NetworkService;
@@ -26,7 +27,10 @@ public class IdiomGameApp extends Application {
 	private String serverIp = "127.0.0.1";
 	private int serverPort = 12345;
 	private IConnectHandler handler;
-
+	
+	//add TODO
+	private String lastRegisterName;
+	
 	public void onCreate(Bundle savedInstanceState) {
 
 	}
@@ -62,6 +66,7 @@ public class IdiomGameApp extends Application {
 		if (networkService != null) {
 			networkService.disconnect();
 			destroyService();
+			networkService = null;
 		}
 	}
 
@@ -130,9 +135,11 @@ public class IdiomGameApp extends Application {
 			} else if (strStatus.equals("error")) {
 				String strCode = bundle.getString("code");
 				if (strCode.equals("1")) {// connection error
-					((IExceptionHandler) currentActivity).exceptionCatch(1);
+					disconnect();
+					((IExceptionHandler) currentActivity).exceptionCatch();
 				} else if (strCode.equals("2")) {// send message error
-					((IExceptionHandler) currentActivity).exceptionCatch(2);
+					disconnect();
+					((IExceptionHandler) currentActivity).exceptionCatch();
 				}
 			}
 		}
@@ -177,5 +184,14 @@ public class IdiomGameApp extends Application {
 	public void setServerPort(int serverPort) {
 		this.serverPort = serverPort;
 	}
+
+	public String getLastRegisterName() {
+		return lastRegisterName;
+	}
+
+	public void setLastRegisterName(String lastRegisterName) {
+		this.lastRegisterName = lastRegisterName;
+	}
+
 
 }

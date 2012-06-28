@@ -25,6 +25,7 @@ import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
+import dashanzi.android.dto.notify.LogoutNotifyMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
 import dashanzi.android.dto.request.RefreshRequestMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
@@ -41,6 +42,7 @@ public class House extends ListActivity implements IMessageHandler,
 	// 组件
 	private TextView welcomeTv = null;// 欢迎tv
 	private Button quickSelectBtn = null;// 快速登陆btn
+	private Button houseRefreshBtn = null;// 刷新大厅btn
 	// houseList
 	private List<HashMap<String, Object>> houseList = new ArrayList<HashMap<String, Object>>();
 	private SimpleAdapter houseListAdapter = null;
@@ -51,6 +53,8 @@ public class House extends ListActivity implements IMessageHandler,
 	private Map<String, String> groupIdStateMap = new HashMap<String, String>();// 存储gid
 																				// 与
 																				// state，便于登陆房间时，判断房间是否已满
+	private List<GroupInfo> groups;// grouplist
+	private boolean refreshBtnPressed = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,9 @@ public class House extends ListActivity implements IMessageHandler,
 		// 4. 设置快速加入监听
 		quickSelectBtn = (Button) findViewById(R.id.house_quick_select_btn);
 		quickSelectBtn.setOnClickListener(new MyOnClickListener());
+		// 5. 设置刷新大厅监听
+		houseRefreshBtn = (Button) findViewById(R.id.house_refresh_btn);
+		houseRefreshBtn.setOnClickListener(new MyOnClickListener());
 
 		// TODO
 		// HeartBeat.startHeartBeat(app);
@@ -100,12 +107,13 @@ public class House extends ListActivity implements IMessageHandler,
 			RefreshResponseMsg refreshRes = (RefreshResponseMsg) msg;
 			Log.i(tag, "<<<--- get RefreshResponseMsg = " + msg.toString());
 			// 1. 获得所有房间信息、初始化房间列表
-			List<GroupInfo> groups = refreshRes.getGroupInfoList();
-			
-			//对Groups按从gid从小到大排序
+			groups = refreshRes.getGroupInfoList();
+
+			// 对Groups按从gid从小到大排序
 			Collections.sort(groups, new GroupComparator());
-			
+
 			for (GroupInfo group : groups) {
+
 				HashMap<String, Object> houseInfo = new HashMap<String, Object>();
 				houseInfo.put(Constants.HouseList.HEADER_IMAGE,
 						R.drawable.house_list_image);
@@ -128,6 +136,15 @@ public class House extends ListActivity implements IMessageHandler,
 							R.id.house_rest_place_num });
 			// 3. 设置显示ListView
 			setListAdapter(houseListAdapter);
+			
+			//4. 显示刷新结果
+			if(refreshBtnPressed && refreshRes.getStatus().equals(Constants.Response.SUCCESS)){
+				ToastUtil.toast(this, "刷新完毕!", R.drawable.game_idiom_check_correct);
+			}else if(refreshBtnPressed && refreshRes.getStatus().equals(Constants.Response.FAILED)){
+				ToastUtil.toast(this, "刷新失败!", android.R.drawable.ic_dialog_alert);
+			}
+			refreshBtnPressed = false;
+			
 		} else if (msg instanceof JoinResponseMsg) {
 			JoinResponseMsg joinRes = (JoinResponseMsg) msg;
 
@@ -148,18 +165,6 @@ public class House extends ListActivity implements IMessageHandler,
 			}
 		}
 	}
-
-	// // 用于生成test数据 TODO
-	// private void getHouseList() {
-	// for (int i = 0; i < 20; i++) {
-	// HashMap<String, Object> houseInfo = new HashMap<String, Object>();
-	// houseInfo.put(Constants.HouseList.HEADER_IMAGE,
-	// R.drawable.house_list_image);
-	// houseInfo.put(Constants.HouseList.HOUSE_NUM, i + 10 + "");
-	// houseInfo.put(Constants.HouseList.HOUSE_REST_PLACE_NUM, "3/3");
-	// houseList.add(houseInfo);
-	// }
-	// }
 
 	/********************************************************************************************************************************
 	 * 按键监听
@@ -198,7 +203,6 @@ public class House extends ListActivity implements IMessageHandler,
 							// 向服务端发送登陆房间请求
 							sendJionRequest(gid_selected, userName);
 						}
-
 					});
 
 			builder.setNegativeButton("取消",
@@ -206,32 +210,83 @@ public class House extends ListActivity implements IMessageHandler,
 
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-
 						}
 					});
 			builder.create().show();
 		}
-
 	};
 
 	// 快速加入按钮监听
 	class MyOnClickListener implements OnClickListener {
+
 		@Override
 		public void onClick(View v) {
-			if (houseList == null || houseList.size() < 1) {
-				Log.e(tag, "houseList is null");
-				return;
+			switch (v.getId()) {
+			case R.id.house_quick_select_btn:// 快速登陆
+				if (houseList == null || houseList.size() < 1) {
+					Log.e(tag, "houseList is null");
+					return;
+				}
+
+				gid_selected = quickSelectHouseNum();
+
+				if (gid_selected == null) {
+					ToastUtil.toast(House.this, "所有房间已满!请稍等!",
+							android.R.drawable.ic_dialog_alert);
+				} else {
+					// 向服务端发送登陆房间请求
+					sendJionRequest(gid_selected, userName);
+				}
+				break;
+
+			case R.id.house_refresh_btn:// 刷新大厅
+				refreshBtnPressed = true;
+				RefreshRequestMsg refreshReq = new RefreshRequestMsg();
+				refreshReq.setType(Constants.Type.REFRESH_REQ);
+				app.sendMessage(refreshReq);
+				Log.i(tag,
+						"--->>> send RefreshRequestMsg ="
+								+ refreshReq.toString());
+				break;
+			default:
+				break;
+
 			}
-
-			gid_selected = quickSelectHouseNum();
-
-			// 向服务端发送登陆房间请求
-			sendJionRequest(gid_selected, userName);
 		}
 
-		// TODO 第一个房间号作为选择结果，可以扩展
+		// 优先顺序： 2/3, 1/3, 0/3 使得玩家尽快能够进入游戏
 		private String quickSelectHouseNum() {
-			return (String) houseList.get(0).get(Constants.HouseList.HOUSE_NUM);
+			String gid_quick = null;
+
+			// 是否有2/3
+
+			List<GroupInfo> tempList1 = new ArrayList<GroupInfo>();// 保存1/3的group
+			List<GroupInfo> tempList2 = new ArrayList<GroupInfo>();// 保存0/3的group
+			for (GroupInfo group : groups) {
+				String state = group.getState();
+				if (state.equals("3/3")) {
+					continue;
+				}
+				if (state.equals("2/3")) {
+					gid_quick = group.getGid();
+					break;
+				} else if (state.equals("1/3")) {
+					tempList1.add(group);
+				} else if (state.equals("0/3")) {
+					tempList2.add(group);
+				}
+
+			}
+
+			// 如果没有2/3的，则优先考虑1/3的，再考虑0/3的，都满了的时候，返回null
+			if (gid_quick == null) {
+				if (tempList1 != null && tempList1.size() > 0) {
+					gid_quick = tempList1.get(0).getGid();
+				} else if (tempList2 != null && tempList2.size() > 0) {
+					gid_quick = tempList2.get(0).getGid();
+				}
+			}
+			return gid_quick;
 		}
 	}
 
@@ -257,8 +312,20 @@ public class House extends ListActivity implements IMessageHandler,
 							intent.setClass(House.this, IndexSelect.class);
 							House.this.startActivity(intent);
 
-							// 2. finish activity
+							// 发送logoutNotify 退出大厅，准备断开连接
+							LogoutNotifyMsg logout = new LogoutNotifyMsg();
+							logout.setType(Constants.Type.LOGOUT_NOTIFY);
+							logout.setName(userName);
+							app.sendMessage(logout);
+							Log.i(tag, "--->>> send  LogoutNotifyMsg = "
+									+ logout.toString());
+
+							// 断开连接 disconnect
+							app.disconnect();
+
+							// finish activity
 							House.this.finish();
+
 						}
 					});
 
@@ -287,6 +354,12 @@ public class House extends ListActivity implements IMessageHandler,
 	protected void onResume() {
 		super.onResume();
 		app.setCurrentActivity(this);
+
+		// 3. 此时向服务端发送refresh_request
+		RefreshRequestMsg refreshReq = new RefreshRequestMsg();
+		refreshReq.setType(Constants.Type.REFRESH_REQ);
+		app.sendMessage(refreshReq);
+		Log.i(tag, "--->>> send RefreshRequestMsg =" + refreshReq.toString());
 	}
 
 	@Override

@@ -26,8 +26,6 @@ public class IndexSelect extends TabActivity {
 	private TabHost mTabHost;
 	private TabWidget mTabWidget;
 	
-	private String userName = null;
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,11 +35,6 @@ public class IndexSelect extends TabActivity {
 		app.setAboutThreadIsInterrupt(true);// 终止about thread
 
 		Intent intent = this.getIntent();
-		if(intent != null){
-			userName = intent.getStringExtra("name");
-		}else{
-			Log.e(tag, " user name is null");
-		}
 		
 		mTabHost = this.getTabHost();
 		/* 去除标签下方的白线 */
@@ -142,16 +135,6 @@ public class IndexSelect extends TabActivity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,int id) {
 									
-									// 1. 发送退出游戏通知
-									LogoutNotifyMsg logout = new LogoutNotifyMsg();
-									logout.setType(Constants.Type.LOGOUT_NOTIFY);
-									logout.setName(userName);
-									app.sendMessage(logout);
-									Log.i(tag, "--->>> send  LogoutNotifyMsg = " + logout.toString());
-									
-									
-									//断开连接
-									app.disconnect();
 									IndexSelect.this.finish();
 								}
 							});

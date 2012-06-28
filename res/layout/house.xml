@@ -37,17 +37,17 @@
             android:layout_height="20dip"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:text="欢迎您！"
             android:gravity="right"
-            android:paddingRight="15dip"
             android:paddingBottom="2dip"
+            android:paddingRight="15dip"
+            android:text="欢迎您！"
             android:textColor="@android:color/white" >
         </TextView>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="300dip"
+        android:layout_height="fill_parent"
         android:layout_weight="1"
         android:background="@drawable/frame" >
 
@@ -112,16 +112,34 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="55dip"
-        android:background="@drawable/gridview_background" >
+        android:background="@drawable/gridview_background"
+        android:gravity="center" >
 
-        <Button
-            android:id="@+id/house_quick_select_btn"
-            android:layout_width="120dip"
-            android:layout_height="60dip"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="快速加入"
-            android:textSize="20dip" />
+        <RelativeLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="260dip"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" >
+
+            <Button
+                android:id="@+id/house_quick_select_btn"
+                android:layout_width="120dip"
+                android:layout_height="60dip"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="快速加入"
+                android:textSize="20dip" />
+
+            <Button
+                android:id="@+id/house_refresh_btn"
+                android:layout_width="120dip"
+                android:layout_height="60dip"
+                android:layout_alignParentLeft="true"
+                android:gravity="center"
+                android:text="大厅刷新"
+                android:textSize="20dip" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </LinearLayout>

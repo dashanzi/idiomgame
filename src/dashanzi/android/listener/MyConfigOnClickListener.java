@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.TextView;
 import dashanzi.android.Constants;
+import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 import dashanzi.android.db.DBUtil;
 import dashanzi.android.dto.ServerInfo;
@@ -42,6 +44,10 @@ public class MyConfigOnClickListener implements OnClickListener {
 
 			final EditText serverIpEt = (EditText) textEntryView
 					.findViewById(R.id.config_server_ip_edit_text);
+			
+			//显示当前ip
+			TextView currentIp = (TextView)textEntryView.findViewById(R.id.current_server_ip_show);
+			currentIp.setText(DBUtil.getServerInfo(context).getIp());
 
 			// 操作
 			builder.setPositiveButton("完成",
@@ -55,7 +61,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 									|| serverIpEt.getText() == null) {
 								Log.e(tag, "ip is null");
 								ToastUtil.toast(context,
-										"Ip形式错误! 参考：210.75.225.158",
+										"Ip形式错误! 参考：175.41.135.231",
 										android.R.drawable.ic_dialog_alert);
 								formatCorrect = false;
 								return;
@@ -66,7 +72,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 							if (!temp_ip.contains(".")) {
 								Log.e(tag, "format error 111 not contains '.' ");
 								ToastUtil.toast(context,
-										"Ip形式错误! 参考：210.75.225.158",
+										"Ip形式错误! 参考：175.41.135.231",
 										android.R.drawable.ic_dialog_alert);
 								formatCorrect = false;
 								return;
@@ -79,7 +85,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 								if(v.length!=4){
 									Log.e(tag, "format error 222 not four block");
 									ToastUtil.toast(context,
-											"Ip形式错误! 参考：210.75.225.158",
+											"Ip形式错误! 参考：175.41.135.231",
 											android.R.drawable.ic_dialog_alert);
 									formatCorrect = false;
 									return;
@@ -94,7 +100,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 								e1.printStackTrace();
 								Log.e(tag, "format error 333 ip format error! ");
 								ToastUtil.toast(context,
-										"Ip形式错误! 参考：210.75.225.158",
+										"Ip形式错误! 参考：175.41.135.231",
 										android.R.drawable.ic_dialog_alert);
 								formatCorrect = false;
 								return;
@@ -107,6 +113,13 @@ public class MyConfigOnClickListener implements OnClickListener {
 								dto.setIp(temp_ip);
 								dto.setPort(Constants.DataBase.DEFAULT_PORT);
 								boolean actionResult = DBUtil.setServerInfo(context, dto);
+								
+								//close socket
+								IdiomGameApp app = (IdiomGameApp) context.getApplication();
+								
+								//每次配置ip后，要断开连接
+								app.disconnect();
+								
 								if(actionResult){
 									ToastUtil.toast(context, "配置成功!", 0);
 								}else{

@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -44,8 +45,9 @@ public class NetworkService extends Service {
 	public void connect(String ip, int port) {
 		try {
 			// 1. connect
-			socket = new Socket(ip, port);
+			socket = new Socket();
 			// socket.setSoTimeout(5000);
+			socket.connect(new InetSocketAddress(ip, port), 10000);
 			is = new BufferedReader(new InputStreamReader(
 					socket.getInputStream()));
 			// os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
@@ -82,15 +84,20 @@ public class NetworkService extends Service {
 			intent.setAction("android.intent.action.test");
 			sendBroadcast(intent);
 			// TODO Auto-generated catch block
-//			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 	}
 
 	public void sendMessage(IMessage msg) {
-		Log.i("==NET==","socket.isConnected()="+socket.isConnected());
-		Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
-		if (socket.isConnected()) {
+		if (socket != null) {// edited by juzm TODO
+			Log.i("==NET==", "socket.isConnected()=" + socket.isConnected());
+			Log.i("==NET==",
+					"socket.isOutputShutdown()=" + socket.isOutputShutdown());
+		}
+
+		if (socket != null && socket.isConnected()) {// edited by juzm socket !=
+														// null TODO
 			if (!socket.isOutputShutdown()) {
 				// os.print("Are you sb?");
 
@@ -98,22 +105,22 @@ public class NetworkService extends Service {
 					// socket.getOutputStream()
 					// .write("{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"zhangsan\",\"gid\":\"g01\"}}\r\n"
 					// .getBytes("utf-8"));
-					Log.i("==NET==","write 1");
+					Log.i("==NET==", "write 1");
 					socket.getOutputStream().write(
 							Beans2JsonUtil.getJsonStr(msg).getBytes("utf-8"));
-					Log.i("==NET==","write 2");
+					Log.i("==NET==", "write 2");
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
-//					Log.i("==NET==","socket.isConnected()="+socket.isConnected());
-//					Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
-					
+					// Log.i("==NET==","socket.isConnected()="+socket.isConnected());
+					// Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
+
 					Intent intent = new Intent();
 					intent.putExtra("status", "error");
 					intent.putExtra("code", "2");
 					intent.setAction("android.intent.action.test");
 					sendBroadcast(intent);
-					
+
 					e.printStackTrace();
 				}
 
@@ -123,6 +130,10 @@ public class NetworkService extends Service {
 
 	public void disconnect() {
 		try {
+			// edited by juzm TODO
+			if (socket == null || socket.isClosed() == true) {
+				return;
+			}
 			socket.close();
 			is.close();
 			os.close();
@@ -140,7 +151,7 @@ public class NetworkService extends Service {
 		Log.i("==NET==", "message received: " + strMsg);
 
 		Intent intent = new Intent();
-		intent.putExtra("status", "oks");
+		intent.putExtra("status", "ok");
 		intent.putExtra("msg", strMsg);
 		intent.setAction("android.intent.action.test");
 		sendBroadcast(intent);
@@ -151,14 +162,16 @@ public class NetworkService extends Service {
 
 		@Override
 		public void run() {
-			Log.i("==NET==","socket.isConnected()="+socket.isConnected());
-			Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
+			Log.i("==NET==", "socket.isConnected()=" + socket.isConnected());
+			Log.i("==NET==",
+					"socket.isOutputShutdown()=" + socket.isOutputShutdown());
 			String content;
 			while (readFlag) {
 				if (socket.isConnected()) {
 					if (!socket.isInputShutdown()) {
 						try {
-							if ((content = is.readLine()) != null) {
+							if (is != null && (!socket.isClosed())
+									&& (content = is.readLine()) != null) {
 								System.out.println("content => " + content);
 								onMessageRecevied(content);
 							} else {

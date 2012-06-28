@@ -362,14 +362,7 @@ public class Game extends Activity implements IMessageHandler,
 
 		// 查看玩家信息
 		if (msg instanceof GetUserInfoResponseMsg) {
-			// 判断游戏是否就绪
-			if (!this.isGameReady()) {
-				Log.e(tag,
-						"revieve TimeoutResponseMsg || HelpResponseMsg, but game is not ready !!");
-				ToastUtil.toast(this, "不在游戏中,禁止查看!",
-						android.R.drawable.ic_dialog_alert);
-				return;
-			}
+			
 			GetUserInfoResponseMsg resp = (GetUserInfoResponseMsg) msg;
 			Log.i(tag, "<<<---  GetUserInfoResponseMsg  = " + resp.toString());
 

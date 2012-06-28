@@ -10,19 +10,35 @@
         android:layout_height="fill_parent"
         >
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/relativeLayout1"
             android:layout_width="200dip"
-            android:layout_height="100dip"
+            android:layout_height="150dip"
             android:layout_centerInParent="true"
+            android:orientation="vertical"
             >
 
             <TextView
+                android:id="@+id/current_server_ip_textview"
+                android:layout_width="fill_parent"
+                android:layout_height="25dip"
+                android:gravity="left"
+                android:text="当前服务器IP："
+                android:textColor="@android:color/white"
+                android:textSize="15dip" />
+            <TextView
+                android:id="@+id/current_server_ip_show"
+                android:layout_width="fill_parent"
+                android:layout_height="25dip"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="15dip" />
+            <TextView
                 android:id="@+id/config_server_ip_textview"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="35dip"
                 android:gravity="left"
-                android:text="服务器IP："
+                android:text="配置服务器IP："
                 android:textColor="@android:color/white"
                 android:textSize="20dip" />
 
@@ -30,8 +46,8 @@
                 android:id="@+id/config_server_ip_edit_text"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/config_server_ip_textview" />
-        </RelativeLayout>
+                />
+        </LinearLayout>
     </RelativeLayout>
 
 </LinearLayout>
