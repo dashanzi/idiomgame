@@ -44,7 +44,31 @@ public class NetworkService extends Service {
 			Log.i("==NET==", "connected");
 
 			// 2. start reader
-			new Thread(readerThread).start();
+			// new Thread(readerThread).start();
+
+			Log.i("==NET==", "socket.isConnected()=" + socket.isConnected());
+			Log.i("==NET==",
+					"socket.isOutputShutdown()=" + socket.isOutputShutdown());
+			String content;
+			while (readFlag) {
+				if (socket.isConnected()) {
+					if (!socket.isInputShutdown()) {
+						try {
+							if (is != null && (!socket.isClosed())
+									&& (content = is.readLine()) != null) {
+								System.out.println("content => " + content);
+								onMessageRecevied(content);
+							} else {
+
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+			Log.i("==NET==", "reader ended");
+
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -92,14 +116,15 @@ public class NetworkService extends Service {
 
 	public void disconnect() {
 		try {
+			readFlag = false;
 			// edited by juzm TODO
-			if (socket == null || socket.isClosed() == true || is == null || os == null) {
+			if (socket == null || socket.isClosed() == true || is == null
+					|| os == null) {
 				return;
 			}
 			socket.close();
 			is.close();
 			os.close();
-			readFlag = false;
 			Log.i("==NET==",
 					"socket closed: socket.isClosed=" + socket.isClosed()
 							+ ", socket.isConnected=" + socket.isConnected());
@@ -124,27 +149,6 @@ public class NetworkService extends Service {
 
 		@Override
 		public void run() {
-			Log.i("==NET==", "socket.isConnected()=" + socket.isConnected());
-			Log.i("==NET==",
-					"socket.isOutputShutdown()=" + socket.isOutputShutdown());
-			String content;
-			while (readFlag) {
-				if (socket.isConnected()) {
-					if (!socket.isInputShutdown()) {
-						try {
-							if (is != null && (!socket.isClosed())
-									&& (content = is.readLine()) != null) {
-								System.out.println("content => " + content);
-								onMessageRecevied(content);
-							} else {
-
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
 
 		}
 
@@ -156,7 +160,7 @@ public class NetworkService extends Service {
 		Log.i("==NET==", "service created");
 		super.onCreate();
 	}
-	
+
 	public IBinder onBind(Intent intent) {
 		// Log.i("NetworkService", "service onBind");
 		return binder;
@@ -176,7 +180,7 @@ public class NetworkService extends Service {
 		readFlag = false;
 		super.onDestroy();
 	}
-	
+
 	// ------------- inner classes ----------------------------
 	public class MyBinder extends Binder {
 		public NetworkService getService() {
