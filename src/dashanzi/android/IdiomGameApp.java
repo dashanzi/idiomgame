@@ -16,28 +16,32 @@ import dashanzi.android.activity.IConnectHandler;
 import dashanzi.android.activity.IExceptionHandler;
 import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
-import dashanzi.android.service.NetworkService;
+import dashanzi.android.service.ReceiverService;
+import dashanzi.android.service.SenderService;
 import dashanzi.android.util.Json2BeansUtil;
 
 public class IdiomGameApp extends Application {
 	private IMessageHandler currentActivity;
-	private NetworkService networkService;
+	// private NetworkService networkService;
+	private SenderService senderService;
+	private ReceiverService receiverService;
+	private MyReceiver receiver;
+	private ServiceConnection scSender;
+	private ServiceConnection scReceiver;
 	private boolean aboutThreadIsInterrupt = false;
 
 	private String serverIp = "127.0.0.1";
 	private int serverPort = 12345;
-	private IConnectHandler handler;
 
 	// add TODO
 	private String lastRegisterName;
 	private int[] femaleHeaderIdArray = { R.drawable.g000, R.drawable.g001,
 			R.drawable.g002, R.drawable.g003, R.drawable.g004, R.drawable.g005,
 			R.drawable.g006, R.drawable.g007, R.drawable.g008 };
-	
-	
+
 	private int[] manHeaderIdArray = { R.drawable.b000, R.drawable.b001,
 			R.drawable.b002, R.drawable.b003, R.drawable.b004, R.drawable.b005,
-			R.drawable.b006, R.drawable.b007, R.drawable.b008};
+			R.drawable.b006, R.drawable.b007, R.drawable.b008 };
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -48,33 +52,41 @@ public class IdiomGameApp extends Application {
 	 * used by all activities
 	 */
 	public void sendMessage(IMessage msg) {
-		if (networkService == null) {
+		if (senderService == null) {
+			exceptionCaught(-2, "");
 			Log.e("==APP==", "networkService == NULL");
 		} else {
-			networkService.sendMessage(msg);
+			senderService.sendMessage(msg);
 		}
 	}
 
-	/**
-	 * used by all welcome activity
-	 */
-	public void connect(IConnectHandler handler) {
-		if (networkService == null) {
-			this.handler = handler;
-			initService();
-		} else {
-			Log.i("==APP==", "service already binded, reusing...");
-			handler.handle();
+	public boolean doConnect(String ip, int port) {
+		this.serverIp = ip;
+		this.serverPort = port;
+
+		if (doBindService()) {
+			doRegisterReceiver();
+			if (senderService.connect(ip, port)) {
+				return true;
+			} else {
+				doUnregisterReceiver();
+			}
 		}
-		// connnectService();
+
+		return false;
 	}
 
-	public void disconnect() {
-		// TODO edit by juzm
-		if (networkService != null) {
-			networkService.disconnect();
-			destroyService();
-			networkService = null;
+	public void doDisconnect() {
+		// stop receiving before close connection!
+		if (receiverService != null) {
+			receiverService.stopReceiving();
+			unbindService(scReceiver);
+			receiverService = null;
+		}
+		if (senderService != null) {
+			senderService.disconnect();
+			unbindService(scSender);
+			senderService = null;
 		}
 	}
 
@@ -88,42 +100,103 @@ public class IdiomGameApp extends Application {
 		currentActivity.onMesssageReceived(msg);
 	}
 
-	private void initService() {
-		// 1. init service
-		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, connection, Context.BIND_AUTO_CREATE);
-		Log.i("==APP==", "service binded");
+	private boolean doBindService() {
+		Intent itSender = new Intent(this, SenderService.class);
+		Intent itReceiver = new Intent(this, ReceiverService.class);
+		int i;
 
-		// 2. reg receiver
-		MyReceiver receiver = new MyReceiver();
+		scSender = new ServiceConnection() {
+
+			public void onServiceDisconnected(ComponentName name) {
+				senderService = null;
+			}
+
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.i("==APP==", "sender service connected");
+				senderService = ((SenderService.MyBinder) service).getService();
+
+				// senderService.connect(serverIp, serverPort);
+				// System.out.println("service=" + networkService);
+
+				// IdiomGameApp.this.handler.handle();
+				// networkService.test();
+			}
+		};
+
+		scReceiver = new ServiceConnection() {
+
+			public void onServiceDisconnected(ComponentName name) {
+				receiverService = null;
+			}
+
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.i("==APP==", "receiver service connected");
+				receiverService = ((ReceiverService.MyBinder) service)
+						.getService();
+
+				// networkService.connect(serverIp, serverPort);
+
+				// IdiomGameApp.this.handler.handle();
+			}
+		};
+
+		if (!bindService(itSender, scSender, Context.BIND_AUTO_CREATE)) {
+			unbindService(scSender);
+			return false;
+		}
+		if (!bindService(itReceiver, scReceiver, Context.BIND_AUTO_CREATE)) {
+			unbindService(scReceiver);
+			return false;
+		}
+
+		for (i = 0; i < 3; i++) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (senderService != null && receiverService != null) {
+				break;
+			}
+		}
+
+		if (i == 3) {
+
+			// network error
+			Log.e("==APP==", "scSender=" + senderService + ", scReceiver="
+					+ receiverService);
+
+			unbindService(scSender);
+			Log.e("==APP==", "sender service unbinded");
+
+			unbindService(scReceiver);
+			Log.e("==APP==", "receiver service unbinded");
+
+			exceptionCaught(-1, "");
+			return false;
+		}
+
+		Log.i("==APP==", "sender service binded");
+		Log.i("==APP==", "receiver service binded");
+		return true;
+	}
+
+	private void doRegisterReceiver() {
+		receiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.test");
 		IdiomGameApp.this.registerReceiver(receiver, filter);
 		Log.i("==APP==", "receiver registered");
-
 	}
 
-	private void destroyService() {
-		unbindService(connection);
+	private void doUnregisterReceiver() {
+		IdiomGameApp.this.unregisterReceiver(receiver);
+		Log.i("==APP==", "receiver unregistered");
 	}
 
-	private ServiceConnection connection = new ServiceConnection() {
-
-		public void onServiceDisconnected(ComponentName name) {
-			networkService = null;
-		}
-
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			Log.i("==APP==", "service connected");
-			networkService = ((NetworkService.MyBinder) service).getService();
-
-			networkService.connect(serverIp, serverPort);
-			// System.out.println("service=" + networkService);
-
-			IdiomGameApp.this.handler.handle();
-			// networkService.test();
-		}
-	};
+	private void exceptionCaught(int code, String reason) {
+		((IExceptionHandler) currentActivity).exceptionCatch();
+	}
 
 	public class MyReceiver extends BroadcastReceiver {
 		@Override
@@ -143,11 +216,13 @@ public class IdiomGameApp extends Application {
 			} else if (strStatus.equals("error")) {
 				String strCode = bundle.getString("code");
 				if (strCode.equals("1")) {// connection error
-					disconnect();
-					((IExceptionHandler) currentActivity).exceptionCatch();
+					// disconnect();
+					exceptionCaught(1, "");
+					// ((IExceptionHandler) currentActivity).exceptionCatch();
 				} else if (strCode.equals("2")) {// send message error
-					disconnect();
-					((IExceptionHandler) currentActivity).exceptionCatch();
+					// disconnect();
+					exceptionCaught(2, "");
+					// ((IExceptionHandler) currentActivity).exceptionCatch();
 				}
 			}
 		}
