@@ -201,30 +201,25 @@ public class Register extends Activity implements IMessageHandler,
 				Log.e(tag, " DBUtil.getServerInfo error !");
 				return;
 			}
-			app.setServerIp(dto.getIp());
-			app.setServerPort(dto.getPort());
 			Log.e(tag,
 					" Register  IP = " + dto.getIp() + ": PORT = "
 							+ dto.getPort());
 
-			app.connect(new IConnectHandler() {
-
-				@Override
-				public void handle() {
-					req.setName(name.getText().toString());
-					req.setPassword(password.getText().toString());
-					req.setGender(gender_select);
-					req.setType(Constants.Type.REGISTER_REQ);
-					if(req.getHeaderImageId()==null){
-						//说明没有主动设置头像
-						req.setHeaderImageId("0");//设置默认第一个
-					}
-					app.sendMessage(req);
-					Log.i(tag,
-							"--->>> send RegisterRequestMsg = "
-									+ req.toString());
+			if(app.doConnect(dto.getIp(),dto.getPort())){
+				req.setName(name.getText().toString());
+				req.setPassword(password.getText().toString());
+				req.setGender(gender_select);
+				req.setType(Constants.Type.REGISTER_REQ);
+				if(req.getHeaderImageId()==null){
+					//说明没有主动设置头像
+					req.setHeaderImageId("0");//设置默认第一个
 				}
-			});
+				app.sendMessage(req);
+				Log.i(tag,
+						"--->>> send RegisterRequestMsg = "
+								+ req.toString());
+			}
+			
 		}
 	}
 

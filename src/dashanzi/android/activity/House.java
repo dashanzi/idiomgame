@@ -322,7 +322,7 @@ public class House extends ListActivity implements IMessageHandler,
 									+ logout.toString());
 
 							// 断开连接 disconnect
-							app.disconnect();
+							app.doDisconnect();
 
 							// finish activity
 							House.this.finish();

@@ -118,7 +118,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 								IdiomGameApp app = (IdiomGameApp) context.getApplication();
 								
 								//每次配置ip后，要断开连接
-								app.disconnect();
+								app.doDisconnect();
 								
 								if(actionResult){
 									ToastUtil.toastAlert(context, "配置成功!", 0);

@@ -153,21 +153,15 @@ public class Login extends Activity implements IMessageHandler,
 				Log.e(tag, " DBUtil.getServerInfo error !");
 				return;
 			}
-			app.setServerIp(dto.getIp());
-			app.setServerPort(dto.getPort());
 
 			Log.e(tag,
 					" Login  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
-			app.connect(new IConnectHandler() {
-				public void handle() {
-
-					// 连接成功后，向服务端发送登陆请求
-					Log.i(tag, "---->>> connect success !! send LogMsg = "
-							+ loginMsg.toString());
-					app.sendMessage(loginMsg);
-				}
-
-			});
+			if(app.doConnect(dto.getIp(),dto.getPort())){
+				// 连接成功后，向服务端发送登陆请求
+				Log.i(tag, "---->>> connect success !! send LogMsg = "
+						+ loginMsg.toString());
+				app.sendMessage(loginMsg);
+			}
 
 			// 显示加载动画
 			initImage(loading_ll);
