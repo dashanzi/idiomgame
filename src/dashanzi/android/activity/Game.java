@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -54,6 +55,7 @@ import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
+import dashanzi.android.util.FormatUtil;
 import dashanzi.android.util.ToastUtil;
 
 public class Game extends Activity implements IMessageHandler,
@@ -129,16 +131,17 @@ public class Game extends Activity implements IMessageHandler,
 		gid = intent.getStringExtra("gid");
 		myUid = intent.getStringExtra("uid");
 		String help_num = intent.getStringExtra("helpNum");
-		helpNum = Integer.parseInt(help_num.trim());
+		helpNum = FormatUtil.String2Int(help_num.trim());
 
 		this.setTitle("成语接龙" + "-" + gid + "号房间");
 
 		// 3. 向服务端发送刷新房间信息请求
+		
 		RefreshRoomRequestMsg req = new RefreshRoomRequestMsg();
 		req.setType(Constants.Type.REFRESHROOM_REQ);
 		req.setGid(gid);
 		app.sendMessage(req);
-		Log.i(tag, "--->>> send RefreshRoomRequestMsg = " + req.toString());
+		Log.e(tag, " oncreate --->>> send RefreshRoomRequestMsg = " + req.toString());
 
 	}
 
@@ -156,9 +159,6 @@ public class Game extends Activity implements IMessageHandler,
 	int[] playerHeaderArray = { R.id.game_player_one_header_image,
 			R.id.game_player_two_header_image,
 			R.id.game_player_three_header_image };
-	// TODO
-	int[] headerImageArray = { R.drawable.player_1, R.drawable.player_2,
-			R.drawable.player_3 };
 
 	Map<Integer, String> positionUidMap = new HashMap<Integer, String>();
 
@@ -172,8 +172,13 @@ public class Game extends Activity implements IMessageHandler,
 		// 刷新房间信息
 		if (msg instanceof RefreshRoomResponseMsg) {
 			RefreshRoomResponseMsg resp = (RefreshRoomResponseMsg) msg;
-			Log.i(tag, "<<<---  RefreshRoomResponseMsg  = " + resp.toString());
+			Log.e(tag, "<<<---  RefreshRoomResponseMsg  = " + resp.toString());
 			List<User> users = resp.getUsers();
+			if (users == null) {
+				Log.e(tag, "users null");
+				return;
+			}
+
 			if (users.size() > Constants.Player.PLAYER_NUM) {
 				Log.e(tag, "users.size()>3");
 				return;
@@ -189,7 +194,7 @@ public class Game extends Activity implements IMessageHandler,
 				req.setGid(gid);
 				app.sendMessage(req);
 				Log.i(tag,
-						"--->>> send RefreshRoomRequestMsg = " + req.toString());
+						"--->>> send StartRequestMsg = " + req.toString());
 			}
 
 			// 显示玩家信息
@@ -420,7 +425,7 @@ public class Game extends Activity implements IMessageHandler,
 			return last_uid;
 		}
 		try {
-			int current_uid = Integer.parseInt(uid.substring(uid.length() - 1));
+			int current_uid = FormatUtil.String2Int(uid.substring(uid.length() - 1));
 			switch (current_uid) {
 			case Constants.Player.PlAYER_ONE:// 当前玩家1
 				last_uid = Constants.Player.PlAYER_THREE;// 上一个玩家应该为3
@@ -487,7 +492,7 @@ public class Game extends Activity implements IMessageHandler,
 		for (User user : userList) {
 			String tempUid = user.getUid();
 			String index = user.getUid().substring(tempUid.length() - 1);
-			int position = Integer.parseInt(index);
+			int position = FormatUtil.String2Int(index);
 
 			// 记录imageBtn与uid的关系
 			positionUidMap.put(position, tempUid);
@@ -500,7 +505,7 @@ public class Game extends Activity implements IMessageHandler,
 			TextView playerScore = (TextView) findViewById(playerScoreArray[position]);
 			playerScore.setText(user.getScore());
 
-			// 用户头像 
+			// 用户头像
 			ImageButton headerImage = (ImageButton) findViewById(playerHeaderArray[position]);
 			if (user.getGender() == null) {
 				Log.e(tempUid, "gender is null ! uid =" + tempUid);
@@ -511,10 +516,10 @@ public class Game extends Activity implements IMessageHandler,
 				return;
 			}
 
-			if (Integer.parseInt(user.getGender()) == Constants.Player.MAN) {
+			if (FormatUtil.String2Int(user.getGender()) == Constants.Player.MAN) {
 				headerImage.setImageResource(app.getManHeaderIdArray()[Integer
 						.parseInt(user.getHeaderImageId())]);
-			} else if (Integer.parseInt(user.getGender()) == Constants.Player.FEMALE) {
+			} else if (FormatUtil.String2Int(user.getGender()) == Constants.Player.FEMALE) {
 				headerImage
 						.setImageResource(app.getFemaleHeaderIdArray()[Integer
 								.parseInt(user.getHeaderImageId())]);
@@ -800,6 +805,11 @@ public class Game extends Activity implements IMessageHandler,
 			req.setGid(gid);
 
 			int tag = (Integer) v.getTag();
+			String uid = positionUidMap.get(tag);
+			if(uid == null){
+				Log.e("Game", " press space header !!");
+				return;
+			}
 			req.setUid(positionUidMap.get(tag));// tag与uid末尾对应
 			app.sendMessage(req);
 			Log.i(Game.this.tag,
@@ -880,6 +890,7 @@ public class Game extends Activity implements IMessageHandler,
 				quitNotify.setGid(gid);
 				quitNotify.setUid(myUid);
 				app.sendMessage(quitNotify);
+				Log.e(tag, "--->>> send QuitNotifyMsg = " + quitNotify.toString());
 
 				// 2. 终止timer
 				stopTimer();
@@ -950,6 +961,20 @@ public class Game extends Activity implements IMessageHandler,
 
 			return tv;
 		}
+	}
+	
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		// TODO Auto-generated method stub
+		if (newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.game);
+            //横屏
+        } else {
+            setContentView(R.layout.game);//竖屏
+        }
+       
+        super.onConfigurationChanged(newConfig);
 	}
 
 	/********************************************************************************************************************************

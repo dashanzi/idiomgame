@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
 import dashanzi.android.Constants;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
@@ -143,8 +144,14 @@ public class Json2BeansUtil {
 		result.setHelpNum(body.getString("helpNum"));
 
 		// List<User>
+		List<User> users = null;
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
+
 		JSONArray listJson = body.getJSONArray("users");
-		List<User> users = new ArrayList<User>();
+		users = new ArrayList<User>();
 
 		for (int i = 0; i < listJson.length(); i++) {
 
@@ -184,6 +191,10 @@ public class Json2BeansUtil {
 		result.setNextUid(body.getString("nextuid"));
 
 		// List<User>
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
 		JSONArray listJson = body.getJSONArray("users");
 		List<User> users = new ArrayList<User>();
 
@@ -194,6 +205,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -223,6 +236,11 @@ public class Json2BeansUtil {
 		result.setNextUid(body.getString("nextuid"));
 
 		// List<User>
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
+
 		JSONArray listJson = body.getJSONArray("users");
 		List<User> users = new ArrayList<User>();
 
@@ -233,6 +251,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -255,8 +275,13 @@ public class Json2BeansUtil {
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
 		// List<User>
+		List<User> users = null;
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
 		JSONArray listJson = body.getJSONArray("users");
-		List<User> users = new ArrayList<User>();
+		users = new ArrayList<User>();
 
 		for (int i = 0; i < listJson.length(); i++) {
 
@@ -265,6 +290,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -333,7 +360,13 @@ public class Json2BeansUtil {
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
 		// List<User>
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
+
 		JSONArray listJson = body.getJSONArray("users");
+
 		List<User> users = new ArrayList<User>();
 
 		for (int i = 0; i < listJson.length(); i++) {
@@ -377,6 +410,11 @@ public class Json2BeansUtil {
 		result.setWord(body.getString("firstword"));
 
 		// List<User>
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
+
 		JSONArray listJson = body.getJSONArray("users");
 		List<User> users = new ArrayList<User>();
 
@@ -387,6 +425,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);
@@ -445,6 +485,10 @@ public class Json2BeansUtil {
 		result.setNextuid(body.getString("nextuid"));
 
 		// List<User>
+		if (body.isNull("users")) {
+			Log.e("USERS ARRAY NULL", "");
+			return result;
+		}
 		JSONArray listJson = body.getJSONArray("users");
 		List<User> users = new ArrayList<User>();
 
@@ -455,6 +499,8 @@ public class Json2BeansUtil {
 			user.setUid(userJson.getString("uid"));
 			user.setName(userJson.getString("name"));
 			user.setScore(userJson.getString("score"));
+			user.setGender(userJson.getString("gender"));
+			user.setHeaderImageId(userJson.getString("headerImageId"));
 			users.add(user);
 		}
 		result.setUsers(users);

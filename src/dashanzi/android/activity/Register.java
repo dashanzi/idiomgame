@@ -172,8 +172,8 @@ public class Register extends Activity implements IMessageHandler,
 			app.setLastRegisterName(name.getText().toString());
 
 			ToastUtil.toast(this, "注册成功!", R.drawable.game_idiom_check_correct);
-		} else {
-			ToastUtil.toast(this, "注册失败!", android.R.drawable.ic_dialog_alert);
+		} else if(resp.getStatus().equals(Constants.Response.FAILED)){
+			ToastUtil.toast(this, "账号已被注册!请选择其他账号!", android.R.drawable.ic_dialog_alert);
 		}
 	}
 

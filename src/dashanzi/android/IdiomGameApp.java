@@ -22,6 +22,7 @@ import dashanzi.android.util.Json2BeansUtil;
 public class IdiomGameApp extends Application {
 	private IMessageHandler currentActivity;
 	private NetworkService networkService;
+	private MyReceiver receiver;
 	private boolean aboutThreadIsInterrupt = false;
 
 	private String serverIp = "127.0.0.1";
@@ -33,11 +34,10 @@ public class IdiomGameApp extends Application {
 	private int[] femaleHeaderIdArray = { R.drawable.g000, R.drawable.g001,
 			R.drawable.g002, R.drawable.g003, R.drawable.g004, R.drawable.g005,
 			R.drawable.g006, R.drawable.g007, R.drawable.g008 };
-	
-	
+
 	private int[] manHeaderIdArray = { R.drawable.b000, R.drawable.b001,
 			R.drawable.b002, R.drawable.b003, R.drawable.b004, R.drawable.b005,
-			R.drawable.b006, R.drawable.b007, R.drawable.b008};
+			R.drawable.b006, R.drawable.b007, R.drawable.b008 };
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -72,9 +72,11 @@ public class IdiomGameApp extends Application {
 	public void disconnect() {
 		// TODO edit by juzm
 		if (networkService != null) {
+			IdiomGameApp.this.unregisterReceiver(receiver);
 			networkService.disconnect();
 			destroyService();
 			networkService = null;
+			receiver = null;
 		}
 	}
 
@@ -84,6 +86,7 @@ public class IdiomGameApp extends Application {
 			Log.i("==APP==", "message length=0");
 			return;
 		}
+		Log.i("==APP==", "onMessageReceived => " + s);
 		IMessage msg = Json2BeansUtil.getMessageFromJsonStr(s);
 		currentActivity.onMesssageReceived(msg);
 	}
@@ -95,7 +98,7 @@ public class IdiomGameApp extends Application {
 		Log.i("==APP==", "service binded");
 
 		// 2. reg receiver
-		MyReceiver receiver = new MyReceiver();
+		receiver = new MyReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.intent.action.test");
 		IdiomGameApp.this.registerReceiver(receiver, filter);
