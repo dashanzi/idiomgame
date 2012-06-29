@@ -25,11 +25,8 @@ public class Voice extends Activity implements OnClickListener,
 		RecognizerDialogListener {
 	private static final String TAG = "IatDemoActivity";
 
-	private TextView mCategoryText;
 	private EditText mResultText;
 	private SharedPreferences mSharedPreferences;
-	
-	private String result = null;
 	
 	private RecognizerDialog iatDialog;
 	@Override
@@ -41,15 +38,12 @@ public class Voice extends Activity implements OnClickListener,
 		((TextView) findViewById(android.R.id.title))
 				.setGravity(Gravity.CENTER);
 
-		mCategoryText = (TextView) findViewById(R.id.categoty);
-		mCategoryText.setVisibility(View.VISIBLE);
 		Button iatButton = (Button) findViewById(android.R.id.button1);
 		iatButton.setOnClickListener(this);
 		iatButton.setText("开始");
 		mResultText = (EditText) findViewById(R.id.txt_result);
 		iatDialog = new RecognizerDialog(this, "appid=" + getString(R.string.app_id));
 		iatDialog.setListener(this);
-
 		
 		mSharedPreferences = getSharedPreferences(getPackageName(),
 				MODE_PRIVATE);
@@ -58,20 +52,6 @@ public class Voice extends Activity implements OnClickListener,
 	@Override
 	protected void onStart() {
 		super.onStart();
-
-		String engine = mSharedPreferences.getString(
-				getString(R.string.preference_key_iat_engine),
-				getString(R.string.preference_default_iat_engine));
-//		String[] engineEntries = getResources().getStringArray(
-//				R.array.preference_entries_iat_engine);
-//		String[] engineValues = getResources().getStringArray(
-//				R.array.preference_values_iat_engine);
-//		for (int i = 0; i < engineValues.length; i++) {
-//			if (engineValues[i].equals(engine)) {
-//				mCategoryText.setText(engineEntries[i]);
-//				break;
-//			}
-//		}
 	}
 
 	@Override
@@ -79,9 +59,6 @@ public class Voice extends Activity implements OnClickListener,
 		switch (v.getId()) {
 		case android.R.id.button1:
 			showIatDialog();
-			break;
-		case android.R.id.button2:
-//			startActivity(new Intent(this, IatPreferenceActivity.class));
 			break;
 		default:
 			break;
@@ -94,26 +71,8 @@ public class Voice extends Activity implements OnClickListener,
 				getString(R.string.preference_key_iat_engine),
 				getString(R.string.preference_default_iat_engine));
 
-		String area = null;
-//		if (IatPreferenceActivity.ENGINE_POI.equals(engine)) {
-//			final String defaultProvince = getString(R.string.preference_default_poi_province);
-//			String province = mSharedPreferences.getString(
-//					getString(R.string.preference_key_poi_province),
-//					defaultProvince);
-//			final String defaultCity = getString(R.string.preference_default_poi_city);
-//			String city = mSharedPreferences.getString(
-//					getString(R.string.preference_key_poi_city),
-//					defaultCity);
-//
-//			if (!defaultProvince.equals(province)) {
-//				area = "area=" + province;
-//				if (!defaultCity.equals(city)) {
-//					area += city;
-//				}
-//			}
-//		}
 
-		iatDialog.setEngine(engine, area, null);
+		iatDialog.setEngine(engine, null, null);
 
 		String rate = mSharedPreferences.getString(
 				getString(R.string.preference_key_iat_rate),

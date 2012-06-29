@@ -64,6 +64,12 @@
         <service
             android:name=".service.NetworkService"
             android:enabled="true" />
+        <service
+            android:name=".service.SenderService"
+            android:enabled="true" />
+        <service
+            android:name=".service.ReceiverService"
+            android:enabled="true" />
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
