@@ -1057,5 +1057,11 @@ public class Game extends Activity implements IMessageHandler,
 		ToastUtil.toastAlert(Game.this, "网络连接异常!",
 				android.R.drawable.ic_dialog_alert);
 	}
-
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		app.setCurrentActivity(this);
+	}
 }

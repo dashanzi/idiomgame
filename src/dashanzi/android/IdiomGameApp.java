@@ -12,7 +12,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import dashanzi.android.activity.IConnectHandler;
 import dashanzi.android.activity.IExceptionHandler;
 import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
