@@ -1,5 +1,12 @@
 package dashanzi.android;
 
+/**
+ * 
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class Constants {
 
 	public static class Game{
@@ -7,6 +14,12 @@ public class Constants {
 		public static final int PLAYER_1_IMAGEBTN_TAG = 0;// 需要与uid的末尾对应
 		public static final int PLAYER_2_IMAGEBTN_TAG = 1;
 		public static final int PLAYER_3_IMAGEBTN_TAG = 2;
+		
+		// 倒计时秒数
+		public static final int COUNT_DOWN_SECOND = 60;
+		public static final int MIN_IDIOM_WORD_NUM = 3;
+		public static final int MAX_IDIOM_WORD_NUM = 16;
+		
 		// gridView
 		public static final int EXIT = 0;
 		public static final int SUBMIT = 1;

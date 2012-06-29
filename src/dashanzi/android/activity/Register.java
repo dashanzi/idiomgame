@@ -103,6 +103,32 @@ public class Register extends Activity implements IMessageHandler,
 						R.id.HeaderImage, R.id.ItemText });
 	}
 
+	/*******************************************************************************
+	 * Logic Action
+	 ******************************************************************************/
+	@Override
+	public void onMesssageReceived(IMessage msg) {
+		if (!(msg instanceof RegisterResponseMsg)) {
+			Log.e(tag, "msg instanceof RegisterResponseMsg is error !");
+			return;
+		}
+
+		RegisterResponseMsg resp = (RegisterResponseMsg) msg;
+		Log.i(tag, "<<<---  RegisterResponseMsg  = " + resp.toString());
+
+		if (resp.getStatus().equals(Constants.Response.SUCCESS)) {
+			// 在app中记录lastRegisterName
+			app.setLastRegisterName(name.getText().toString());
+
+			ToastUtil.toastAlert(this, "注册成功!", R.drawable.game_idiom_check_correct);
+		} else if(resp.getStatus().equals(Constants.Response.FAILED)){
+			ToastUtil.toastAlert(this, "账号已被注册!请选择其他账号!", android.R.drawable.ic_dialog_alert);
+		}
+	}
+
+	/*******************************************************************************
+	 * 按钮监听
+	 ******************************************************************************/
 	class MyHeaderSelectOnClickListener implements OnClickListener {
 
 		@Override
@@ -147,52 +173,25 @@ public class Register extends Activity implements IMessageHandler,
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				
-				ToastUtil.toast(Register.this, "您选择了 "+ (arg2+1)+" 号头像", 0);
+				ToastUtil.toastAlert(Register.this, "您选择了 "+ (arg2+1)+" 号头像", 0);
 				headerImageId = arg2+"";
 			}
 
 		}
 	}
-
-	/*******************************************************************************
-	 * 按钮监听
-	 ******************************************************************************/
-	@Override
-	public void onMesssageReceived(IMessage msg) {
-		if (!(msg instanceof RegisterResponseMsg)) {
-			Log.e(tag, "msg instanceof RegisterResponseMsg is error !");
-			return;
-		}
-
-		RegisterResponseMsg resp = (RegisterResponseMsg) msg;
-		Log.i(tag, "<<<---  RegisterResponseMsg  = " + resp.toString());
-
-		if (resp.getStatus().equals(Constants.Response.SUCCESS)) {
-			// 在app中记录lastRegisterName
-			app.setLastRegisterName(name.getText().toString());
-
-			ToastUtil.toast(this, "注册成功!", R.drawable.game_idiom_check_correct);
-		} else {
-			ToastUtil.toast(this, "注册失败!", android.R.drawable.ic_dialog_alert);
-		}
-	}
-
-	/*******************************************************************************
-	 * 按钮监听
-	 ******************************************************************************/
-
+	
 	class MyBtnOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
 			if (name.getText().toString() == null
 					|| name.getText().toString().trim().length() == 0) {
-				ToastUtil.toast(Register.this, "亲~账号不能为空~",
+				ToastUtil.toastAlert(Register.this, "亲~账号不能为空~",
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
 			if (password.getText().toString() == null
 					|| password.getText().toString().trim().length() == 0) {
-				ToastUtil.toast(Register.this, "亲~密码不能为空~",
+				ToastUtil.toastAlert(Register.this, "亲~密码不能为空~",
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
@@ -202,30 +201,25 @@ public class Register extends Activity implements IMessageHandler,
 				Log.e(tag, " DBUtil.getServerInfo error !");
 				return;
 			}
-			app.setServerIp(dto.getIp());
-			app.setServerPort(dto.getPort());
 			Log.e(tag,
 					" Register  IP = " + dto.getIp() + ": PORT = "
 							+ dto.getPort());
 
-			app.connect(new IConnectHandler() {
-
-				@Override
-				public void handle() {
-					req.setName(name.getText().toString());
-					req.setPassword(password.getText().toString());
-					req.setGender(gender_select);
-					req.setType(Constants.Type.REGISTER_REQ);
-					if(req.getHeaderImageId()==null){
-						//说明没有主动设置头像
-						req.setHeaderImageId("0");//设置默认第一个
-					}
-					app.sendMessage(req);
-					Log.i(tag,
-							"--->>> send RegisterRequestMsg = "
-									+ req.toString());
+			if(app.doConnect(dto.getIp(),dto.getPort())){
+				req.setName(name.getText().toString());
+				req.setPassword(password.getText().toString());
+				req.setGender(gender_select);
+				req.setType(Constants.Type.REGISTER_REQ);
+				if(req.getHeaderImageId()==null){
+					//说明没有主动设置头像
+					req.setHeaderImageId("0");//设置默认第一个
 				}
-			});
+				app.sendMessage(req);
+				Log.i(tag,
+						"--->>> send RegisterRequestMsg = "
+								+ req.toString());
+			}
+			
 		}
 	}
 
@@ -265,7 +259,7 @@ public class Register extends Activity implements IMessageHandler,
 	@Override
 	public void exceptionCatch() {
 		Log.e(tag, "socket connect exception !");
-		ToastUtil.toast(Register.this, "网络连接异常!",
+		ToastUtil.toastAlert(Register.this, "网络连接异常!",
 				android.R.drawable.ic_dialog_alert);
 	}
 }

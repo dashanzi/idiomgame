@@ -23,4 +23,16 @@
     <string name="exit">退出</string>
     <string name="about">帮助</string>
     
+    <!-- voice -->
+    <string name="app_id">4f969b02</string>
+    <string name="voice_title">语音输入</string>
+    <string
+		name="preference_key_iat_engine">iat_engine</string>
+    <string
+		name="preference_default_iat_engine">sms</string>
+    <string
+		name="preference_key_iat_rate">iat_rate</string>
+    <string
+		name="preference_default_iat_rate">rate16k</string>
+    
 </resources>

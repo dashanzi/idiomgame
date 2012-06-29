@@ -23,6 +23,7 @@ import android.widget.TextView;
 import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
+import dashanzi.android.dto.GroupComparator;
 import dashanzi.android.dto.GroupInfo;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
@@ -139,9 +140,9 @@ public class House extends ListActivity implements IMessageHandler,
 			
 			//4. 显示刷新结果
 			if(refreshBtnPressed && refreshRes.getStatus().equals(Constants.Response.SUCCESS)){
-				ToastUtil.toast(this, "刷新完毕!", R.drawable.game_idiom_check_correct);
+				ToastUtil.toastAlert(this, "刷新完毕!", R.drawable.game_idiom_check_correct);
 			}else if(refreshBtnPressed && refreshRes.getStatus().equals(Constants.Response.FAILED)){
-				ToastUtil.toast(this, "刷新失败!", android.R.drawable.ic_dialog_alert);
+				ToastUtil.toastAlert(this, "刷新失败!", android.R.drawable.ic_dialog_alert);
 			}
 			refreshBtnPressed = false;
 			
@@ -160,7 +161,7 @@ public class House extends ListActivity implements IMessageHandler,
 				startActivity(intent);
 			} else {
 				// 提示登陆失败
-				ToastUtil.toast(this, "登陆失败,请重新登陆!",
+				ToastUtil.toastAlert(this, "登陆失败,请重新登陆!",
 						android.R.drawable.ic_dialog_alert);
 			}
 		}
@@ -184,7 +185,7 @@ public class House extends ListActivity implements IMessageHandler,
 			// 判断房间是否已满，已满则提示
 			String state = groupIdStateMap.get(gid_selected);
 			if (state != null && state.trim().equals("3/3")) {
-				ToastUtil.toast(House.this, "房间已满,请选择其他房间!",
+				ToastUtil.toastAlert(House.this, "房间已满,请选择其他房间!",
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
@@ -231,7 +232,7 @@ public class House extends ListActivity implements IMessageHandler,
 				gid_selected = quickSelectHouseNum();
 
 				if (gid_selected == null) {
-					ToastUtil.toast(House.this, "所有房间已满!请稍等!",
+					ToastUtil.toastAlert(House.this, "所有房间已满!请稍等!",
 							android.R.drawable.ic_dialog_alert);
 				} else {
 					// 向服务端发送登陆房间请求
@@ -321,7 +322,7 @@ public class House extends ListActivity implements IMessageHandler,
 									+ logout.toString());
 
 							// 断开连接 disconnect
-							app.disconnect();
+							app.doDisconnect();
 
 							// finish activity
 							House.this.finish();
@@ -365,7 +366,7 @@ public class House extends ListActivity implements IMessageHandler,
 	@Override
 	public void exceptionCatch() {
 		Log.e(tag, "socket connect exception !");
-		ToastUtil.toast(House.this, "网络连接异常!",
+		ToastUtil.toastAlert(House.this, "网络连接异常!",
 				android.R.drawable.ic_dialog_alert);
 	}
 }

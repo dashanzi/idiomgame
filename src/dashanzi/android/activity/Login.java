@@ -120,7 +120,7 @@ public class Login extends Activity implements IMessageHandler,
 			Login.this.finish();
 		} else if (loginRes.getStatus().equals(Constants.Response.FAILED)) {
 			// 提示登陆失败
-			ToastUtil.toast(this, "用户名或密码错误,请重新登陆!",
+			ToastUtil.toastAlert(this, "用户名或密码错误,请重新登陆!",
 					android.R.drawable.ic_dialog_alert);
 		}
 	}
@@ -153,21 +153,15 @@ public class Login extends Activity implements IMessageHandler,
 				Log.e(tag, " DBUtil.getServerInfo error !");
 				return;
 			}
-			app.setServerIp(dto.getIp());
-			app.setServerPort(dto.getPort());
 
 			Log.e(tag,
 					" Login  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
-			app.connect(new IConnectHandler() {
-				public void handle() {
-
-					// 连接成功后，向服务端发送登陆请求
-					Log.i(tag, "---->>> connect success !! send LogMsg = "
-							+ loginMsg.toString());
-					app.sendMessage(loginMsg);
-				}
-
-			});
+			if(app.doConnect(dto.getIp(),dto.getPort())){
+				// 连接成功后，向服务端发送登陆请求
+				Log.i(tag, "---->>> connect success !! send LogMsg = "
+						+ loginMsg.toString());
+				app.sendMessage(loginMsg);
+			}
 
 			// 显示加载动画
 			initImage(loading_ll);
@@ -330,7 +324,7 @@ public class Login extends Activity implements IMessageHandler,
 	@Override
 	public void exceptionCatch() {
 		Log.e(tag, "socket connect exception !");
-		ToastUtil.toast(Login.this, "网络连接异常!",
+		ToastUtil.toastAlert(Login.this, "网络连接异常!",
 				android.R.drawable.ic_dialog_alert);
 		// 终止登陆动画
 		hasLoginResult = true;

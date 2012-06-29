@@ -60,7 +60,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 							if (serverIpEt == null
 									|| serverIpEt.getText() == null) {
 								Log.e(tag, "ip is null");
-								ToastUtil.toast(context,
+								ToastUtil.toastAlert(context,
 										"Ip形式错误! 参考：175.41.135.231",
 										android.R.drawable.ic_dialog_alert);
 								formatCorrect = false;
@@ -71,7 +71,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 
 							if (!temp_ip.contains(".")) {
 								Log.e(tag, "format error 111 not contains '.' ");
-								ToastUtil.toast(context,
+								ToastUtil.toastAlert(context,
 										"Ip形式错误! 参考：175.41.135.231",
 										android.R.drawable.ic_dialog_alert);
 								formatCorrect = false;
@@ -84,7 +84,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 								String[] v = temp.split(":");
 								if(v.length!=4){
 									Log.e(tag, "format error 222 not four block");
-									ToastUtil.toast(context,
+									ToastUtil.toastAlert(context,
 											"Ip形式错误! 参考：175.41.135.231",
 											android.R.drawable.ic_dialog_alert);
 									formatCorrect = false;
@@ -99,7 +99,7 @@ public class MyConfigOnClickListener implements OnClickListener {
 								//ip形式错误
 								e1.printStackTrace();
 								Log.e(tag, "format error 333 ip format error! ");
-								ToastUtil.toast(context,
+								ToastUtil.toastAlert(context,
 										"Ip形式错误! 参考：175.41.135.231",
 										android.R.drawable.ic_dialog_alert);
 								formatCorrect = false;
@@ -118,12 +118,12 @@ public class MyConfigOnClickListener implements OnClickListener {
 								IdiomGameApp app = (IdiomGameApp) context.getApplication();
 								
 								//每次配置ip后，要断开连接
-								app.disconnect();
+								app.doDisconnect();
 								
 								if(actionResult){
-									ToastUtil.toast(context, "配置成功!", 0);
+									ToastUtil.toastAlert(context, "配置成功!", 0);
 								}else{
-									ToastUtil.toast(context, "配置失败!", android.R.drawable.ic_dialog_alert);
+									ToastUtil.toastAlert(context, "配置失败!", android.R.drawable.ic_dialog_alert);
 								}
 							}
 						}
