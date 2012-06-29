@@ -12,6 +12,9 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.iflytek.speech.SynthesizerPlayer;
+
 import dashanzi.android.activity.IConnectHandler;
 import dashanzi.android.activity.IExceptionHandler;
 import dashanzi.android.activity.IMessageHandler;
@@ -38,6 +41,8 @@ public class IdiomGameApp extends Application {
 	private int[] manHeaderIdArray = { R.drawable.b000, R.drawable.b001,
 			R.drawable.b002, R.drawable.b003, R.drawable.b004, R.drawable.b005,
 			R.drawable.b006, R.drawable.b007, R.drawable.b008 };
+	
+//	private SynthesizerPlayer synPlayer = null;
 
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -219,4 +224,12 @@ public class IdiomGameApp extends Application {
 	public void setManHeaderIdArray(int[] manHeaderIdArray) {
 		this.manHeaderIdArray = manHeaderIdArray;
 	}
+	
+//	public SynthesizerPlayer getSynPlayer() {
+//		return synPlayer;
+//	}
+//
+//	public void setSynPlayer(SynthesizerPlayer synPlayer) {
+//		this.synPlayer = synPlayer;
+//	}
 }

@@ -7,9 +7,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+/**
+ * 
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class ToastUtil {
 
-	public static void toast(Context context, String warningString, int imageId) {
+	/**
+	 * toast提示框
+	 * @param context 上下文
+	 * @param warningString 提示内容
+	 * @param imageId 图标标识
+	 */
+	public static void toastAlert(Context context, String warningString, int imageId) {
 		Toast toast = Toast.makeText(context.getApplicationContext(),
 				warningString, Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
@@ -21,6 +34,12 @@ public class ToastUtil {
 		toast.show();
 	}
 
+	/**
+	 * 成语显示toast
+	 * @param context 上下文
+	 * @param idiom 成语
+	 * @param playerId 玩家标识
+	 */
 	public static void showIdiomToast(Context context, String idiom,
 			int playerId) {
 		Toast toast = Toast.makeText(context.getApplicationContext(), idiom,

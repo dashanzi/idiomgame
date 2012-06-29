@@ -419,6 +419,15 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/gridview_background"
             android:gravity="center" />
-    </RelativeLayout>
 
+        <ImageButton
+            android:id="@+id/voice_recognizer_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/game_idiom_write_area"
+            android:layout_toRightOf="@+id/game_idiom_write_area"
+            android:src="@drawable/clock" />
+
+    </RelativeLayout>
+    
 </LinearLayout>

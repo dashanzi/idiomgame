@@ -1,8 +1,7 @@
-package dashanzi.android.activity;
+package dashanzi.android.dto;
 
 import java.util.Comparator;
 
-import dashanzi.android.dto.GroupInfo;
 
 public class GroupComparator implements Comparator<Object> {
 

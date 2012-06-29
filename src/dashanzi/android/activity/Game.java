@@ -36,6 +36,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+
+import com.iflytek.speech.SynthesizerPlayer;
+
 import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
@@ -57,14 +60,19 @@ import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 import dashanzi.android.util.FormatUtil;
 import dashanzi.android.util.ToastUtil;
+import dashanzi.android.util.VoiceUtil;
 
+/**
+ * 
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ * 
+ */
 public class Game extends Activity implements IMessageHandler,
-		IExceptionHandler {
+		IExceptionHandler{
 
 	private final String tag = "Game";
-
-	// 倒计时秒数
-	private static final int COUNT_DOWN_SECOND = 60;
 
 	private IdiomGameApp app = null;
 
@@ -91,7 +99,14 @@ public class Game extends Activity implements IMessageHandler,
 	private String myUid = null;
 	private String gid = null;
 	private int helpNum = 0;
+	private int[] genderArray = new int[3];
 	private GridAdapter gridAdapter;
+	SynthesizerPlayer synPlayer = null;
+
+	// TODO ------------------------------------------------------
+	private ImageButton voiceRecognizerBtn;
+
+	// --------------------------------------------------------
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -136,14 +151,37 @@ public class Game extends Activity implements IMessageHandler,
 		this.setTitle("成语接龙" + "-" + gid + "号房间");
 
 		// 3. 向服务端发送刷新房间信息请求
-		
+
 		RefreshRoomRequestMsg req = new RefreshRoomRequestMsg();
 		req.setType(Constants.Type.REFRESHROOM_REQ);
 		req.setGid(gid);
 		app.sendMessage(req);
-		Log.e(tag, " oncreate --->>> send RefreshRoomRequestMsg = " + req.toString());
+		Log.e(tag,
+				" oncreate --->>> send RefreshRoomRequestMsg = "
+						+ req.toString());
+
+		// TODO--------------------------------------------------------------
+		synPlayer = SynthesizerPlayer.createSynthesizerPlayer(this, "appid="
+				+ getString(R.string.app_id));
+
+		((TextView) findViewById(android.R.id.title))
+				.setGravity(Gravity.CENTER);
+
+		// init recognizer dialog
+		voiceRecognizerBtn = (ImageButton) findViewById(R.id.voice_recognizer_btn);
+
+		voiceRecognizerBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+				Game.this.startActivity(new Intent(Game.this, Voice.class));
+			}
+		});
+		// TODO--------------------------------------------------------------
 
 	}
+
 
 	/************************************************************************************************************************
 	 * Logic Action
@@ -193,8 +231,7 @@ public class Game extends Activity implements IMessageHandler,
 				req.setType(Constants.Type.START_REQ);
 				req.setGid(gid);
 				app.sendMessage(req);
-				Log.i(tag,
-						"--->>> send StartRequestMsg = " + req.toString());
+				Log.i(tag, "--->>> send StartRequestMsg = " + req.toString());
 			}
 
 			// 显示玩家信息
@@ -222,7 +259,7 @@ public class Game extends Activity implements IMessageHandler,
 					// 1. 停表
 					this.stopTimer();
 					// 2. 提示
-					ToastUtil.toast(this, "有人退出房间! 游戏终止!",
+					ToastUtil.toastAlert(this, "有人退出房间! 游戏终止!",
 							android.R.drawable.ic_dialog_alert);
 				}
 			}
@@ -236,7 +273,7 @@ public class Game extends Activity implements IMessageHandler,
 			// 判断游戏是否就绪
 			if (!this.isGameReady()) {
 				Log.e(tag, "revieve StartNotifyMsg , but game is not ready !!");
-				ToastUtil.toast(this, "房间未满,不能游戏!",
+				ToastUtil.toastAlert(this, "房间未满,不能游戏!",
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
@@ -250,6 +287,14 @@ public class Game extends Activity implements IMessageHandler,
 
 			if (users.size() != Constants.Player.PLAYER_NUM) {
 				Log.e(tag, "users.size() != 3");
+			}
+
+			// 记录玩家的性别 TODO
+			for (User user : users) {
+				String temp = user.getUid().substring(
+						user.getUid().length() - 1);
+				int index = FormatUtil.String2Int(temp);
+				genderArray[index] = FormatUtil.String2Int(user.getGender());
 			}
 
 			// 显示玩家名
@@ -271,7 +316,7 @@ public class Game extends Activity implements IMessageHandler,
 			// 判断游戏是否就绪
 			if (!this.isGameReady()) {
 				Log.e(tag, "revieve InputResponseMsg, but game is not ready !!");
-				ToastUtil.toast(this, "房间未满,不能游戏!",
+				ToastUtil.toastAlert(this, "房间未满,不能游戏!",
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
@@ -287,6 +332,9 @@ public class Game extends Activity implements IMessageHandler,
 			if (inputRes.getStatus().equals(Constants.Response.SUCCESS)) {
 				// 显示结果正确
 				idiomCheckThread(Constants.CheckResultType.CORRECT);
+				// TODO voice
+				VoiceUtil.SynthesizerVoice(synPlayer, currentWord,
+						genderArray[getLastUid(currentUid)]);
 				// 冒泡上一玩家接的成语
 				ToastUtil.showIdiomToast(this, currentWord,
 						getLastUid(currentUid));
@@ -296,6 +344,9 @@ public class Game extends Activity implements IMessageHandler,
 				String answer = inputRes.getAnswer();
 				showIdiomThread(0, answer);
 				idiomCheckThread(Constants.CheckResultType.WORING);
+				// TODO voice
+				VoiceUtil.SynthesizerVoice(synPlayer, answer,
+						genderArray[getLastUid(currentUid)]);
 				// 冒泡上一玩家接的成语
 				ToastUtil.showIdiomToast(this, answer, getLastUid(currentUid));
 			}
@@ -324,7 +375,7 @@ public class Game extends Activity implements IMessageHandler,
 			if (!this.isGameReady()) {
 				Log.e(tag,
 						"revieve TimeoutResponseMsg || HelpResponseMsg, but game is not ready !!");
-				ToastUtil.toast(this, "房间未满,不能游戏!",
+				ToastUtil.toastAlert(this, "房间未满,不能游戏!",
 						android.R.drawable.ic_dialog_alert);
 				return;
 			}
@@ -337,6 +388,11 @@ public class Game extends Activity implements IMessageHandler,
 				users = resp.getUsers();
 				// 显示超时
 				idiomCheckThread(Constants.CheckResultType.TIME_OUT);
+
+				// TODO voice
+				VoiceUtil.SynthesizerVoice(synPlayer, "超时!",
+						genderArray[getLastUid(currentUid)]);
+
 				// 冒泡上一个玩家超时
 				ToastUtil.showIdiomToast(this, "超时!", getLastUid(currentUid));
 			} else if (msg instanceof HelpResponseMsg) {
@@ -348,6 +404,10 @@ public class Game extends Activity implements IMessageHandler,
 
 				// 显示使用锦囊
 				idiomCheckThread(Constants.CheckResultType.HELP);
+
+				// TODO voice
+				VoiceUtil.SynthesizerVoice(synPlayer, "使用锦囊!",
+						genderArray[getLastUid(currentUid)]);
 				// 冒泡上一个玩家使用锦囊
 				ToastUtil.showIdiomToast(this, "使用锦囊!", getLastUid(currentUid));
 
@@ -425,7 +485,8 @@ public class Game extends Activity implements IMessageHandler,
 			return last_uid;
 		}
 		try {
-			int current_uid = FormatUtil.String2Int(uid.substring(uid.length() - 1));
+			int current_uid = FormatUtil
+					.String2Int(uid.substring(uid.length() - 1));
 			switch (current_uid) {
 			case Constants.Player.PlAYER_ONE:// 当前玩家1
 				last_uid = Constants.Player.PlAYER_THREE;// 上一个玩家应该为3
@@ -447,7 +508,7 @@ public class Game extends Activity implements IMessageHandler,
 	}
 
 	private void checkPlayOrder(String currentUid2, String myUid2) {
-		// 为轮到自己游戏的时候，将editText设置为不可编辑
+		// 未轮到自己游戏的时候，将editText设置为不可编辑
 		if (currentUid2.equals(myUid2)) {
 			idiom_write_et.setFocusableInTouchMode(true);
 		} else {
@@ -551,16 +612,19 @@ public class Game extends Activity implements IMessageHandler,
 	private void doSubmitAction() {
 		// 1. 判断是否是自己出成语
 		if (!myUid.equals(currentUid)) {
-			ToastUtil.toast(this, "未到自己游戏时间!\n\t  稍安勿躁!",
+			ToastUtil.toastAlert(this, "未到自己游戏时间!\n\t  稍安勿躁!",
 					android.R.drawable.ic_dialog_alert);
 			return;
 		}
 
 		// 2. 发送提交请求
 		String idiom_write = idiom_write_et.getText().toString();
-		if (idiom_write == null || idiom_write.trim().length() != 4) {
-			ToastUtil
-					.toast(this, "成语格式错误!", android.R.drawable.ic_dialog_alert);
+		if (idiom_write == null
+				|| idiom_write.trim().length() < Constants.Game.MIN_IDIOM_WORD_NUM
+				|| idiom_write.trim().length() > Constants.Game.MAX_IDIOM_WORD_NUM) {// 成语字数范围：
+																						// 3-16个字
+			ToastUtil.toastAlert(this, "成语格式错误!",
+					android.R.drawable.ic_dialog_alert);
 			return;
 		}
 		InputRequestMsg inputReq = new InputRequestMsg();
@@ -579,20 +643,20 @@ public class Game extends Activity implements IMessageHandler,
 	private void doHelpAction() {
 		// 1. 判断是否是自己出成语
 		if (!myUid.equals(currentUid)) {
-			ToastUtil.toast(this, "剩余锦囊 " + helpNum + " 个!" + "\n\t稍安勿躁!",
+			ToastUtil.toastAlert(this, "剩余锦囊 " + helpNum + " 个!" + "\n\t稍安勿躁!",
 					android.R.drawable.ic_dialog_alert);
 			return;
 		}
 
 		// 判断锦囊是否有剩余
 		if (helpNum <= 0) {
-			ToastUtil
-					.toast(this, "锦囊已经用尽！", android.R.drawable.ic_dialog_alert);
+			ToastUtil.toastAlert(this, "锦囊已经用尽！",
+					android.R.drawable.ic_dialog_alert);
 			return;
 		} else {
 			// 锦囊数减去1
 			helpNum--;
-			ToastUtil.toast(this, "剩余锦囊 " + helpNum + " 个!",
+			ToastUtil.toastAlert(this, "剩余锦囊 " + helpNum + " 个!",
 					android.R.drawable.ic_dialog_alert);
 		}
 
@@ -746,7 +810,7 @@ public class Game extends Activity implements IMessageHandler,
 		private boolean flag = true;
 
 		public void run() {
-			int i = COUNT_DOWN_SECOND;
+			int i = Constants.Game.COUNT_DOWN_SECOND;
 			while (isShutDown() && i >= 0) {
 
 				clockHandler.sendEmptyMessage(i);
@@ -806,7 +870,7 @@ public class Game extends Activity implements IMessageHandler,
 
 			int tag = (Integer) v.getTag();
 			String uid = positionUidMap.get(tag);
-			if(uid == null){
+			if (uid == null) {
 				Log.e("Game", " press space header !!");
 				return;
 			}
@@ -890,7 +954,8 @@ public class Game extends Activity implements IMessageHandler,
 				quitNotify.setGid(gid);
 				quitNotify.setUid(myUid);
 				app.sendMessage(quitNotify);
-				Log.e(tag, "--->>> send QuitNotifyMsg = " + quitNotify.toString());
+				Log.e(tag,
+						"--->>> send QuitNotifyMsg = " + quitNotify.toString());
 
 				// 2. 终止timer
 				stopTimer();
@@ -962,19 +1027,17 @@ public class Game extends Activity implements IMessageHandler,
 			return tv;
 		}
 	}
-	
-	
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
-		if (newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE) {
-            setContentView(R.layout.game);
-            //横屏
-        } else {
-            setContentView(R.layout.game);//竖屏
-        }
-       
-        super.onConfigurationChanged(newConfig);
+		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+			setContentView(R.layout.game);
+			// 横屏
+		} else {
+			setContentView(R.layout.game);// 竖屏
+		}
+
+		super.onConfigurationChanged(newConfig);
 	}
 
 	/********************************************************************************************************************************
@@ -991,7 +1054,8 @@ public class Game extends Activity implements IMessageHandler,
 	@Override
 	public void exceptionCatch() {
 		Log.e(tag, "socket connect exception !");
-		ToastUtil.toast(Game.this, "网络连接异常!",
+		ToastUtil.toastAlert(Game.this, "网络连接异常!",
 				android.R.drawable.ic_dialog_alert);
 	}
+
 }

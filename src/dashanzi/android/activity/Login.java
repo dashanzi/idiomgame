@@ -120,7 +120,7 @@ public class Login extends Activity implements IMessageHandler,
 			Login.this.finish();
 		} else if (loginRes.getStatus().equals(Constants.Response.FAILED)) {
 			// 提示登陆失败
-			ToastUtil.toast(this, "用户名或密码错误,请重新登陆!",
+			ToastUtil.toastAlert(this, "用户名或密码错误,请重新登陆!",
 					android.R.drawable.ic_dialog_alert);
 		}
 	}
@@ -330,7 +330,7 @@ public class Login extends Activity implements IMessageHandler,
 	@Override
 	public void exceptionCatch() {
 		Log.e(tag, "socket connect exception !");
-		ToastUtil.toast(Login.this, "网络连接异常!",
+		ToastUtil.toastAlert(Login.this, "网络连接异常!",
 				android.R.drawable.ic_dialog_alert);
 		// 终止登陆动画
 		hasLoginResult = true;

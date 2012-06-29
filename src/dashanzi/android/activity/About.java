@@ -17,6 +17,13 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 import dashanzi.android.R;
 
+/**
+ * 
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class About extends Activity implements OnGestureListener {
 
 	private static final String tag = "About";
@@ -29,7 +36,6 @@ public class About extends Activity implements OnGestureListener {
 	private int tiltle_index = 0;
 	private final int pageNum = 5;
 
-	// TODO
 	// 声明两个按钮，分别代表向左和向右滑动
 	private ImageView btnLeft = null;
 	private ImageView btnRight = null;
@@ -58,6 +64,7 @@ public class About extends Activity implements OnGestureListener {
 		flipper.addView(getImageView(R.drawable.page4));
 		flipper.addView(getImageView(R.drawable.image5));
 
+		//初始化悬浮按钮
 		initImageButtonView();
 	}
 
@@ -74,7 +81,6 @@ public class About extends Activity implements OnGestureListener {
 
 	@Override
 	public boolean onDown(MotionEvent e) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -82,35 +88,18 @@ public class About extends Activity implements OnGestureListener {
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		if (e1.getX() - e2.getX() > 120) {
+			
 			// 下一张
 			showNextPage();
-
 			return true;
 		} else if (e1.getX() - e2.getX() < -120) {
 			
 			//上一张
-			showPrevious();
-			
+			showPreviousPage();
 			return true;
 		}
 		return false;
 	}
-
-	private void showPrevious() {
-		// TODO Auto-generated method stub
-		if (tiltle_index == 0) {
-			tiltle_index = pageNum - 1;
-		} else {
-			tiltle_index--;
-		}
-		title_tv.setText(titles[tiltle_index]);
-		this.flipper.setInAnimation(AnimationUtils.loadAnimation(this,
-				R.anim.push_right_in));
-		this.flipper.setOutAnimation(AnimationUtils.loadAnimation(this,
-				R.anim.push_right_out));
-		this.flipper.showPrevious();
-	}
-
 
 	/**
 	 * 初始化悬浮按钮
@@ -156,7 +145,7 @@ public class About extends Activity implements OnGestureListener {
 		btnLeft.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View arg0) {
 				// 上一张
-				showPrevious();
+				showPreviousPage();
 			}
 		});
 
@@ -188,8 +177,22 @@ public class About extends Activity implements OnGestureListener {
 		wm.addView(btnRight, wmParams);
 	}
 
+	private void showPreviousPage() {
+		if (tiltle_index == 0) {
+			tiltle_index = pageNum - 1;
+		} else {
+			tiltle_index--;
+		}
+		title_tv.setText(titles[tiltle_index]);
+		this.flipper.setInAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.push_right_in));
+		this.flipper.setOutAnimation(AnimationUtils.loadAnimation(this,
+				R.anim.push_right_out));
+		this.flipper.showPrevious();
+	}
+
+	
 	private void showNextPage() {
-		// TODO Auto-generated method stub
 		if (tiltle_index == pageNum - 1) {
 			tiltle_index = 0;
 		} else {
@@ -206,7 +209,6 @@ public class About extends Activity implements OnGestureListener {
 	
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		Log.e(tag, "onResume");
 
@@ -220,7 +222,6 @@ public class About extends Activity implements OnGestureListener {
 
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		Log.e(tag, "-->> onPause");
 		super.onPause();
 
@@ -230,26 +231,22 @@ public class About extends Activity implements OnGestureListener {
 
 	@Override
 	public void onLongPress(MotionEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
 			float distanceY) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void onShowPress(MotionEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean onSingleTapUp(MotionEvent e) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }
