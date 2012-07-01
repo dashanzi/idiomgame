@@ -156,12 +156,16 @@ public class Login extends Activity implements IMessageHandler,
 
 			Log.e(tag,
 					" Login  IP = " + dto.getIp() + ": PORT = " + dto.getPort());
-			if(app.doConnect(dto.getIp(),dto.getPort())){
-				// 连接成功后，向服务端发送登陆请求
-				Log.i(tag, "---->>> connect success !! send LogMsg = "
-						+ loginMsg.toString());
-				app.sendMessage(loginMsg);
-			}
+			app.doConnect(dto.getIp(), dto.getPort(), new IConnectHandler() {
+				@Override
+				public void handle() {
+
+					// 连接成功后，向服务端发送登陆请求
+					Log.i(tag, "---->>> connect success !! send LogMsg = "
+							+ loginMsg.toString());
+					app.sendMessage(loginMsg);
+				}
+			});
 
 			// 显示加载动画
 			initImage(loading_ll);

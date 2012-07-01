@@ -27,7 +27,19 @@ public class NetworkService extends Service {
 	private BufferedReader is;
 	private PrintWriter os;
 
-//	public boolean readFlag = true;
+	public boolean readFlag = true;
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		// Log.i("NetworkService", "service onBind");
+		return binder;
+	}
+
+	public class MyBinder extends Binder {
+		public NetworkService getService() {
+			return NetworkService.this;
+		}
+	}
 
 	// ------------- public methods ----------------------------
 	public void connect(String ip, int port) {
@@ -36,18 +48,32 @@ public class NetworkService extends Service {
 			socket = new Socket();
 			// socket.setSoTimeout(5000);
 			socket.connect(new InetSocketAddress(ip, port), 10000);
-			
+			is = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+			// os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+			// socket.getOutputStream())), true);
 			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream())), true);
 
 			Log.i("==NET==", "connected");
 
+			// if (socket.isConnected()) {
+			// if (!socket.isOutputShutdown()) {
+			// // os.print("Are you sb?");
+			//
+			// socket.getOutputStream()
+			// .write(new String(
+			// "{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"张三\",\"gid\":\"g01\"}}\r\n"
+			// .getBytes("UTF-8"), "UTF-8")
+			// .getBytes("UTF-8"));
+			//
+			// }
+			// }
+
 			// 2. start reader
-//			 new Thread(readerThread).start();
-
-			
-
+			new Thread(readerThread).start();
 		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			Log.i("==NET==", "IOException caught when connecting: " + e);
@@ -57,6 +83,8 @@ public class NetworkService extends Service {
 			intent.putExtra("code", "1");
 			intent.setAction("android.intent.action.test");
 			sendBroadcast(intent);
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
 		}
 
 	}
@@ -71,7 +99,12 @@ public class NetworkService extends Service {
 		if (socket != null && socket.isConnected()) {// edited by juzm socket !=
 														// null TODO
 			if (!socket.isOutputShutdown()) {
+				// os.print("Are you sb?");
+
 				try {
+					// socket.getOutputStream()
+					// .write("{\"header\":{\"type\":\"JOIN_REQ\"},\"body\":{\"name\":\"zhangsan\",\"gid\":\"g01\"}}\r\n"
+					// .getBytes("utf-8"));
 					Log.i("==NET==", "write 1");
 					socket.getOutputStream().write(
 							Beans2JsonUtil.getJsonStr(msg).getBytes("utf-8"));
@@ -79,6 +112,8 @@ public class NetworkService extends Service {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
+					// Log.i("==NET==","socket.isConnected()="+socket.isConnected());
+					// Log.i("==NET==","socket.isOutputShutdown()="+socket.isOutputShutdown());
 
 					Intent intent = new Intent();
 					intent.putExtra("status", "error");
@@ -88,21 +123,21 @@ public class NetworkService extends Service {
 
 					e.printStackTrace();
 				}
+
 			}
 		}
 	}
 
 	public void disconnect() {
 		try {
-//			readFlag = false;
 			// edited by juzm TODO
-			if (socket == null || socket.isClosed() == true || is == null
-					|| os == null) {
+			if (socket == null || socket.isClosed() == true || is == null || os == null) {
 				return;
 			}
 			socket.close();
 			is.close();
 			os.close();
+			readFlag = false;
 			Log.i("==NET==",
 					"socket closed: socket.isClosed=" + socket.isClosed()
 							+ ", socket.isConnected=" + socket.isConnected());
@@ -111,49 +146,90 @@ public class NetworkService extends Service {
 		}
 	}
 
-	
+	// ------------- private methods ----------------------------
+	public void onMessageRecevied(String strMsg) {
+		Log.i("==NET==", "message received: " + strMsg);
+
+		Intent intent = new Intent();
+		intent.putExtra("status", "ok");
+		intent.putExtra("msg", strMsg);
+		intent.setAction("android.intent.action.test");
+		sendBroadcast(intent);
+	}
 
 	// ------------- reader thread ----------------------------
-//	Runnable readerThread = new Runnable() {
-//
-//		@Override
-//		public void run() {
-//			
-//		}
-//
-//	};
+	Runnable readerThread = new Runnable() {
 
-	// ------------- other methods ----------------------------
+		@Override
+		public void run() {
+			Log.i("==NET==", "socket.isConnected()=" + socket.isConnected());
+			Log.i("==NET==",
+					"socket.isOutputShutdown()=" + socket.isOutputShutdown());
+			String content;
+			while (readFlag) {
+				if (socket.isConnected()) {
+					if (!socket.isInputShutdown()) {
+						try {
+							if (is != null && (!socket.isClosed())
+									&& (content = is.readLine()) != null) {
+								System.out.println("content => " + content);
+								onMessageRecevied(content);
+							} else {
+
+							}
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+
+		}
+
+	};
+
+	// ------------- other ----------------------------
 
 	public void onCreate() {
 		Log.i("==NET==", "service created");
 		super.onCreate();
 	}
 
-	public IBinder onBind(Intent intent) {
-		// Log.i("NetworkService", "service onBind");
-		return binder;
-	}
-
 	public void onStart(Intent intent, int startId) {
 		super.onStart(intent, startId);
+		// new Thread() {
+		//
+		// public void run() {
+		// int i = 0;
+		// while (!isStop) {
+		// Intent intent = new Intent();
+		// intent.putExtra("i", i);
+		// i++;
+		// intent.setAction("android.intent.action.test");
+		// sendBroadcast(intent);
+		// Log.i("ttt", "Broadcasting... " + String.valueOf(i));
+		// try {
+		// sleep(1000);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		// }.start();
+
 	}
 
 	public int onStartCommand(Intent i, int a, int b) {
+		// Log.i("==NET==", "Services onStartCommand");
+
 		return 0;
 	}
 
+	@Override
 	public void onDestroy() {
 		Log.i("==NET==", "service destroyed");
 		isStop = true;
-//		readFlag = false;
+		readFlag = false;
 		super.onDestroy();
-	}
-
-	// ------------- inner classes ----------------------------
-	public class MyBinder extends Binder {
-		public NetworkService getService() {
-			return NetworkService.this;
-		}
 	}
 }

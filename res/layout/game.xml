@@ -370,22 +370,21 @@
 
         <RelativeLayout
             android:id="@+id/game_idiom_write_area"
-            android:layout_width="260dip"
+            android:layout_width="300dip"
             android:layout_height="70dip"
             android:layout_above="@+id/game_gridview"
             android:layout_centerHorizontal="true" >
 
             <RelativeLayout
                 android:id="@+id/game_idiom_write_layout_out"
-                android:layout_width="260dip"
+                android:layout_width="240dip"
                 android:layout_height="60dip"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:background="@drawable/game_write_background" >
 
                 <RelativeLayout
                     android:id="@+id/game_idiom_write_layout_inner"
-                    android:layout_width="240dip"
+                    android:layout_width="220dip"
                     android:layout_height="40dip"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true" >
@@ -410,6 +409,16 @@
                     </EditText>
                 </RelativeLayout>
             </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/voice_recognizer_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/game_idiom_write_layout_out"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/game_idiom_write_layout_out"
+                android:src="@drawable/microphone" />
         </RelativeLayout>
 
         <GridView
@@ -420,14 +429,24 @@
             android:background="@drawable/gridview_background"
             android:gravity="center" />
 
-        <ImageButton
-            android:id="@+id/voice_recognizer_btn"
+        <ToggleButton
+            android:id="@+id/game_voice_speak_toggle_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/game_idiom_write_area"
-            android:layout_toRightOf="@+id/game_idiom_write_area"
-            android:src="@drawable/clock" />
+            android:layout_alignBottom="@+id/game_player_one_layout"
+            android:layout_alignLeft="@+id/game_idiom_write_area"
+            android:layout_marginBottom="32dp"
+            android:checked="true"
+            />
+
+        <ImageView
+            android:id="@+id/game_voice_speak_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/game_voice_speak_toggle_btn"
+            android:layout_alignRight="@+id/game_voice_speak_toggle_btn"
+            android:src="@android:drawable/ic_lock_silent_mode_off" />
 
     </RelativeLayout>
-    
+
 </LinearLayout>

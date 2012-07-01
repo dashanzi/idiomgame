@@ -35,7 +35,7 @@ public class Register extends Activity implements IMessageHandler,
 
 	private static final String tag = "Register";
 	private IdiomGameApp app = null;
-	
+
 	private RegisterRequestMsg req = new RegisterRequestMsg();
 	private EditText name = null;
 	private EditText password = null;
@@ -120,9 +120,11 @@ public class Register extends Activity implements IMessageHandler,
 			// 在app中记录lastRegisterName
 			app.setLastRegisterName(name.getText().toString());
 
-			ToastUtil.toastAlert(this, "注册成功!", R.drawable.game_idiom_check_correct);
-		} else if(resp.getStatus().equals(Constants.Response.FAILED)){
-			ToastUtil.toastAlert(this, "账号已被注册!请选择其他账号!", android.R.drawable.ic_dialog_alert);
+			ToastUtil.toastAlert(this, "注册成功!",
+					R.drawable.game_idiom_check_correct);
+		} else if (resp.getStatus().equals(Constants.Response.FAILED)) {
+			ToastUtil.toastAlert(this, "账号已被注册!请选择其他账号!",
+					android.R.drawable.ic_dialog_alert);
 		}
 	}
 
@@ -160,8 +162,8 @@ public class Register extends Activity implements IMessageHandler,
 
 						public void onClick(DialogInterface dialog,
 								int whichButton) {
-							
-							//设置headerImageId
+
+							// 设置headerImageId
 							req.setHeaderImageId(headerImageId);
 						}
 					});
@@ -172,14 +174,15 @@ public class Register extends Activity implements IMessageHandler,
 		class ItemClickListener implements OnItemClickListener {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				
-				ToastUtil.toastAlert(Register.this, "您选择了 "+ (arg2+1)+" 号头像", 0);
-				headerImageId = arg2+"";
+
+				ToastUtil.toastAlert(Register.this, "您选择了 " + (arg2 + 1)
+						+ " 号头像", 0);
+				headerImageId = arg2 + "";
 			}
 
 		}
 	}
-	
+
 	class MyBtnOnClickListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
@@ -205,21 +208,24 @@ public class Register extends Activity implements IMessageHandler,
 					" Register  IP = " + dto.getIp() + ": PORT = "
 							+ dto.getPort());
 
-			if(app.doConnect(dto.getIp(),dto.getPort())){
-				req.setName(name.getText().toString());
-				req.setPassword(password.getText().toString());
-				req.setGender(gender_select);
-				req.setType(Constants.Type.REGISTER_REQ);
-				if(req.getHeaderImageId()==null){
-					//说明没有主动设置头像
-					req.setHeaderImageId("0");//设置默认第一个
+			app.doConnect(dto.getIp(), dto.getPort(), new IConnectHandler() {
+				@Override
+				public void handle() {
+					req.setName(name.getText().toString());
+					req.setPassword(password.getText().toString());
+					req.setGender(gender_select);
+					req.setType(Constants.Type.REGISTER_REQ);
+					if (req.getHeaderImageId() == null) {
+						// 说明没有主动设置头像
+						req.setHeaderImageId("0");// 设置默认第一个
+					}
+					app.sendMessage(req);
+					Log.i(tag,
+							"--->>> send RegisterRequestMsg = "
+									+ req.toString());
 				}
-				app.sendMessage(req);
-				Log.i(tag,
-						"--->>> send RegisterRequestMsg = "
-								+ req.toString());
-			}
-			
+			});
+
 		}
 	}
 

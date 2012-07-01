@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+import dashanzi.android.activity.IConnectHandler;
+
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -15,6 +18,7 @@ public class ReceiverService extends Service {
 	private final IBinder binder = new MyBinder();
 	private boolean readFlag = true;
 	private Socket socket;
+	private IConnectHandler handler;
 
 	private BufferedReader is;
 
@@ -31,6 +35,7 @@ public class ReceiverService extends Service {
 
 	// ------------- public methods ----------------------------
 	public void startReceiving(Socket s) {
+		Log.i("==NET==", "startReceiving");
 		this.socket = s;
 		Log.i("==NET==", "socket.isConnected()=" + s.isConnected());
 		Log.i("==NET==", "socket.isOutputShutdown()=" + s.isOutputShutdown());
@@ -64,7 +69,7 @@ public class ReceiverService extends Service {
 
 	public void stopReceiving() {
 		try {
-			readFlag=false;
+			readFlag = false;
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -74,9 +79,19 @@ public class ReceiverService extends Service {
 	// ------------- other methods ----------------------------
 
 	public IBinder onBind(Intent intent) {
+		// mmm: error?
+		handler.handle();
+		startReceiving(socket);
+		// startReceiving(socket);
 		// Log.i("ReceiverService", "service onBind");
 		return binder;
 	}
+	
+
+	public void onCreate() {
+
+	}
+	
 
 	// ------------- setters and getters ----------------------------
 	public Socket getSocket() {
@@ -100,6 +115,14 @@ public class ReceiverService extends Service {
 		public ReceiverService getService() {
 			return ReceiverService.this;
 		}
+	}
+
+	public IConnectHandler getHandler() {
+		return handler;
+	}
+
+	public void setHandler(IConnectHandler handler) {
+		this.handler = handler;
 	}
 
 }

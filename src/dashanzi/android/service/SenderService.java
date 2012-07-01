@@ -30,7 +30,7 @@ public class SenderService extends Service {
 	// public boolean readFlag = true;
 
 	// ------------- public methods ----------------------------
-	public boolean connect(String ip, int port) {
+	public Socket connect(String ip, int port) {
 		try {
 			// 1. connect
 			socket = new Socket();
@@ -40,11 +40,10 @@ public class SenderService extends Service {
 			os = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 					socket.getOutputStream())), true);
 
-			Log.i("==NET==", "connected");
-
+			Log.i("==NET==", "connected, socket=" + socket);
 
 		} catch (UnknownHostException e) {
-			return false;
+			return null;
 		} catch (IOException e) {
 			Log.i("==NET==", "IOException caught when connecting: " + e);
 
@@ -60,16 +59,16 @@ public class SenderService extends Service {
 				}
 			}
 
-//			Intent intent = new Intent();
-//			intent.putExtra("status", "error");
-//			intent.putExtra("code", "1");
-//			intent.setAction("android.intent.action.test");
-//			sendBroadcast(intent);
+			// Intent intent = new Intent();
+			// intent.putExtra("status", "error");
+			// intent.putExtra("code", "1");
+			// intent.setAction("android.intent.action.test");
+			// sendBroadcast(intent);
 
-			return false;
+			return null;
 		}
 
-		return true;
+		return socket;
 
 	}
 
@@ -164,5 +163,13 @@ public class SenderService extends Service {
 		public SenderService getService() {
 			return SenderService.this;
 		}
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+
+	public void setSocket(Socket socket) {
+		this.socket = socket;
 	}
 }

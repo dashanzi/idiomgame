@@ -29,6 +29,8 @@ import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -36,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.iflytek.speech.SynthesizerPlayer;
 
@@ -70,7 +73,7 @@ import dashanzi.android.util.VoiceUtil;
  * 
  */
 public class Game extends Activity implements IMessageHandler,
-		IExceptionHandler{
+		IExceptionHandler {
 
 	private final String tag = "Game";
 
@@ -101,12 +104,12 @@ public class Game extends Activity implements IMessageHandler,
 	private int helpNum = 0;
 	private int[] genderArray = new int[3];
 	private GridAdapter gridAdapter;
-	SynthesizerPlayer synPlayer = null;
+	private SynthesizerPlayer synPlayer = null;
 
-	// TODO ------------------------------------------------------
 	private ImageButton voiceRecognizerBtn;
-
-	// --------------------------------------------------------
+	private ToggleButton speakerBtn;
+	private ImageView speakerImage;
+	private boolean speakerOn = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -160,28 +163,51 @@ public class Game extends Activity implements IMessageHandler,
 				" oncreate --->>> send RefreshRoomRequestMsg = "
 						+ req.toString());
 
-		// TODO--------------------------------------------------------------
+		speakerImage = (ImageView) findViewById(R.id.game_voice_speak_image);
+		speakerBtn = (ToggleButton) findViewById(R.id.game_voice_speak_toggle_btn);
+		speakerBtn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				if (isChecked) {
+					ToastUtil.toastAlert(Game.this, "语音播报开启!", 0);
+					// 换图片
+					speakerImage.setBackgroundResource(android.R.drawable.ic_lock_silent_mode_off);
+					// 设置开启flag
+					setSpeakerOn(true);
+				} else {
+					ToastUtil.toastAlert(Game.this, "语音播报关闭!", 0);
+					// 换图片
+					speakerImage.setBackgroundResource(android.R.drawable.ic_lock_silent_mode);
+					// 设置关闭flag
+					setSpeakerOn(false);
+				}
+			}
+		});
+
+		// 语音播放
 		synPlayer = SynthesizerPlayer.createSynthesizerPlayer(this, "appid="
 				+ getString(R.string.app_id));
 
 		((TextView) findViewById(android.R.id.title))
 				.setGravity(Gravity.CENTER);
 
-		// init recognizer dialog
+		// 语音识别
 		voiceRecognizerBtn = (ImageButton) findViewById(R.id.voice_recognizer_btn);
-
 		voiceRecognizerBtn.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				
+				// 1. 判断是否是自己出成语
+				if (currentUid == null || !myUid.equals(currentUid)) {
+					ToastUtil.toastAlert(Game.this, "未到自己游戏时间!" + "\n\t稍安勿躁!",
+							android.R.drawable.ic_dialog_alert);
+					return;
+				}
 				Game.this.startActivity(new Intent(Game.this, Voice.class));
 			}
 		});
-		// TODO--------------------------------------------------------------
-
 	}
-
 
 	/************************************************************************************************************************
 	 * Logic Action
@@ -289,7 +315,7 @@ public class Game extends Activity implements IMessageHandler,
 				Log.e(tag, "users.size() != 3");
 			}
 
-			// 记录玩家的性别 TODO
+			// 记录玩家的性别
 			for (User user : users) {
 				String temp = user.getUid().substring(
 						user.getUid().length() - 1);
@@ -332,9 +358,12 @@ public class Game extends Activity implements IMessageHandler,
 			if (inputRes.getStatus().equals(Constants.Response.SUCCESS)) {
 				// 显示结果正确
 				idiomCheckThread(Constants.CheckResultType.CORRECT);
-				// TODO voice
-				VoiceUtil.SynthesizerVoice(synPlayer, currentWord,
-						genderArray[getLastUid(currentUid)]);
+				// voice 判断是否开启
+				if (isSpeakerOn()) {
+					VoiceUtil.SynthesizerVoice(synPlayer, currentWord,
+							genderArray[getLastUid(currentUid)]);
+				}
+
 				// 冒泡上一玩家接的成语
 				ToastUtil.showIdiomToast(this, currentWord,
 						getLastUid(currentUid));
@@ -344,9 +373,11 @@ public class Game extends Activity implements IMessageHandler,
 				String answer = inputRes.getAnswer();
 				showIdiomThread(0, answer);
 				idiomCheckThread(Constants.CheckResultType.WORING);
-				// TODO voice
-				VoiceUtil.SynthesizerVoice(synPlayer, answer,
-						genderArray[getLastUid(currentUid)]);
+				// voice 判断是否开启
+				if (isSpeakerOn()) {
+					VoiceUtil.SynthesizerVoice(synPlayer, answer,
+							genderArray[getLastUid(currentUid)]);
+				}
 				// 冒泡上一玩家接的成语
 				ToastUtil.showIdiomToast(this, answer, getLastUid(currentUid));
 			}
@@ -389,9 +420,11 @@ public class Game extends Activity implements IMessageHandler,
 				// 显示超时
 				idiomCheckThread(Constants.CheckResultType.TIME_OUT);
 
-				// TODO voice
-				VoiceUtil.SynthesizerVoice(synPlayer, "超时!",
-						genderArray[getLastUid(currentUid)]);
+				// voice 判断是否开启
+				if (isSpeakerOn()) {
+					VoiceUtil.SynthesizerVoice(synPlayer, "超时!",
+							genderArray[getLastUid(currentUid)]);
+				}
 
 				// 冒泡上一个玩家超时
 				ToastUtil.showIdiomToast(this, "超时!", getLastUid(currentUid));
@@ -405,9 +438,11 @@ public class Game extends Activity implements IMessageHandler,
 				// 显示使用锦囊
 				idiomCheckThread(Constants.CheckResultType.HELP);
 
-				// TODO voice
-				VoiceUtil.SynthesizerVoice(synPlayer, "使用锦囊!",
-						genderArray[getLastUid(currentUid)]);
+				// voice
+				if (isSpeakerOn()) {
+					VoiceUtil.SynthesizerVoice(synPlayer, "使用锦囊!",
+							genderArray[getLastUid(currentUid)]);
+				}
 				// 冒泡上一个玩家使用锦囊
 				ToastUtil.showIdiomToast(this, "使用锦囊!", getLastUid(currentUid));
 
@@ -1040,6 +1075,25 @@ public class Game extends Activity implements IMessageHandler,
 		super.onConfigurationChanged(newConfig);
 	}
 
+	@Override
+	public void exceptionCatch() {
+		Log.e(tag, "socket connect exception !");
+		ToastUtil.toastAlert(Game.this, "网络连接异常!",
+				android.R.drawable.ic_dialog_alert);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		app.setCurrentActivity(this);
+
+		// 获得语音识别结果
+		if (app.getVoiceIdiom() != null) {
+			Log.e(tag, "Game onResume ---" + app.getVoiceIdiom());
+			idiom_write_et.setText(app.getVoiceIdiom());
+		}
+	}
+
 	/********************************************************************************************************************************
 	 * getter and setter
 	 ********************************************************************************************************************************/
@@ -1051,17 +1105,11 @@ public class Game extends Activity implements IMessageHandler,
 		this.gameReady = gameReady;
 	}
 
-	@Override
-	public void exceptionCatch() {
-		Log.e(tag, "socket connect exception !");
-		ToastUtil.toastAlert(Game.this, "网络连接异常!",
-				android.R.drawable.ic_dialog_alert);
+	public boolean isSpeakerOn() {
+		return speakerOn;
 	}
-	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		app.setCurrentActivity(this);
+
+	public void setSpeakerOn(boolean speakerOn) {
+		this.speakerOn = speakerOn;
 	}
 }
