@@ -429,24 +429,6 @@
             android:background="@drawable/gridview_background"
             android:gravity="center" />
 
-        <ToggleButton
-            android:id="@+id/game_voice_speak_toggle_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/game_player_one_layout"
-            android:layout_alignLeft="@+id/game_idiom_write_area"
-            android:layout_marginBottom="32dp"
-            android:checked="true"
-            />
-
-        <ImageView
-            android:id="@+id/game_voice_speak_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/game_voice_speak_toggle_btn"
-            android:layout_alignRight="@+id/game_voice_speak_toggle_btn"
-            android:src="@android:drawable/ic_lock_silent_mode_off" />
-
     </RelativeLayout>
 
 </LinearLayout>

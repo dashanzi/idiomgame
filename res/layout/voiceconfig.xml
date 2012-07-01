@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="250dip"
+            android:layout_height="150dip"
+            android:layout_centerInParent="true" >
+
+            <TextView
+                android:id="@+id/current_server_ip_textview"
+                android:layout_width="fill_parent"
+                android:layout_height="25dip"
+                android:layout_above="@+id/relativeLayout1"
+                android:layout_alignLeft="@+id/relativeLayout1"
+                android:gravity="left"
+                android:text="是否开启语音播报?"
+                android:textColor="@android:color/white"
+                android:textSize="20dip" />
+
+            <TextView
+                android:id="@+id/config_server_ip_textview"
+                android:layout_width="fill_parent"
+                android:layout_height="35dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:gravity="left"
+                android:text="是否开启背景音乐?"
+                android:textColor="@android:color/white"
+                android:textSize="20dip" />
+
+            <ToggleButton
+                android:id="@+id/voice_speak_toggle_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:text="ToggleButton" />
+
+            <ToggleButton
+                android:id="@+id/back_ground_music_toggle_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/config_server_ip_textview"
+                android:layout_alignParentRight="true"
+                android:text="ToggleButton" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

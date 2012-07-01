@@ -20,8 +20,8 @@
     <string name="game_player_three">玩家3</string>
     
     <!-- Menu -->
-    <string name="exit">退出</string>
-    <string name="about">帮助</string>
+    <string name="vioceConfig">音效设置</string>
+    <string name="about">游戏帮助</string>
     
     <!-- voice -->
     <string name="app_id">4f969b02</string>

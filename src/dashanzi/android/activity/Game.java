@@ -107,9 +107,11 @@ public class Game extends Activity implements IMessageHandler,
 	private SynthesizerPlayer synPlayer = null;
 
 	private ImageButton voiceRecognizerBtn;
-	private ToggleButton speakerBtn;
-	private ImageView speakerImage;
 	private boolean speakerOn = true;
+	private boolean musicOn = true;
+
+	// background music
+	private Intent musicIntent = new Intent("dashanzi.android.music");
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -163,28 +165,6 @@ public class Game extends Activity implements IMessageHandler,
 				" oncreate --->>> send RefreshRoomRequestMsg = "
 						+ req.toString());
 
-		speakerImage = (ImageView) findViewById(R.id.game_voice_speak_image);
-		speakerBtn = (ToggleButton) findViewById(R.id.game_voice_speak_toggle_btn);
-		speakerBtn.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				// TODO Auto-generated method stub
-				if (isChecked) {
-					ToastUtil.toastAlert(Game.this, "语音播报开启!", 0);
-					// 换图片
-					speakerImage.setBackgroundResource(android.R.drawable.ic_lock_silent_mode_off);
-					// 设置开启flag
-					setSpeakerOn(true);
-				} else {
-					ToastUtil.toastAlert(Game.this, "语音播报关闭!", 0);
-					// 换图片
-					speakerImage.setBackgroundResource(android.R.drawable.ic_lock_silent_mode);
-					// 设置关闭flag
-					setSpeakerOn(false);
-				}
-			}
-		});
 
 		// 语音播放
 		synPlayer = SynthesizerPlayer.createSynthesizerPlayer(this, "appid="
@@ -207,6 +187,10 @@ public class Game extends Activity implements IMessageHandler,
 				Game.this.startActivity(new Intent(Game.this, Voice.class));
 			}
 		});
+
+		//默认播放背景音乐 
+		playBackGroundMusic();
+		
 	}
 
 	/************************************************************************************************************************
@@ -942,7 +926,7 @@ public class Game extends Activity implements IMessageHandler,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, 1, 1, R.string.about);
-		menu.add(0, 2, 2, R.string.exit);
+		menu.add(0, 2, 2, R.string.vioceConfig);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -950,8 +934,39 @@ public class Game extends Activity implements IMessageHandler,
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (item != null) {
 			if (item.getItemId() == 2) {
-				// 退出程序
-				Game.this.finish();
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						Game.this);
+				LayoutInflater factory = LayoutInflater.from(Game.this);
+				View textEntryView = factory.inflate(R.layout.voiceconfig,
+						null);
+				builder.setIcon(R.drawable.login_config_image);
+				builder.setTitle("音效设置");
+				builder.setView(textEntryView);
+				ToggleButton speakBtn = (ToggleButton) textEntryView.findViewById(R.id.voice_speak_toggle_btn);
+				speakBtn.setChecked(isSpeakerOn());
+				ToggleButton musicBtn = (ToggleButton) textEntryView.findViewById(R.id.back_ground_music_toggle_btn);
+				musicBtn.setChecked(isMusicOn());
+				
+				speakBtn.setOnCheckedChangeListener(new MyOnCheckedChandeListener());
+				musicBtn.setOnCheckedChangeListener(new MyOnCheckedChandeListener());
+				
+				builder.setPositiveButton("确定",
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								
+								if(isMusicOn()){
+									Game.this.playBackGroundMusic();
+								}else{
+									Game.this.pauseBackGroundMusic();
+								}
+							}
+						});
+				
+				builder.create().show();
+				
+				
 			} else if (item.getItemId() == 1) {
 				Intent intent = new Intent();
 				intent.setClass(Game.this, About.class);
@@ -962,6 +977,39 @@ public class Game extends Activity implements IMessageHandler,
 		}
 
 		return super.onMenuItemSelected(featureId, item);
+	}
+
+	// 音效设置
+	class MyOnCheckedChandeListener implements OnCheckedChangeListener {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+
+			int id = buttonView.getId();
+			switch (id) {
+			case R.id.voice_speak_toggle_btn://语音播报
+				if (isChecked) {
+					// 设置开启flag
+					setSpeakerOn(true);
+				} else {
+					// 设置关闭flag
+					setSpeakerOn(false);
+				}
+				break;
+			case R.id.back_ground_music_toggle_btn://背景音乐
+				if (isChecked) {
+					// 设置开启flag
+					setMusicOn(true);
+				} else {
+					// 设置关闭flag
+					setMusicOn(false);
+				}
+				break;
+			default:
+				break;
+
+			}
+		}
 	}
 
 	// 监听back键
@@ -1092,8 +1140,41 @@ public class Game extends Activity implements IMessageHandler,
 			Log.e(tag, "Game onResume ---" + app.getVoiceIdiom());
 			idiom_write_et.setText(app.getVoiceIdiom());
 		}
+
+		if(isMusicOn()){//判断是否为开启状态
+			playBackGroundMusic();	
+		}
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		Log.e(tag, "Game onPause ......");
+		
+		//暂停背景音乐
+		pauseBackGroundMusic();
+	}
+
+	
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.e(tag, "Game onDestroy ......");
+		stopService(musicIntent);
+	}
+
+
+	private void playBackGroundMusic() {
+			musicIntent.putExtra("flag", "play");
+			startService(musicIntent);
+	}
+	
+	private void pauseBackGroundMusic() {
+			musicIntent.putExtra("flag", "pause");
+			startService(musicIntent);
+	}
+	
 	/********************************************************************************************************************************
 	 * getter and setter
 	 ********************************************************************************************************************************/
@@ -1111,5 +1192,13 @@ public class Game extends Activity implements IMessageHandler,
 
 	public void setSpeakerOn(boolean speakerOn) {
 		this.speakerOn = speakerOn;
+	}
+
+	public boolean isMusicOn() {
+		return musicOn;
+	}
+
+	public void setMusicOn(boolean musicOn) {
+		this.musicOn = musicOn;
 	}
 }

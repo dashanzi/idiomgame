@@ -70,6 +70,12 @@
         <service
             android:name=".service.ReceiverService"
             android:enabled="true" />
+        
+        <service android:name=".service.MusicService" >
+            <intent-filter>
+                <action android:name="dashanzi.android.music" />
+            </intent-filter>
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >

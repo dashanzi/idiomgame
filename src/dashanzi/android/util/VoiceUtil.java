@@ -18,6 +18,7 @@ public class VoiceUtil {
 	public static void SynthesizerVoice(final SynthesizerPlayer player,
 			final String voiceText, final int gender) {
 
+		Log.e(tag, "gender = " + gender+"");
 		if (player == null) {
 			Log.e(tag, "player == null");
 			return;
@@ -36,7 +37,7 @@ public class VoiceUtil {
 				default:
 					break;
 				}
-				player.playText(voiceText, "ent=vivi21,bft=5", null);
+				player.playText(voiceText, null, null);
 			};
 		}.start();
 	}
