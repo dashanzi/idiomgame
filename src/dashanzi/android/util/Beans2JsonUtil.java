@@ -8,6 +8,7 @@ import dashanzi.android.dto.IMessage;
 import dashanzi.android.dto.notify.LogoutNotifyMsg;
 import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.request.GetUserInfoRequestMsg;
+import dashanzi.android.dto.request.HeartbeatRequestMsg;
 import dashanzi.android.dto.request.HelpRequestMsg;
 import dashanzi.android.dto.request.InputRequestMsg;
 import dashanzi.android.dto.request.JoinRequestMsg;
@@ -205,6 +206,20 @@ public class Beans2JsonUtil {
 		return json.toString();
 	}
 
+	private static String getJsonStrFromHeartbeatRequest(
+			HeartbeatRequestMsg bean) throws JSONException {
+		JSONObject json = new JSONObject();
+
+		JSONObject header = new JSONObject();
+		header.put(Constants.JSON_REQ_HEADER.TYPE, bean.getType());
+		json.put(Constants.JSON.HEADER, header);
+
+		JSONObject body = new JSONObject();
+		body.put("name", bean.getName());
+		json.put(Constants.JSON.BODY, body);
+		return json.toString();
+	}
+
 	public static String getJsonStr(IMessage msg) {
 		String s = null;
 		if (msg instanceof RegisterRequestMsg) {
@@ -309,6 +324,15 @@ public class Beans2JsonUtil {
 		} else if (msg instanceof QuitNotifyMsg) {
 			try {
 				s = getJsonStrFromQuitNotify((QuitNotifyMsg) msg);
+				s += "\r\n\r\n";
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} finally {
+
+			}
+		} else if (msg instanceof HeartbeatRequestMsg) {
+			try {
+				s = getJsonStrFromHeartbeatRequest((HeartbeatRequestMsg) msg);
 				s += "\r\n\r\n";
 			} catch (JSONException e) {
 				e.printStackTrace();

@@ -16,6 +16,7 @@ import dashanzi.android.dto.notify.QuitNotifyMsg;
 import dashanzi.android.dto.notify.RoomNotifyMsg;
 import dashanzi.android.dto.notify.StartNotifyMsg;
 import dashanzi.android.dto.response.GetUserInfoResponseMsg;
+import dashanzi.android.dto.response.HeartbeatResponseMsg;
 import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.JoinResponseMsg;
@@ -57,6 +58,8 @@ public class Json2BeansUtil {
 			msg = getQuitNotifyFromJsonStr(jsonStr);
 		} else if (type.equals(Constants.Type.LOGOUT_NOTIFY)) {
 
+		} else if (type.equals(Constants.Type.HEARTBEAT_RESP)) {
+			msg = getHeartbeatResponseFromJsonStr(jsonStr);
 		}
 		return msg;
 	}
@@ -523,6 +526,24 @@ public class Json2BeansUtil {
 		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 		result.setGid(body.getString("gid"));
 		result.setUid(body.getString("uid"));
+
+		return result;
+	}
+
+	private static HeartbeatResponseMsg getHeartbeatResponseFromJsonStr(
+			String jsonStr) throws JSONException {
+		if (jsonStr == null) {
+			return null;
+		}
+
+		HeartbeatResponseMsg result = new HeartbeatResponseMsg();
+		JSONObject dataJson = new JSONObject(jsonStr);
+
+		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
+		result.setType(header.getString("type"));
+		result.setStatus(header.getString("status"));
+
+		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
 		return result;
 	}

@@ -24,6 +24,7 @@ public class NetworkService extends Service {
 	protected boolean isStop = false;
 	private final IBinder binder = new MyBinder();
 	private Socket socket;
+
 	private BufferedReader is;
 	private PrintWriter os;
 
@@ -131,7 +132,8 @@ public class NetworkService extends Service {
 	public void disconnect() {
 		try {
 			// edited by juzm TODO
-			if (socket == null || socket.isClosed() == true || is == null || os == null) {
+			if (socket == null || socket.isClosed() == true || is == null
+					|| os == null) {
 				return;
 			}
 			socket.close();
@@ -231,5 +233,9 @@ public class NetworkService extends Service {
 		isStop = true;
 		readFlag = false;
 		super.onDestroy();
+	}
+
+	public Socket getSocket() {
+		return socket;
 	}
 }

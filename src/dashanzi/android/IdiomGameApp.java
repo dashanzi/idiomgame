@@ -16,14 +16,19 @@ import dashanzi.android.activity.IConnectHandler;
 import dashanzi.android.activity.IExceptionHandler;
 import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
+import dashanzi.android.service.HeartbeatService;
 import dashanzi.android.service.NetworkService;
 import dashanzi.android.util.Json2BeansUtil;
 
 public class IdiomGameApp extends Application {
 	private IMessageHandler currentActivity;
 	private NetworkService networkService;
+
 	private MyReceiver receiver;
 	private boolean aboutThreadIsInterrupt = false;
+
+	private HeartbeatService heartbeatService;
+	private ServiceConnection scHeartbeat;
 
 	private String serverIp = "127.0.0.1";
 	private int serverPort = 12345;
@@ -76,9 +81,17 @@ public class IdiomGameApp extends Application {
 		// TODO edit by juzm
 		if (networkService != null) {
 			IdiomGameApp.this.unregisterReceiver(receiver);
+
+			// stop network service
 			networkService.disconnect();
-			destroyService();
+			unbindService(connection);
 			networkService = null;
+
+			// stop heartbeat service
+			heartbeatService.stopHeartbeat();
+			unbindService(scHeartbeat);
+			heartbeatService = null;
+
 			receiver = null;
 		}
 	}
@@ -109,9 +122,28 @@ public class IdiomGameApp extends Application {
 
 	}
 
-	private void destroyService() {
-		unbindService(connection);
+	private void initHeartbeatService() {
+		// 1. init service
+		Intent intent = new Intent(this, NetworkService.class);
+		scHeartbeat = new ServiceConnection() {
+
+			public void onServiceDisconnected(ComponentName name) {
+				heartbeatService = null;
+			}
+
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.i("==APP==", "heatbeat service connected");
+				heartbeatService = ((HeartbeatService.MyBinder) service)
+						.getService();
+				heartbeatService.startHeartbeat(IdiomGameApp.this, "usname");
+			}
+		};
+		bindService(intent, scHeartbeat, Context.BIND_AUTO_CREATE);
 	}
+
+	// private void destroyService() {
+
+	// }
 
 	private ServiceConnection connection = new ServiceConnection() {
 
@@ -125,6 +157,9 @@ public class IdiomGameApp extends Application {
 
 			networkService.connect(serverIp, serverPort);
 			// System.out.println("service=" + networkService);
+
+			// init heartbeat service after connection
+			initHeartbeatService();
 
 			IdiomGameApp.this.handler.handle();
 			// networkService.test();
