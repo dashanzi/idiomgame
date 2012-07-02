@@ -113,8 +113,7 @@ public class Voice extends Activity implements OnClickListener,
 		String result_temp = builder.toString();
 		String result = result_temp.replace("。", "");
 		mResultText.append(result);
-		mResultText.setSelection(result.length());
-//		mResultText.setSelection(mResultText.length());
+//		mResultText.setSelection(result.length());
 
 		Log.e("test", mResultText.getText().toString().replace("。", ""));
 		app.setVoiceIdiom(mResultText.getText().toString().replace("。", ""));

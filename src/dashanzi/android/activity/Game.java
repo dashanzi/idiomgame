@@ -1155,8 +1155,6 @@ public class Game extends Activity implements IMessageHandler,
 		pauseBackGroundMusic();
 	}
 
-	
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
