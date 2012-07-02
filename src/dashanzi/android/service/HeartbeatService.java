@@ -15,9 +15,7 @@ public class HeartbeatService extends Service {
 	private boolean flag = true;
 
 	// ------------- other methods ----------------------------
-
 	public void onCreate() {
-		// Log.i("==NET==", "service created");
 		super.onCreate();
 	}
 
@@ -34,7 +32,7 @@ public class HeartbeatService extends Service {
 	}
 
 	public void onDestroy() {
-		// Log.i("==NET==", "service destroyed");
+		Log.i("==HB==", "heatbeat service destroyed");
 		super.onDestroy();
 	}
 
