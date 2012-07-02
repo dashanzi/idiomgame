@@ -62,7 +62,7 @@ public class IdiomGameApp extends Application {
 	}
 
 	/**
-	 * used by all welcome activity
+	 * used by welcome activity
 	 */
 	public void doConnect(String ip, int port, IConnectHandler handler) {
 		this.serverIp = ip;
@@ -77,6 +77,9 @@ public class IdiomGameApp extends Application {
 		// connnectService();
 	}
 	
+	/**
+	 * used by all login activity
+	 */
 	public void doStartHeartbeat(final String userName) {
 		// 1. init service
 		Intent intent = new Intent(this, HeartbeatService.class);
@@ -104,7 +107,7 @@ public class IdiomGameApp extends Application {
 
 			// stop network service
 			networkService.disconnect();
-			unbindService(connection);
+			unbindService(scNetwork);
 			networkService = null;
 
 			// stop heartbeat service
@@ -130,7 +133,7 @@ public class IdiomGameApp extends Application {
 	private void initService() {
 		// 1. init service
 		Intent intent = new Intent(this, NetworkService.class);
-		bindService(intent, connection, Context.BIND_AUTO_CREATE);
+		bindService(intent, scNetwork, Context.BIND_AUTO_CREATE);
 		Log.i("==APP==", "service binded");
 
 		// 2. reg receiver
@@ -143,12 +146,7 @@ public class IdiomGameApp extends Application {
 	}
 
 	
-
-	// private void destroyService() {
-
-	// }
-
-	private ServiceConnection connection = new ServiceConnection() {
+	private ServiceConnection scNetwork = new ServiceConnection() {
 
 		public void onServiceDisconnected(ComponentName name) {
 			networkService = null;
@@ -159,13 +157,8 @@ public class IdiomGameApp extends Application {
 			networkService = ((NetworkService.MyBinder) service).getService();
 
 			networkService.connect(serverIp, serverPort);
-			// System.out.println("service=" + networkService);
-
-			// init heartbeat service after connection
-			//			initHeartbeatService();
 
 			IdiomGameApp.this.handler.handle();
-			// networkService.test();
 		}
 	};
 
@@ -197,7 +190,6 @@ public class IdiomGameApp extends Application {
 		}
 
 		public MyReceiver() {
-			// System.out.println("MyReceiver");
 		}
 
 	}
