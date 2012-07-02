@@ -128,6 +128,7 @@ public class IdiomGameApp extends Application {
 		scHeartbeat = new ServiceConnection() {
 
 			public void onServiceDisconnected(ComponentName name) {
+				Log.i("==APP==", "heatbeat service disconnected");
 				heartbeatService = null;
 			}
 
