@@ -86,8 +86,8 @@ public class Constants {
 		public static final String LOGOUT_NOTIFY = "LOGOUT_NOTIFY";
 		public static final String GETUSERINFO_REQ = "GETUSERINFO_REQ";
 		public static final String GETUSERINFO_RESP = "GETUSERINFO_RESP";
-		public static final Object HEARTBEAT_REQ = "HEARTBEAT_REQ";
-		public static final Object HEARTBEAT_RESP = "HEARTBEAT_RESP";
+		public static final String HEARTBEAT_REQ = "HEARTBEAT_REQ";
+		public static final String HEARTBEAT_RESP = "HEARTBEAT_RESP";
 	}
 
 	public static class CheckResultType {

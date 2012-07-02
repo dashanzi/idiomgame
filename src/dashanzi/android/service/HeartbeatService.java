@@ -45,21 +45,29 @@ public class HeartbeatService extends Service {
 		}
 	}
 
-	public void startHeartbeat(IdiomGameApp app, String name) {
-		Log.i("==HB==", "heatbeat service started");
-		HeartbeatRequestMsg hrm = new HeartbeatRequestMsg();
-		hrm.setType(Constants.Type.REFRESHROOM_REQ);
-		hrm.setName(name);
+	public void startHeartbeat(final IdiomGameApp app, final String name) {
 
-		while (flag) {
-			app.sendMessage(hrm);
-			try {
-				Thread.sleep(10 * 1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		Runnable r = new Runnable() {
+			public void run() {
+				Log.i("==HB==", "heatbeat service started");
+				HeartbeatRequestMsg hrm = new HeartbeatRequestMsg();
+				hrm.setType(Constants.Type.HEARTBEAT_REQ);
+				hrm.setName(name);
+
+				while (flag) {
+					app.sendMessage(hrm);
+					try {
+						Log.i("==HB==", "heatbeating... ...");
+						Thread.sleep(10 * 1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				Log.i("==HB==", "heatbeat service ended.");
 			}
-		}
-		Log.i("==HB==", "heatbeat service ended.");
+		};
+
+		new Thread(r).start();
 	}
 
 	public void stopHeartbeat() {

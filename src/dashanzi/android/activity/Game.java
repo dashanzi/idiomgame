@@ -731,6 +731,11 @@ public class Game extends Activity implements IMessageHandler,
 
 			Bundle b = msg.getData();
 			String idiom = b.getString("idiom");
+			if(idiom!=null && idiom.length()>4){
+				idiom_show_tv.setTextSize(10);
+			}else{
+				idiom_show_tv.setTextSize(30);
+			}
 			idiom_show_tv.setText(idiom);
 		}
 	};

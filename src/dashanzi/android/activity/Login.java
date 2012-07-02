@@ -114,6 +114,10 @@ public class Login extends Activity implements IMessageHandler,
 			Intent intent = new Intent();
 			intent.putExtra("name", userName.getText().toString());
 			intent.setClass(Login.this, House.class);
+			
+			//开启heartbeat
+			app.doStartHeartbeat(userName.getText().toString());
+			
 			Login.this.startActivity(intent);
 
 			// 终止Login

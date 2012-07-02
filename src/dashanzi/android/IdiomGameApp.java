@@ -76,6 +76,26 @@ public class IdiomGameApp extends Application {
 		}
 		// connnectService();
 	}
+	
+	public void doStartHeartbeat(final String userName) {
+		// 1. init service
+		Intent intent = new Intent(this, HeartbeatService.class);
+		scHeartbeat = new ServiceConnection() {
+
+			public void onServiceDisconnected(ComponentName name) {
+				Log.i("==APP==", "heatbeat service disconnected");
+				heartbeatService = null;
+			}
+
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.i("==APP==", "heatbeat service connected");
+				heartbeatService = ((HeartbeatService.MyBinder) service)
+						.getService();
+				heartbeatService.startHeartbeat(IdiomGameApp.this, userName);
+			}
+		};
+		bindService(intent, scHeartbeat, Context.BIND_AUTO_CREATE);
+	}
 
 	public void doDisconnect() {
 		// TODO edit by juzm
@@ -122,25 +142,7 @@ public class IdiomGameApp extends Application {
 
 	}
 
-	private void initHeartbeatService() {
-		// 1. init service
-		Intent intent = new Intent(this, NetworkService.class);
-		scHeartbeat = new ServiceConnection() {
-
-			public void onServiceDisconnected(ComponentName name) {
-				Log.i("==APP==", "heatbeat service disconnected");
-				heartbeatService = null;
-			}
-
-			public void onServiceConnected(ComponentName name, IBinder service) {
-				Log.i("==APP==", "heatbeat service connected");
-				heartbeatService = ((HeartbeatService.MyBinder) service)
-						.getService();
-				heartbeatService.startHeartbeat(IdiomGameApp.this, "usname");
-			}
-		};
-		bindService(intent, scHeartbeat, Context.BIND_AUTO_CREATE);
-	}
+	
 
 	// private void destroyService() {
 
@@ -160,7 +162,7 @@ public class IdiomGameApp extends Application {
 			// System.out.println("service=" + networkService);
 
 			// init heartbeat service after connection
-			initHeartbeatService();
+			//			initHeartbeatService();
 
 			IdiomGameApp.this.handler.handle();
 			// networkService.test();
