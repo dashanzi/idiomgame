@@ -18,7 +18,6 @@ public class VoiceUtil {
 	public static void SynthesizerVoice(final SynthesizerPlayer player,
 			final String voiceText, final int gender) {
 
-		Log.e(tag, "gender = " + gender+"");
 		if (player == null) {
 			Log.e(tag, "player == null");
 			return;
@@ -26,7 +25,6 @@ public class VoiceUtil {
 
 		new Thread() {
 			public void run() {
-				Log.e(tag, " --->>> voice run !");
 				switch (gender) {
 				case Constants.Player.MAN:
 					player.setVoiceName("xiaoyu");

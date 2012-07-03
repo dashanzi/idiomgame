@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,7 +19,9 @@ import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.service.HeartbeatService;
 import dashanzi.android.service.NetworkService;
+import dashanzi.android.util.DFAUtil;
 import dashanzi.android.util.Json2BeansUtil;
+import dashanzi.android.util.Node;
 
 public class IdiomGameApp extends Application {
 	private IMessageHandler currentActivity;
@@ -45,8 +48,18 @@ public class IdiomGameApp extends Application {
 			R.drawable.b002, R.drawable.b003, R.drawable.b004, R.drawable.b005,
 			R.drawable.b006, R.drawable.b007, R.drawable.b008 };
 
+//	//DFA 敏感词生成树
+//	private final Node rootNode = new Node('R');
+
 	public void onCreate(Bundle savedInstanceState) {
 
+		// TODO
+//		// init
+//		Resources res = getResources();
+//		final String[] arr = res.getStringArray(R.array.censor_words);
+//		DFAUtil.createTree(arr, rootNode);
+//		Log.e("dfa","initial .....");
+		
 	}
 
 	// ------------- public methods ----------------------------
@@ -76,7 +89,7 @@ public class IdiomGameApp extends Application {
 		}
 		// connnectService();
 	}
-	
+
 	/**
 	 * used by all login activity
 	 */
@@ -111,10 +124,11 @@ public class IdiomGameApp extends Application {
 			networkService = null;
 
 			// stop heartbeat service
-			heartbeatService.stopHeartbeat();
-			unbindService(scHeartbeat);
-			heartbeatService = null;
-
+			if(heartbeatService!=null){//edited by juzm
+				heartbeatService.stopHeartbeat();
+				unbindService(scHeartbeat);
+				heartbeatService = null;
+			}
 			receiver = null;
 		}
 	}
@@ -145,7 +159,6 @@ public class IdiomGameApp extends Application {
 
 	}
 
-	
 	private ServiceConnection scNetwork = new ServiceConnection() {
 
 		public void onServiceDisconnected(ComponentName name) {
@@ -260,4 +273,5 @@ public class IdiomGameApp extends Application {
 	public void setVoiceIdiom(String voiceIdiom) {
 		this.voiceIdiom = voiceIdiom;
 	}
+
 }

@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,7 +62,9 @@ import dashanzi.android.dto.response.HelpResponseMsg;
 import dashanzi.android.dto.response.InputResponseMsg;
 import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
+import dashanzi.android.util.DFAUtil;
 import dashanzi.android.util.FormatUtil;
+import dashanzi.android.util.Node;
 import dashanzi.android.util.ToastUtil;
 import dashanzi.android.util.VoiceUtil;
 
@@ -112,6 +115,9 @@ public class Game extends Activity implements IMessageHandler,
 
 	// background music
 	private Intent musicIntent = new Intent("dashanzi.android.music");
+
+	// DFA 敏感词生成树
+	private final Node rootNode = new Node('R');
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -165,7 +171,6 @@ public class Game extends Activity implements IMessageHandler,
 				" oncreate --->>> send RefreshRoomRequestMsg = "
 						+ req.toString());
 
-
 		// 语音播放
 		synPlayer = SynthesizerPlayer.createSynthesizerPlayer(this, "appid="
 				+ getString(R.string.app_id));
@@ -188,9 +193,13 @@ public class Game extends Activity implements IMessageHandler,
 			}
 		});
 
-		//默认播放背景音乐 
+		// 默认播放背景音乐
 		playBackGroundMusic();
-		
+
+		// 初始化敏感词检索树
+		Resources res = getResources();
+		final String[] arr = res.getStringArray(R.array.censor_words);
+		DFAUtil.createTree(arr, rootNode);
 	}
 
 	/************************************************************************************************************************
@@ -646,6 +655,21 @@ public class Game extends Activity implements IMessageHandler,
 					android.R.drawable.ic_dialog_alert);
 			return;
 		}
+
+		// 3. 敏感词过滤 
+		
+		List<String> censerWords = DFAUtil.searchWord(rootNode,
+				idiom_write);
+		if (censerWords != null && censerWords.size() > 0) {
+			StringBuffer censers = new StringBuffer();
+			for (String str : censerWords) {
+				censers.append("\"").append(str).append("\",");
+			}
+			ToastUtil.toastAlert(Game.this, "净化娱乐环境!敏感词：" + censers.toString(),
+					android.R.drawable.ic_dialog_alert);
+			return;
+		}
+
 		InputRequestMsg inputReq = new InputRequestMsg();
 		inputReq.setGid(gid);
 		inputReq.setType(Constants.Type.INPUT_REQ);
@@ -731,9 +755,9 @@ public class Game extends Activity implements IMessageHandler,
 
 			Bundle b = msg.getData();
 			String idiom = b.getString("idiom");
-			if(idiom!=null && idiom.length()>4){
+			if (idiom != null && idiom.length() > 4) {
 				idiom_show_tv.setTextSize(10);
-			}else{
+			} else {
 				idiom_show_tv.setTextSize(30);
 			}
 			idiom_show_tv.setText(idiom);
@@ -939,39 +963,39 @@ public class Game extends Activity implements IMessageHandler,
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		if (item != null) {
 			if (item.getItemId() == 2) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						Game.this);
+				AlertDialog.Builder builder = new AlertDialog.Builder(Game.this);
 				LayoutInflater factory = LayoutInflater.from(Game.this);
-				View textEntryView = factory.inflate(R.layout.voiceconfig,
-						null);
+				View textEntryView = factory
+						.inflate(R.layout.voiceconfig, null);
 				builder.setIcon(R.drawable.login_config_image);
 				builder.setTitle("音效设置");
 				builder.setView(textEntryView);
-				ToggleButton speakBtn = (ToggleButton) textEntryView.findViewById(R.id.voice_speak_toggle_btn);
+				ToggleButton speakBtn = (ToggleButton) textEntryView
+						.findViewById(R.id.voice_speak_toggle_btn);
 				speakBtn.setChecked(isSpeakerOn());
-				ToggleButton musicBtn = (ToggleButton) textEntryView.findViewById(R.id.back_ground_music_toggle_btn);
+				ToggleButton musicBtn = (ToggleButton) textEntryView
+						.findViewById(R.id.back_ground_music_toggle_btn);
 				musicBtn.setChecked(isMusicOn());
-				
+
 				speakBtn.setOnCheckedChangeListener(new MyOnCheckedChandeListener());
 				musicBtn.setOnCheckedChangeListener(new MyOnCheckedChandeListener());
-				
+
 				builder.setPositiveButton("确定",
 						new DialogInterface.OnClickListener() {
 
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								
-								if(isMusicOn()){
+
+								if (isMusicOn()) {
 									Game.this.playBackGroundMusic();
-								}else{
+								} else {
 									Game.this.pauseBackGroundMusic();
 								}
 							}
 						});
-				
+
 				builder.create().show();
-				
-				
+
 			} else if (item.getItemId() == 1) {
 				Intent intent = new Intent();
 				intent.setClass(Game.this, About.class);
@@ -992,7 +1016,7 @@ public class Game extends Activity implements IMessageHandler,
 
 			int id = buttonView.getId();
 			switch (id) {
-			case R.id.voice_speak_toggle_btn://语音播报
+			case R.id.voice_speak_toggle_btn:// 语音播报
 				if (isChecked) {
 					// 设置开启flag
 					setSpeakerOn(true);
@@ -1001,7 +1025,7 @@ public class Game extends Activity implements IMessageHandler,
 					setSpeakerOn(false);
 				}
 				break;
-			case R.id.back_ground_music_toggle_btn://背景音乐
+			case R.id.back_ground_music_toggle_btn:// 背景音乐
 				if (isChecked) {
 					// 设置开启flag
 					setMusicOn(true);
@@ -1146,8 +1170,8 @@ public class Game extends Activity implements IMessageHandler,
 			idiom_write_et.setText(app.getVoiceIdiom());
 		}
 
-		if(isMusicOn()){//判断是否为开启状态
-			playBackGroundMusic();	
+		if (isMusicOn()) {// 判断是否为开启状态
+			playBackGroundMusic();
 		}
 	}
 
@@ -1155,8 +1179,8 @@ public class Game extends Activity implements IMessageHandler,
 	protected void onPause() {
 		super.onPause();
 		Log.e(tag, "Game onPause ......");
-		
-		//暂停背景音乐
+
+		// 暂停背景音乐
 		pauseBackGroundMusic();
 	}
 
@@ -1167,17 +1191,16 @@ public class Game extends Activity implements IMessageHandler,
 		stopService(musicIntent);
 	}
 
-
 	private void playBackGroundMusic() {
-			musicIntent.putExtra("flag", "play");
-			startService(musicIntent);
+		musicIntent.putExtra("flag", "play");
+		startService(musicIntent);
 	}
-	
+
 	private void pauseBackGroundMusic() {
-			musicIntent.putExtra("flag", "pause");
-			startService(musicIntent);
+		musicIntent.putExtra("flag", "pause");
+		startService(musicIntent);
 	}
-	
+
 	/********************************************************************************************************************************
 	 * getter and setter
 	 ********************************************************************************************************************************/

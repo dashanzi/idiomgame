@@ -1,19 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
- 
-   <color name="yellow1">#F9E60E</color>
-   <color name="yellow2">#F9F89D</color>
-   <color name="orange4">#F7BE45</color>
-   <color name="orange5">#F7D896</color>
-   <color name="blue2">#006400</color>
-   <color name="grey05">#ACA899</color>
-   <color name="white1">#FFFFFF</color>
-   <color name="white2">#DDDDDD</color>
-   <color name="darkblue">#00008B</color>
-   <color name="darkturquoise">#00CED1</color>
-   <color name="palevioletred">#DB7093</color>
-   <color name="peru">#CD853F</color>
-   <color name="red">#FF0000</color>
-   <color name="blue">#0000FF</color>
-    
+
+    <color name="yellow1">#F9E60E</color>
+    <color name="yellow2">#F9F89D</color>
+    <color name="orange4">#F7BE45</color>
+    <color name="orange5">#F7D896</color>
+    <color name="blue2">#006400</color>
+    <color name="grey05">#ACA899</color>
+    <color name="white1">#FFFFFF</color>
+    <color name="white2">#DDDDDD</color>
+    <color name="darkblue">#00008B</color>
+    <color name="darkturquoise">#00CED1</color>
+    <color name="palevioletred">#DB7093</color>
+    <color name="peru">#CD853F</color>
+    <color name="red">#FF0000</color>
+    <color name="blue">#0000FF</color>
+
+    <string-array name="censor_words">
+        <item>密码</item>
+        <item>qq</item>
+        <item>怀孕</item>
+        <item>李红痔</item>
+        <item>64</item>
+        <item>89</item>
+        <item>八九</item>
+        <item>六四</item>
+        <item>天安门</item>
+        <item>电话</item>
+        <item>激情交友</item>
+        <item>激情电话</item>
+        <item>JJ</item>
+        <item>MM</item>
+        <item>GG</item>
+        <item>性伙伴</item>
+        <item>有偿服务</item>
+        <item>一夜激情</item>
+        <item>一夜情</item>
+        <item>母子乱伦</item>
+        <item>性服务</item>
+        <item>性伴侣</item>
+        <item>反社会</item>
+        <item>小电影</item>
+        <item>夫妻交换</item>
+        <item>我虽死去</item>
+        <item>自杀</item>
+        <item>胡锦涛</item>
+        <item>共产党</item>
+        <item>西藏</item>
+        <item>中共</item>
+        <item>迷奸</item>
+        <item>透视眼睛</item>
+        <item>催情药</item>
+        <item>作弊器</item>
+        <item>迷魂药</item>
+        <item>迷幻药</item>
+        <item>蒙汗药</item>
+        <item>文凭</item>
+        <item>发票</item>
+        <item>避孕</item>
+        <item>你妈</item>
+        <item>老婆</item>
+        <item>你爸</item>
+        <item>你妹</item>
+        <item>你姐</item>
+        <item>你哥</item>
+        <item>大姨妈</item>
+        <item>日本</item>
+        <item>妈了个逼</item>
+        <item>狗日的</item>
+        <item>狗娘养的</item>
+        <item>成人片</item>
+        <item>激情小电影</item>
+        <item>黄色小电影</item>
+        <item>迷昏药</item>
+        <item>少妇自拍</item>
+        <item>色情片</item>
+        <item>色情电影</item>
+        <item>三级片</item>
+        <item>三级电影</item>
+        <item>免费电影</item>
+        <item>禁网禁片</item>
+        <item>激情视频</item>
+        <item>激情电影</item>
+        <item>黄色电影</item>
+        <item>春宫图</item>
+        <item>SM用品</item>
+        <item>菊花洞</item>
+        <item>去死</item>
+        <item>找死</item>
+        <item>性交</item>
+        <item>性爱</item>
+        <item>我擦</item>
+        <item>我操</item>
+        <item>我干</item>
+        <item>我日</item>
+        <item>我ri</item>
+        <item>我cao</item>
+        <item>勒个去</item>
+        <item>的的</item>
+        <item>草泥马</item>
+        <item>三陪</item>
+        <item>装逼</item>
+        <item>A片</item>
+        <item>婊子</item>
+        <item>贱人</item>
+        <item>妈的</item>
+        <item>丫的</item>
+        <item>大爷</item>
+        <item>贱人</item>
+        <item>卖血</item>
+        <item>求肾</item>
+        <item>换肾</item>
+        <item>押题</item>
+        <item>带考</item>
+        <item>待考</item>
+        <item>包过</item>
+        <item>替考</item>
+        <item>助考</item>
+        <item>保过</item>
+        <item>漏题</item>
+        <item>鞭满</item>
+        <item>中特</item>
+        <item>盗号</item>
+        <item>嗑药</item>
+        <item>打手</item>
+        <item>切腹</item>
+        <item>杀手</item>
+        <item>电鸡</item>
+        <item>买枪</item>
+        <item>卖枪</item>
+        <item>代孕</item>
+        <item>耀邦</item>
+        <item>胡锦</item>
+        <item>中功</item>
+        <item>轮功</item>
+        <item>9坪</item>
+        <item>法伦</item>
+        <item>法L</item>
+        <item>9评</item>
+        <item>九凭</item>
+        <item>自焚</item>
+        <item>紫阳</item>
+        <item>6四</item>
+        <item>六4</item>
+        <item>学潮</item>
+        <item>暴行</item>
+        <item>何新</item>
+        <item>造反</item>
+        <item>信访</item>
+        <item>军转</item>
+        <item>聚集</item>
+        <item>买断</item>
+        <item>罢市</item>
+        <item>维权</item>
+        <item>示威</item>
+        <item>陪聊</item>
+        <item>h图</item>
+        <item>h漫</item>
+        <item>开苞</item>
+        <item>找男</item>
+        <item>找女</item>
+        <item>口淫</item>
+        <item>卖身</item>
+        <item>男奴</item>
+        <item>女奴</item>
+        <item>幼交</item>
+        <item>做台</item>
+        <item>厕奴</item>
+        <item>骚女</item>
+        <item>嫩逼</item>
+        <item>泡友</item>
+        <item>富姐</item>
+        <item>富婆</item>
+        <item>足交</item>
+        <item>群交</item>
+        <item>阴户</item>
+        <item>乳交</item>
+        <item>屁眼</item>
+        <item>共贼</item>
+        <item>台独</item>
+        <item>共独</item>
+        <item>陆独</item>
+        <item>灭共</item>
+        <item>伪大</item>
+        <item>夺权</item>
+        <item>网特</item>
+        <item>反G</item>
+        <item>记签</item>
+        <item>王政</item>
+        <item>华闻</item>
+        <item>涿州</item>
+        <item>6合</item>
+        <item>六合</item>
+        <item>有码</item>
+        <item>无码</item>
+        <item>包养</item>
+        <item>犬交</item>
+        <item>兽交</item>
+        <item>根浴</item>
+        <item>买肾</item>
+        <item>卖肾</item>
+        <item>肾源</item>
+        <item>援交</item>
+        <item>性息</item>
+        <item>裸聊</item>
+        <item>菊暴</item>
+        <item>菊爆</item>
+        <item>暴菊</item>
+        <item>爆菊</item>
+        <item>代考</item>
+        <item>性虐</item>
+        <item>性爱</item>
+        <item>刻章</item>
+        <item>吃人</item>
+        <item>肉棍</item>
+        <item>自烧</item>
+        <item>支那</item>
+        <item>香功</item>
+        <item>亡党</item>
+        <item>挺胡</item>
+        <item>天葬</item>
+        <item>师涛</item>
+        <item>剩火</item>
+        <item>三脱</item>
+        <item>三退</item>
+        <item>亲共</item>
+        <item>民运</item>
+        <item>民殇</item>
+        <item>毛贼</item>
+        <item>恐共</item>
+        <item>疆独</item>
+        <item>江贼</item>
+        <item>江派</item>
+        <item>江驴</item>
+        <item>江毒</item>
+        <item>华语</item>
+        <item>胡温</item>
+        <item>胡派</item>
+        <item>胡江</item>
+        <item>共匪</item>
+        <item>共党</item>
+        <item>反党</item>
+        <item>法轮</item>
+        <item>法功</item>
+        <item>恶警</item>
+        <item>恶党</item>
+        <item>东突</item>
+        <item>党禁</item>
+        <item>党棍</item>
+        <item>赤匪</item>
+        <item>藏独</item>
+        <item>踩江</item>
+        <item>3退</item>
+        <item>脏独</item>
+        <item>脏毒</item>
+        <item>反共</item>
+        <item>昏药</item>
+        <item>土炮</item>
+        <item>胎盘</item>
+        <item>枪模</item>
+        <item>铅弹</item>
+        <item>汽枪</item>
+        <item>汽狗</item>
+        <item>气枪</item>
+        <item>气狗</item>
+        <item>迷药</item>
+        <item>警徽</item>
+        <item>红床</item>
+        <item>狗友</item>
+        <item>弹种</item>
+        <item>弹夹</item>
+        <item>春药</item>
+        <item>斑蝥</item>
+        <item>霰弹</item>
+        <item>土枪</item>
+        <item>双筒</item>
+        <item>双桶</item>
+        <item>手枪</item>
+        <item>人弹</item>
+        <item>猎枪</item>
+        <item>雷管</item>
+        <item>弓弩</item>
+        <item>电狗</item>
+        <item>长狗</item>
+        <item>爆破</item>
+        <item>左棍</item>
+        <item>傻逼</item>
+        <item>贱人</item>
+        <item>贱货</item>
+        <item>粪青</item>
+        <item>婊子</item>
+        <item>换妻</item>
+        <item>淫靡</item>
+        <item>淫水</item>
+        <item>淫兽</item>
+        <item>阴毛</item>
+        <item>阴蒂</item>
+        <item>阴道</item>
+        <item>阴唇</item>
+        <item>性交</item>
+        <item>小穴</item>
+        <item>缩阴</item>
+        <item>肉棒</item>
+        <item>情杀</item>
+        <item>裸照</item>
+        <item>奸杀</item>
+        <item>乱伦</item>
+        <item>口交</item>
+        <item>肛交</item>
+        <item>慧聪</item>
+        <item>特码</item>
+        <item>赌具</item>
+        <item>彩票</item>
+        <item>蝇毒</item>
+        <item>烟碱</item>
+        <item>冰毒</item>
+        <item>办证</item>
+        <item>私服</item>
+        <item>性奴</item>
+        <item>fuck</item>
+        <item>ri</item>
+        <item>ca</item>
+        <item>cao</item>
+    </string-array>
+
 </resources>
