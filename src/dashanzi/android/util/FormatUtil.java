@@ -1,5 +1,13 @@
 package dashanzi.android.util;
 
+/**
+ * 数据类型转换工具类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class FormatUtil {
 	
 	/**

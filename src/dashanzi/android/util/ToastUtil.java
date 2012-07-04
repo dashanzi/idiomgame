@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 /**
- * 
+ * Toast 工具类
  * @author dashanzi
  * @version 1.0
  * @date 20120629

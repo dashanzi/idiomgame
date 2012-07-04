@@ -1,5 +1,13 @@
 package dashanzi.android.dto.request;
 
+/**
+ * 超时请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class TimeoutRequestMsg extends RequestMsg{
 	
 	private String gid;

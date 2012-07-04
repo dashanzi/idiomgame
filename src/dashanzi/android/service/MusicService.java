@@ -7,6 +7,14 @@ import android.os.IBinder;
 import android.util.Log;
 import dashanzi.android.R;
 
+/**
+ * 背景音乐
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class MusicService extends Service {
 
 	private static final String tag = "MusicService";

@@ -19,6 +19,14 @@ import android.util.Log;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.util.Beans2JsonUtil;
 
+/**
+ * 客户端与服务端网络交互
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class NetworkService extends Service {
 
 	protected boolean isStop = false;

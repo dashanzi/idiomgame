@@ -4,6 +4,13 @@ import java.util.List;
 
 import dashanzi.android.dto.User;
 
+/**
+ * 进入房间请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class JoinResponseMsg extends ResponseMsg {
 
 	private String gid;

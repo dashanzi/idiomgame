@@ -1,5 +1,12 @@
 package dashanzi.android.dto.response;
 
+/**
+ * 玩家信息响应
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class GetUserInfoResponseMsg extends ResponseMsg {
 	
 	private String name;

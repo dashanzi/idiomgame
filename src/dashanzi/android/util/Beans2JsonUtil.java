@@ -19,6 +19,14 @@ import dashanzi.android.dto.request.RegisterRequestMsg;
 import dashanzi.android.dto.request.StartRequestMsg;
 import dashanzi.android.dto.request.TimeoutRequestMsg;
 
+/**
+ * 实体向Json转换工具类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class Beans2JsonUtil {
 
 	private static String getJsonStrFromRegisterequest(RegisterRequestMsg bean)

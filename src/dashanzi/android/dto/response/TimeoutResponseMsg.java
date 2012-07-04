@@ -4,6 +4,14 @@ import java.util.List;
 
 import dashanzi.android.dto.User;
 
+/**
+ * 超时响应
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class TimeoutResponseMsg extends ResponseMsg {
 
 	private String gid;

@@ -9,6 +9,13 @@ import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.dto.request.HeartbeatRequestMsg;
 
+/**
+ * 心跳
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class HeartbeatService extends Service {
 
 	private final IBinder binder = new MyBinder();

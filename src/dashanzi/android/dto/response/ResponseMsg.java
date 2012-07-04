@@ -2,6 +2,14 @@ package dashanzi.android.dto.response;
 
 import dashanzi.android.dto.IMessage;
 
+/**
+ * 响应父类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class ResponseMsg implements IMessage {
 
 	private String type;

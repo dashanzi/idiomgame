@@ -5,15 +5,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import dashanzi.android.activity.IConnectHandler;
-
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import dashanzi.android.activity.IConnectHandler;
 
+/**
+ * 消息接收
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class ReceiverService extends Service {
 	private final IBinder binder = new MyBinder();
 	private boolean readFlag = true;

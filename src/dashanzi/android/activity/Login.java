@@ -30,6 +30,13 @@ import dashanzi.android.dto.response.LoginResponseMsg;
 import dashanzi.android.listener.MyConfigOnClickListener;
 import dashanzi.android.util.ToastUtil;
 
+/**
+ * 登录
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class Login extends Activity implements IMessageHandler,
 		IExceptionHandler {
 

@@ -26,6 +26,13 @@ import dashanzi.android.dto.response.RefreshRoomResponseMsg;
 import dashanzi.android.dto.response.RegisterResponseMsg;
 import dashanzi.android.dto.response.TimeoutResponseMsg;
 
+/**
+ * Json向实体转换工具类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class Json2BeansUtil {
 	public static IMessage getMessageFromJsonStr(String jsonStr)
 			throws JSONException {
@@ -109,20 +116,6 @@ public class Json2BeansUtil {
 		result.setType(header.getString("type"));
 		result.setStatus(header.getString("status"));
 
-		// JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
-		// // List<GroupInfo>
-		// JSONArray groups = body.getJSONArray("groups");
-		// List<GroupInfo> groupList = new ArrayList<GroupInfo>();
-		//
-		// for (int i = 0; i < groups.length(); i++) {
-		//
-		// JSONObject groupJson = groups.optJSONObject(i);
-		// GroupInfo group = new GroupInfo();
-		// group.setGid(groupJson.getString("gid"));
-		// group.setState(groupJson.getString("state"));
-		// groupList.add(group);
-		// }
-		// result.setGroupInfoList(groupList);
 		return result;
 	}
 
@@ -542,8 +535,6 @@ public class Json2BeansUtil {
 		JSONObject header = dataJson.getJSONObject(Constants.JSON.HEADER);
 		result.setType(header.getString("type"));
 		result.setStatus(header.getString("status"));
-
-		JSONObject body = dataJson.getJSONObject(Constants.JSON.BODY);
 
 		return result;
 	}

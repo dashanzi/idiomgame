@@ -1,5 +1,13 @@
 package dashanzi.android.dto.request;
 
+/**
+ * 游戏开始请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class StartRequestMsg extends RequestMsg {
 	private String gid;
 

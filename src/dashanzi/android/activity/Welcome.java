@@ -12,6 +12,13 @@ import dashanzi.android.R;
 import dashanzi.android.db.DBUtil;
 import dashanzi.android.dto.IMessage;
 
+/**
+ * 欢迎界面
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class Welcome extends Activity implements IMessageHandler {
 	private final int SPLASH_DELAY_TIME = 3000;
 	private String tag = "Welcome";

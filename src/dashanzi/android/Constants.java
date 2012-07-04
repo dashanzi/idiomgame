@@ -1,7 +1,7 @@
 package dashanzi.android;
 
 /**
- * 
+ * 常量类
  * @author dashanzi
  * @version 1.0
  * @date 20120629

@@ -69,7 +69,7 @@ import dashanzi.android.util.ToastUtil;
 import dashanzi.android.util.VoiceUtil;
 
 /**
- * 
+ * 游戏房间
  * @author dashanzi
  * @version 1.0
  * @date 20120629

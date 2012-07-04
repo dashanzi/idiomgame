@@ -1,5 +1,11 @@
 package dashanzi.android.activity;
 
+/**
+ * 
+ * @author dashanzi
+ * @version 1.0
+ *
+ */
 public interface IConnectHandler {
 
 	/**

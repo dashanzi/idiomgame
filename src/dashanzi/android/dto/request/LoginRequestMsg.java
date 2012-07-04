@@ -1,5 +1,12 @@
 package dashanzi.android.dto.request;
 
+/**
+ * 登陆请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 
 public class LoginRequestMsg extends RequestMsg{
 

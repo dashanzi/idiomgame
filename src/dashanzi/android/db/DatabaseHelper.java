@@ -8,16 +8,14 @@ import android.util.Log;
 import dashanzi.android.Constants;
 
 /**
- * 数据库操作工具类
+ * 数据库创建
  * 
  * @author dashanzi
  * @version 1.0
+ * @date 20120629
  * 
  */
 
-// DatabaseHelper作为一个访问SQLite的助手类，提供两个方面的功能，
-// 第一，getReadableDatabase(),getWritableDatabase()可以获得SQLiteDatabse对象，通过该对象可以对数据库进行操作
-// 第二，提供了onCreate()和onUpgrade()两个回调函数，允许我们在创建和升级数据库时，进行自己的操作
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private static final String tag = "DatabaseHelper";

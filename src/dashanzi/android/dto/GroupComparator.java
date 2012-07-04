@@ -1,10 +1,15 @@
 package dashanzi.android.dto;
 
 import java.util.Comparator;
-
+/**
+ * 房间信息比较器
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 
 public class GroupComparator implements Comparator<Object> {
-
 
 	@Override
 	public int compare(Object lhs, Object rhs) {

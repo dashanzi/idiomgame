@@ -1,5 +1,13 @@
 package dashanzi.android.dto;
 
+/**
+ * 房间信息
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class GroupInfo {
 	
 	private String gid;

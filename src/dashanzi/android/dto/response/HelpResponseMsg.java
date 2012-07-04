@@ -4,6 +4,14 @@ import java.util.List;
 
 import dashanzi.android.dto.User;
 
+/**
+ * 使用锦囊响应
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class HelpResponseMsg extends ResponseMsg {
 	private String gid;
 	private String uid;

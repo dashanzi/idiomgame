@@ -4,6 +4,13 @@ import java.util.List;
 
 import dashanzi.android.dto.GroupInfo;
 
+/**
+ * 登陆响应
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class LoginResponseMsg extends ResponseMsg{
 
 	private List<GroupInfo> groupInfoList;

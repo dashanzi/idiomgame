@@ -15,18 +15,22 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import dashanzi.android.Constants;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
-import dashanzi.android.dto.notify.LogoutNotifyMsg;
 
+/**
+ * 软件首页
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class IndexSelect extends TabActivity {
 	private static final String tag ="IndexSelect";
 	private IdiomGameApp app;
 	private TabHost mTabHost;
 	private TabWidget mTabWidget;
 	
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,8 +38,6 @@ public class IndexSelect extends TabActivity {
 		app = (IdiomGameApp) this.getApplication();
 		app.setAboutThreadIsInterrupt(true);// 终止about thread
 
-		Intent intent = this.getIntent();
-		
 		mTabHost = this.getTabHost();
 		/* 去除标签下方的白线 */
 		mTabHost.setPadding(mTabHost.getPaddingLeft(),
@@ -110,7 +112,7 @@ public class IndexSelect extends TabActivity {
 
 	@Override
 	protected void onResume() {
-		Log.e("IndexSelect", "onResume");
+		Log.e(tag, "onResume");
 		super.onResume();
 		// stop about thread
 		app.setAboutThreadIsInterrupt(true);
@@ -149,8 +151,7 @@ public class IndexSelect extends TabActivity {
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		//用于解决activity中有ViewFlipper不响应
+		//用于解决tab activity中有ViewFlipper不响应
 		getCurrentActivity().onTouchEvent(event);
 		return super.onTouchEvent(event);
 	}

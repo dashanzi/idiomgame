@@ -8,6 +8,14 @@ import android.util.Log;
 import dashanzi.android.Constants;
 import dashanzi.android.dto.ServerInfo;
 
+/**
+ * 数据操作方法工具类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class DBUtil {
 
 	private static final String tag = "DBUtil";

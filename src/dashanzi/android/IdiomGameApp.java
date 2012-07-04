@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -19,10 +18,15 @@ import dashanzi.android.activity.IMessageHandler;
 import dashanzi.android.dto.IMessage;
 import dashanzi.android.service.HeartbeatService;
 import dashanzi.android.service.NetworkService;
-import dashanzi.android.util.DFAUtil;
 import dashanzi.android.util.Json2BeansUtil;
-import dashanzi.android.util.Node;
 
+/**
+ * 应用程序类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class IdiomGameApp extends Application {
 	private IMessageHandler currentActivity;
 	private NetworkService networkService;

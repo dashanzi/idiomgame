@@ -5,7 +5,13 @@ import java.util.List;
 import dashanzi.android.dto.User;
 import dashanzi.android.dto.request.RequestMsg;
 
-
+/**
+ * 游戏开始通知（由服务端发出）
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class StartNotifyMsg extends RequestMsg{
 
 	private String gid;
@@ -45,8 +51,6 @@ public class StartNotifyMsg extends RequestMsg{
 	public void setWord(String word) {
 		this.word = word;
 	}
-
-	
 	
 	@Override
 	public String toString() {

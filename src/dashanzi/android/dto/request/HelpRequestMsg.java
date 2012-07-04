@@ -1,5 +1,12 @@
 package dashanzi.android.dto.request;
 
+/**
+ * 使用锦囊请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class HelpRequestMsg extends RequestMsg {
 	private String gid;
 	private String uid;

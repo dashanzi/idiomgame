@@ -22,6 +22,13 @@ import com.iflytek.ui.RecognizerDialogListener;
 import dashanzi.android.IdiomGameApp;
 import dashanzi.android.R;
 
+/**
+ * 语音输入
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class Voice extends Activity implements OnClickListener,
 		RecognizerDialogListener {
 	private static final String TAG = "IatDemoActivity";
@@ -113,9 +120,7 @@ public class Voice extends Activity implements OnClickListener,
 		String result_temp = builder.toString();
 		String result = result_temp.replace("。", "");
 		mResultText.append(result);
-//		mResultText.setSelection(result.length());
 
-		Log.e("test", mResultText.getText().toString().replace("。", ""));
 		app.setVoiceIdiom(mResultText.getText().toString().replace("。", ""));
 	}
 

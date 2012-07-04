@@ -4,6 +4,13 @@ import java.util.List;
 
 import dashanzi.android.dto.User;
 
+/**
+ * 提交成语响应
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class InputResponseMsg extends ResponseMsg {
 
 	private String gid;

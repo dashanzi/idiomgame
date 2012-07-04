@@ -30,6 +30,13 @@ import dashanzi.android.dto.response.RegisterResponseMsg;
 import dashanzi.android.listener.MyConfigOnClickListener;
 import dashanzi.android.util.ToastUtil;
 
+/**
+ * 注册
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class Register extends Activity implements IMessageHandler,
 		IExceptionHandler {
 

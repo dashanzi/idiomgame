@@ -33,6 +33,13 @@ import dashanzi.android.dto.response.JoinResponseMsg;
 import dashanzi.android.dto.response.RefreshResponseMsg;
 import dashanzi.android.util.ToastUtil;
 
+/**
+ * 游戏大厅
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class House extends ListActivity implements IMessageHandler,
 		IExceptionHandler {
 
@@ -89,9 +96,6 @@ public class House extends ListActivity implements IMessageHandler,
 		// 5. 设置刷新大厅监听
 		houseRefreshBtn = (Button) findViewById(R.id.house_refresh_btn);
 		houseRefreshBtn.setOnClickListener(new MyOnClickListener());
-
-		// TODO
-		// HeartBeat.startHeartBeat(app);
 	}
 
 	/********************************************************************************************************************************

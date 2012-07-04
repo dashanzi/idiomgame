@@ -19,7 +19,14 @@ import dashanzi.android.db.DBUtil;
 import dashanzi.android.dto.ServerInfo;
 import dashanzi.android.util.ToastUtil;
 
-// 登陆按钮监听
+/**
+ * 服务器地址配置按钮监听
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class MyConfigOnClickListener implements OnClickListener {
 	
 	private static final String tag = "MyConfigOnClickListener";

@@ -6,6 +6,13 @@ import com.iflytek.speech.SynthesizerPlayer;
 
 import dashanzi.android.Constants;
 
+/**
+ * 语音播报工具类
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class VoiceUtil {
 	private static final String tag = "VoiceUtil";
 

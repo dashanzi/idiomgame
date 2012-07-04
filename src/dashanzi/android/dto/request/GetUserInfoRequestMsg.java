@@ -1,5 +1,13 @@
 package dashanzi.android.dto.request;
 
+/**
+ * 玩家信息查询请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
+
 public class GetUserInfoRequestMsg extends RequestMsg {
 	private String gid;
 	private String uid;

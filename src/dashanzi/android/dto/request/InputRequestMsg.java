@@ -1,6 +1,12 @@
 package dashanzi.android.dto.request;
 
-
+/**
+ * 成语提交请求
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public class InputRequestMsg extends RequestMsg{
 
 	private String gid;

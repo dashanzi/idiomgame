@@ -1,5 +1,12 @@
 package dashanzi.android.activity;
 
+/**
+ * 
+ * @author dashanzi
+ * @version 1.0
+ * @date 20120629
+ *
+ */
 public interface IExceptionHandler {
 	
 	/**
