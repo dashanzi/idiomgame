@@ -1,7 +1,7 @@
 package dashanzi.android.activity;
 
 /**
- * 
+ * 异常接口
  * @author dashanzi
  * @version 1.0
  * @date 20120629

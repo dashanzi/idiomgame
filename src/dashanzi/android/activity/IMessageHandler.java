@@ -2,7 +2,7 @@ package dashanzi.android.activity;
 
 import dashanzi.android.dto.IMessage;
 /**
- * 
+ * 消息接口
  * @author dashanzi
  * @version 1.0
  * @date 20120629

@@ -1,7 +1,7 @@
 package dashanzi.android.activity;
 
 /**
- * 
+ * 网络连接接口
  * @author dashanzi
  * @version 1.0
  *

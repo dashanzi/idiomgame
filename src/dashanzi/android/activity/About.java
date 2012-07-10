@@ -19,10 +19,11 @@ import dashanzi.android.R;
 
 /**
  * 软件介绍
+ * 
  * @author dashanzi
  * @version 1.0
  * @date 20120629
- *
+ * 
  */
 public class About extends Activity implements OnGestureListener {
 
@@ -32,7 +33,7 @@ public class About extends Activity implements OnGestureListener {
 
 	private GestureDetector detector;
 	private TextView title_tv;
-	private String[] titles = { "游戏宗旨", "注册与登陆", "选择房间", "接龙游戏", "具体规则" };
+	private String[] titles = { "寓教于乐", "软件首页", "游戏大厅", "游戏房间", "具体规则" };
 	private int tiltle_index = 0;
 	private final int pageNum = 5;
 
@@ -62,9 +63,31 @@ public class About extends Activity implements OnGestureListener {
 		flipper.addView(getImageView(R.drawable.page2));
 		flipper.addView(getImageView(R.drawable.page3));
 		flipper.addView(getImageView(R.drawable.page4));
-		flipper.addView(getImageView(R.drawable.image5));
 
-		//初始化悬浮按钮
+		TextView gameRule = getTextView();
+		String separator = "\r\n";
+		StringBuffer sb = new StringBuffer();
+		sb.append("成语匹配规则：").append(separator);
+		sb.append("[1] 龙头成语由服务器端在词库中随机选取发放；").append(separator);
+		sb.append("[2] 前后两个相接的成语，前一成语的尾字和后一成语的首字拼音必须相同（音调可以不同）").append(separator);
+		sb.append("例如：“头脑风暴”下面可接：“抱薪救火”、“褒采一介”、“苞藏祸心”等").append(separator).append(separator);
+		
+		sb.append("积分输赢规则：").append(separator);
+		sb.append("[1] 在规定时间内回答正确: 回答成语在词库中的词频越小，获得积分越多").append(separator);
+		sb.append("	积分公式：(MAX_FREQ-freq)*5/ MAX_FREQ").append(separator);
+		sb.append("[2] 在规定时间内回答错误: 积分-1").append(separator);
+		sb.append("[3] 超时: 积分-1").append(separator);
+		sb.append("[4] 使用锦囊 : 积分+3，但锦囊数-1").append(separator).append(separator);
+		
+		sb.append("等级规则：").append(separator);
+		sb.append("[1] 积分  <= 0 : 等级为0"+ "; [2] 积分  1-10 : 等级为1").append(separator);
+		sb.append("[3] 积分11-30 : 等级为2"+"; [4] 积分31-60 : 等级为3").append(separator);
+		sb.append("[5] 积分61-100 : 等级为4" + "; [6] 积分  >100 : 等级为5").append(separator);
+		
+		gameRule.setText(sb.toString());
+		flipper.addView(gameRule);
+
+		// 初始化悬浮按钮
 		initImageButtonView();
 	}
 
@@ -72,6 +95,11 @@ public class About extends Activity implements OnGestureListener {
 		ImageView imageView = new ImageView(this);
 		imageView.setBackgroundResource(id);
 		return imageView;
+	}
+
+	private TextView getTextView() {
+		TextView textView = new TextView(this);
+		return textView;
 	}
 
 	@Override
@@ -88,13 +116,13 @@ public class About extends Activity implements OnGestureListener {
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
 		if (e1.getX() - e2.getX() > 120) {
-			
+
 			// 下一张
 			showNextPage();
 			return true;
 		} else if (e1.getX() - e2.getX() < -120) {
-			
-			//上一张
+
+			// 上一张
 			showPreviousPage();
 			return true;
 		}
@@ -191,7 +219,6 @@ public class About extends Activity implements OnGestureListener {
 		this.flipper.showPrevious();
 	}
 
-	
 	private void showNextPage() {
 		if (tiltle_index == pageNum - 1) {
 			tiltle_index = 0;
@@ -205,8 +232,7 @@ public class About extends Activity implements OnGestureListener {
 				R.anim.push_left_out));
 		this.flipper.showNext();
 	}
-	
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
